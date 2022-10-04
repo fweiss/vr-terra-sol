@@ -9,9 +9,30 @@
             html,body {overflow: hidden;width: 100%;height: 100%;margin: 0;padding: 0;}
             #renderCanvas {width: 100%;height: 100%;touch-action: none;}
         </style>
+        <link rel="stylesheet" href="assets/main.css"
         <!-- webpack inserts JS -->
     </head>
     <body>
         <canvas id="renderCanvas" touch-action="none"></canvas>
+        <div id="controls">
+            <fieldset>
+                <legend>Select a camera</legend>          
+                <div>
+                  <input type="radio" id="surface" name="camera" value="surface"
+                         checked>
+                  <label for="surface">Surface</label>
+                </div>
+            
+                <div>
+                  <input type="radio" id="orbit" name="camera" value="orbit">
+                  <label for="orbit">Orbit</label>
+                </div>
+            
+                <div>
+                  <input type="radio" id="near_space" name="camera" value="near_space">
+                  <label for="near_space">Near space</label>
+                </div>
+            </fieldset>
+        </div>
     </body>
 </html>
