@@ -1,20 +1,7 @@
 import * as BABYLON from 'babylonjs'
-// import { Camera, CreateScreenshotWithResizeAsync } from 'babylonjs';
-import { PositionGizmo } from 'babylonjs/Gizmos/index';
+import settings from './settings'
 import Controls from './gui-controls';
 import Camera from './camera'
-
-const settings = {
-    earth: {
-        diameter: 12756
-    },
-    starfield: {
-        diameter: 12000000
-    },
-    debug: {
-        inspector: false
-    }
-}
 
 const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
 const engine = new BABYLON.Engine(canvas, true)

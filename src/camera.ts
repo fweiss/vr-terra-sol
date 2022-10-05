@@ -1,13 +1,4 @@
-import { Vector2 } from "babylonjs"
-
-const settings = {
-    earth: {
-        diameter: 12756
-    },
-    starfield: {
-        diameter: 12000000
-    }
-}
+import settings from './settings'
 
 export default class Camera {
     orbitCamera: BABYLON.TargetCamera
@@ -35,8 +26,8 @@ export default class Camera {
         // const camera = this.nearSpaceCamera
         const camera = scene.getNodeByName(cameraName) as BABYLON.TargetCamera
 
-        camera.attachControl(true)
         scene.activeCamera = camera
+        camera.attachControl(true)
         const noPreventDefault = true
         // camera.attachControl(noPreventDefault)
     }
