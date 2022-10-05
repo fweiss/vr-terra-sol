@@ -16,3 +16,5 @@ Animation speed.
 https://reddotblues.medium.com/babylon-js-typescript-project-setup-for-the-impatient-d8c71b4a57ad
 
 http://shadedrelief.com/
+
+https://blog.mastermaps.com/2013/09/creating-webgl-earth-with-threejs.html

@@ -3,7 +3,6 @@ import * as BABYLON from 'babylonjs'
 import { PositionGizmo } from 'babylonjs/Gizmos/index';
 import Controls from './gui-controls';
 import Camera from './camera'
-import { CameraInputsManager } from 'babylonjs';
 
 const settings = {
     earth: {
@@ -43,9 +42,15 @@ if (settings.debug.inspector) {
 const axes = new BABYLON.AxesViewer(scene, 2000)
 
 function createLights() {
-    let light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 0, 100000), scene)
-    light.diffuse = new BABYLON.Color3(1, 1, 1)
+    // use two oposing hemisphere lights to provide full ambient
+    const intensity = .5
+    let light = new BABYLON.HemisphericLight("hemilight_north", new BABYLON.Vector3(0, 100000, 0), scene)
+    light.diffuse = new BABYLON.Color3(intensity, intensity, intensity)
     light.specular = new BABYLON.Color3(0, 0, 0);
+
+    let light2 = new BABYLON.HemisphericLight("hemilight_south", new BABYLON.Vector3(0, -100000, 0), scene)
+    light2.diffuse = new BABYLON.Color3(intensity, intensity, intensity)
+    light2.specular = new BABYLON.Color3(0, 0, 0);
 }
 
 function populateScene() {
@@ -66,7 +71,12 @@ function populateScene() {
     earth.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI / 2)
     earth.material = material
 
-    createStarfield()
+    const starfield = createStarfield()
+
+    const sunlight = new BABYLON.DirectionalLight('sunlight', new BABYLON.Vector3(1, 0, 0), scene)
+    sunlight.excludedMeshes =  [ starfield ]
+    sunlight.intensity = 1
+    sunlight.specular = new BABYLON.Color3()
 }
 
 function createStarfield() {
@@ -75,4 +85,5 @@ function createStarfield() {
     let material = new BABYLON.StandardMaterial('stars', scene)
     material.diffuseTexture = new BABYLON.Texture('assets/starfield.jpg', scene)
     starfield.material = material
+    return starfield
 }
