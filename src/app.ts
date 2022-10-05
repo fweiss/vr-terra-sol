@@ -3,6 +3,7 @@ import * as BABYLON from 'babylonjs'
 import { PositionGizmo } from 'babylonjs/Gizmos/index';
 import Controls from './gui-controls';
 import Camera from './camera'
+import { CameraInputsManager } from 'babylonjs';
 
 const settings = {
     earth: {
@@ -18,7 +19,7 @@ const settings = {
 
 const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
 const engine = new BABYLON.Engine(canvas, true)
-var scene = new BABYLON.Scene(engine)
+var scene: BABYLON.Scene = new BABYLON.Scene(engine)
 engine.runRenderLoop(function () {
     scene.render()
 });
@@ -32,7 +33,8 @@ populateScene()
 
 const controls = new Controls()
 controls.target.addEventListener('camera', (event) => {
-    console.log(event)
+    const cameraName = event.detail
+    camera.switchCamera(cameraName, scene)
 })
 
 if (settings.debug.inspector) {
