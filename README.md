@@ -12,6 +12,15 @@ A realistic earth sphere and radiant sun with variety of POVs and animations.
 
 Animation speed.
 
+## Design rules
+- scale 1 km
+- WebGL xyz (left, up, out)
+- sun at (0,0,0)
+- sun diameter ...
+- earth orbit circular at 1 AU
+- earth diameter ...
+- earth axis incline around z
+
 ## Links and references
 https://reddotblues.medium.com/babylon-js-typescript-project-setup-for-the-impatient-d8c71b4a57ad
 
