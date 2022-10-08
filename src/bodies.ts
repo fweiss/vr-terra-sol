@@ -7,11 +7,9 @@ export default class Bodies {
 
     constructor(scene: BABYLON.Scene) {
         let earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: settings.earth.diameter, sideOrientation: BABYLON.Mesh.FRONTSIDE}, scene)
-        // earth.up = new BABYLON.Vector3(0, 1, 0)
         this.earth = earth
 
         let material = new BABYLON.StandardMaterial('earth_no_clouds', scene)
-        // material.diffuseColor = BABYLON.Color3.FromHexString('#cf9e51')
     
         let res = [ '8k', '16k' ]
         const url = 'assets/' + res[0] + '/2_no_clouds_' + res[0] + '.jpg'
@@ -19,15 +17,9 @@ export default class Bodies {
         const invertY = false // since default is oddly, true
         const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
         texture.uScale = -1.0 // since texture wraps backwards
-        // material.diffuseTexture.vOffset = 1
         material.diffuseTexture = texture
 
-        // since invertY above doesn't seem to work
-        // earth.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI)
-
-        // since texture should center at long 0
-        // earth.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI / 2)
-        earth.material = material
+       earth.material = material
     
         const starfield = createStarfield(scene)
     
@@ -37,7 +29,9 @@ export default class Bodies {
         sunlight.specular = new BABYLON.Color3()
     }
     setEarth(tod) {
-        const beta = (tod / 24) * Math.PI * 2
+        // because texture.uOffset doens't work
+        const textureAdjust = Math.PI / 2
+        const beta = (tod / 24) * Math.PI * 2 + textureAdjust
         this.earth.rotation = new BABYLON.Vector3(0, beta, 0)
     }
 }

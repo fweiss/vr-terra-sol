@@ -18,7 +18,7 @@ createLights()
 const camera = new Camera(scene)
 const bodies = new Bodies(scene)
 
-const controls = new Controls()
+const controls: Controls = new Controls()
 controls.target.addEventListener('camera', (event: CustomEvent) => {
     const cameraName = event.detail
     camera.switchCamera(cameraName, scene)
@@ -27,6 +27,7 @@ controls.target.addEventListener('tod', (event: CustomEvent) => {
     console.log(event.detail)
     bodies.setEarth(event.detail)
 })
+bodies.setEarth(0)
 
 if (settings.debug.inspector) {
     scene.debugLayer.show()
