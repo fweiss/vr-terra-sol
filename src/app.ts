@@ -6,7 +6,7 @@ import Bodies from './bodies'
 
 const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
 const engine = new BABYLON.Engine(canvas, true)
-var scene: BABYLON.Scene = new BABYLON.Scene(engine)
+const scene: BABYLON.Scene = new BABYLON.Scene(engine)
 engine.runRenderLoop(function () {
     scene.render()
 });

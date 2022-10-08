@@ -1,3 +1,5 @@
+import * as BABYLON from 'babylonjs'
+
 import settings from './settings'
 
 export default class Camera {

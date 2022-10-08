@@ -17,9 +17,10 @@ export default class Bodies {
         const url = 'assets/' + res[0] + '/2_no_clouds_' + res[0] + '.jpg'
         const noMipmapOrOptions = false
         const invertY = false // since default is oddly, true
-        material.diffuseTexture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
-        material.diffuseTexture.uScale = -1.0 // since texture wraps backwards
+        const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
+        texture.uScale = -1.0 // since texture wraps backwards
         // material.diffuseTexture.vOffset = 1
+        material.diffuseTexture = texture
 
         // since invertY above doesn't seem to work
         // earth.rotate(new BABYLON.Vector3(0, 0, 1), Math.PI)
