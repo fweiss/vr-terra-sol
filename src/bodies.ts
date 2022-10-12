@@ -19,10 +19,20 @@ export default class Bodies {
         texture.uScale = -1.0 // since texture wraps backwards
         material.diffuseTexture = texture
 
-       earth.material = material
+        earth.material = material
     
         const starfield = createStarfield(scene)
+
+        const sunDiameter = 695700
+        const sunDistance = 149_600_000
+        const x = 127_560
+        const sun = BABYLON.CreateSphere('sun', { diameter: x, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
+        sun.position = new BABYLON.Vector3(-x * 4, 0, 0)
+        const myMaterial = new BABYLON.StandardMaterial("myMaterial", scene)
+        myMaterial.emissiveColor = BABYLON.Color3.FromHexString('#f9d71c')
+        sun.material = myMaterial
     
+        // todo move to lights
         const sunlight = new BABYLON.DirectionalLight('sunlight', new BABYLON.Vector3(1, 0, 0), scene)
         sunlight.excludedMeshes =  [ starfield ]
         sunlight.intensity = 1
@@ -37,6 +47,7 @@ export default class Bodies {
 }
 
 function createStarfield(scene) {
+    const diameter = 1000000
     let starfield = BABYLON.MeshBuilder.CreateSphere("starfield-sphere", { diameter: 1000000, sideOrientation: BABYLON.Mesh.BACKSIDE }, scene)
     starfield.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI)
     let material = new BABYLON.StandardMaterial('stars', scene)
