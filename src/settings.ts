@@ -1,11 +1,12 @@
 export default {
     earth: {
-        diameter: 12756
+        diameter: 12756,
     },
     starfield: {
-        diameter: 12000000
+        diameter: 12000000,
     },
     debug: {
-        inspector: false
+        inspector: false,
+        axesViewer: false,
     }
 }

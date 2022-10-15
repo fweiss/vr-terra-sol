@@ -34,10 +34,7 @@ controls.target.addEventListener('tod', (event: CustomEvent) => {
 })
 bodies.setEarth(0)
 
-if (settings.debug.inspector) {
-    scene.debugLayer.show()
-}
-const axes = new BABYLON.AxesViewer(scene, 2000)
+debugmodes()
 
 function createLights(universe: BABYLON.AbstractMesh) {
     // use two oposing hemisphere lights to provide full ambient
@@ -49,4 +46,13 @@ function createLights(universe: BABYLON.AbstractMesh) {
     let light2 = new BABYLON.HemisphericLight("hemilight_south", new BABYLON.Vector3(0, -100000, 0), scene)
     light2.diffuse = new BABYLON.Color3(intensity, intensity, intensity)
     light2.specular = new BABYLON.Color3(0, 0, 0);
+}
+
+function debugmodes() {
+    if (settings.debug.inspector) {
+        scene.debugLayer.show()
+    }
+    if (settings.debug.axesViewer) {
+        new BABYLON.AxesViewer(scene, 2000)
+    }    
 }
