@@ -5,8 +5,9 @@ import settings from './settings'
 export default class Bodies {
     earth: BABYLON.Mesh
 
-    constructor(scene: BABYLON.Scene) {
+    constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         let earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: settings.earth.diameter, sideOrientation: BABYLON.Mesh.FRONTSIDE}, scene)
+        universe.addChild(earth)
         this.earth = earth
 
         let material = new BABYLON.StandardMaterial('earth_no_clouds', scene)
@@ -21,16 +22,20 @@ export default class Bodies {
 
         earth.material = material
     
-        const starfield = createStarfield(scene)
+        const starfield = createStarfield(scene, universe)
 
-        const sunDiameter = 695700
-        const sunDistance = 149_600_000
-        const x = 127_560
-        const sun = BABYLON.CreateSphere('sun', { diameter: x, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
-        sun.position = new BABYLON.Vector3(-x * 4, 0, 0)
+        // dimensions in km
+        // scaled down to make it visible, even though 1/2 degree of arc should scale
+        // make the dimesions not-to-scale to emphasize the sun in the view
+        const sunDiameter = 695_700 / 250
+        const sunDistance = 149_600_000 / 1000
+        const sun = BABYLON.CreateSphere('sun', { diameter: sunDiameter, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
+        sun.position = new BABYLON.Vector3(-sunDistance, 0, 0)
         const myMaterial = new BABYLON.StandardMaterial("myMaterial", scene)
         myMaterial.emissiveColor = BABYLON.Color3.FromHexString('#f9d71c')
+        // myMaterial.emissiveColor = BABYLON.Color3.FromHexString('#ff2020') // make it stand out
         sun.material = myMaterial
+        universe.addChild(sun)
     
         // todo move to lights
         const sunlight = new BABYLON.DirectionalLight('sunlight', new BABYLON.Vector3(1, 0, 0), scene)
@@ -46,7 +51,7 @@ export default class Bodies {
     }
 }
 
-function createStarfield(scene) {
+function createStarfield(scene, universe: BABYLON.AbstractMesh) {
     const diameter = 1000000
     let starfield = BABYLON.MeshBuilder.CreateSphere("starfield-sphere", { diameter: 1000000, sideOrientation: BABYLON.Mesh.BACKSIDE }, scene)
     starfield.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI)

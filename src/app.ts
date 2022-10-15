@@ -14,9 +14,14 @@ window.addEventListener("resize", function () {
     engine.resize()
 });
 
-createLights()
-const camera = new Camera(scene)
-const bodies = new Bodies(scene)
+// put it all in a scalable mesh, trying to cope with crappy rendering of the sun at great distance
+const universe = new BABYLON.AbstractMesh('universe')
+const scaling = 0.001
+universe.scaling = new BABYLON.Vector3(scaling, scaling, scaling)
+
+createLights(universe)
+const camera = new Camera(scene, universe)
+const bodies = new Bodies(scene, universe)
 
 const controls: Controls = new Controls()
 controls.target.addEventListener('camera', (event: CustomEvent) => {
@@ -34,7 +39,7 @@ if (settings.debug.inspector) {
 }
 const axes = new BABYLON.AxesViewer(scene, 2000)
 
-function createLights() {
+function createLights(universe: BABYLON.AbstractMesh) {
     // use two oposing hemisphere lights to provide full ambient
     const intensity = .5
     let light = new BABYLON.HemisphericLight("hemilight_north", new BABYLON.Vector3(0, 100000, 0), scene)
