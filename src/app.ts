@@ -20,7 +20,7 @@ const scaling = 0.001
 universe.scaling = new BABYLON.Vector3(scaling, scaling, scaling)
 
 createLights(universe)
-const camera = new Camera(scene, universe)
+const camera = new Camera(scene)
 const bodies = new Bodies(scene, universe)
 
 const controls: Controls = new Controls()
