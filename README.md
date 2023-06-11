@@ -4,6 +4,10 @@ Visualization of the spatial relationship between earth and sun
 ## Concept
 A realistic earth sphere and radiant sun with variety of POVs and animations.
 
+## Development
+- run ``npx webpack-cli serve``
+- open [http://localhost:8080/]
+
 ## Navigation
 - default
 - orbit: fixed height nort south, east, west

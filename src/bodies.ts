@@ -40,7 +40,7 @@ export default class Bodies {
         // todo move to lights
         const sunlight = new BABYLON.DirectionalLight('sunlight', new BABYLON.Vector3(1, 0, 0), scene)
         sunlight.excludedMeshes =  [ starfield ]
-        sunlight.intensity = 1
+        sunlight.intensity = 5
         sunlight.specular = new BABYLON.Color3()
     }
     setEarth(tod) {
