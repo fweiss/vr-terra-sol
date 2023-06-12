@@ -19,6 +19,9 @@ export default class Bodies {
         const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
         texture.uScale = -1.0 // since texture wraps backwards
         material.diffuseTexture = texture
+        // since texture is centered where spherical phi = -90 degrees or one quarter turn
+        const alignSphericalTexture = 0.25
+        texture.uOffset = alignSphericalTexture
 
         earth.material = material
     

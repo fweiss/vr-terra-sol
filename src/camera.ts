@@ -46,6 +46,33 @@ export default class Camera {
 
         // camera.checkCollisions = true
         this.orbitCamera.maxZ = 1000010
+        this.orbitCamera.onViewMatrixChangedObservable.add(() => {
+            // console.log(this.orbitCamera.position.toString())
+            this.updateCameraPosition(this.orbitCamera, scene)
+        })
+    }
+    private updateCameraPosition(camera: BABYLON.TargetCamera, scene: BABYLON.Scene) {
+        const earth = scene.getNodeByName('earth') as BABYLON.Mesh
+        const ev: BABYLON.Vector3 = new BABYLON.Vector3().copyFrom(earth.position)
+        ev.subtractInPlace(camera.position)
+        let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
+
+        const latitude = spherical.theta / Math.PI * 180 - 90
+        let longitude = spherical.phi / Math.PI * 180
+        if (longitude < 0 ) {
+            longitude += 180
+        } else {
+            longitude -= 180
+        }
+
+        const latElem: HTMLInputElement = document.getElementById('lat') as HTMLInputElement
+        latElem.value = latitude.toFixed(4).toString()
+        const lonElem: HTMLInputElement = document.getElementById('lon') as HTMLInputElement
+        lonElem.value = longitude.toFixed(4).toString()
+        // // offset since equator is 90 degrees in theta
+        // latElem.value = (spherical.theta / Math.PI * 180 - 90).toString()
+        // // negate since latitude is opposite phi
+        // lonElem.value = (-spherical.phi / Math.PI * 180).toString()
     }
     private createSurfaceCamera(scene: BABYLON.Scene) {
         const elevation = 8000 + 2500
