@@ -56,3 +56,17 @@ function debugmodes() {
         new BABYLON.AxesViewer(scene, 2000)
     }    
 }
+camera.onCameraChangeObservable.add((cameraName: string) => {
+    const latitude = camera.orbitSpherical.theta / Math.PI * 180 - 90
+    let longitude = camera.orbitSpherical.phi / Math.PI * 180
+    if (longitude < 0 ) {
+        longitude += 180
+    } else {
+        longitude -= 180
+    }
+
+    const latElem: HTMLInputElement = document.getElementById('lat') as HTMLInputElement
+    latElem.value = latitude.toFixed(4).toString()
+    const lonElem: HTMLInputElement = document.getElementById('lon') as HTMLInputElement
+    lonElem.value = longitude.toFixed(4).toString()
+})
