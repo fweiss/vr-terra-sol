@@ -5,14 +5,16 @@ import settings from './settings'
 
 export default class Camera {
     orbitCamera: BABYLON.TargetCamera
+    orbitSpherical: BABYLON.Spherical
     nearSpaceCamera: BABYLON.TargetCamera
     activeCamera: BABYLON.TargetCamera
     surfaceCamera:  BABYLON.TargetCamera
+    onCameraChangeObservable = new BABYLON.Observable<string>()
 
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
+        this.orbitSpherical = new BABYLON.Spherical(1, 0, 0)
         const orbitHeight = ((settings.earth.diameter / 2) + 18000)
         const position = new BABYLON.Vector3(0, 0, orbitHeight)
-        // const camera = new BABYLON.UniversalCamera("near_space", position, scene)
 
         this.nearSpaceCamera = new BABYLON.FreeCamera('near_space', position, scene)
         this.nearSpaceCamera.target = new BABYLON.Vector3(0,0,0)
@@ -55,10 +57,12 @@ export default class Camera {
         const earth = scene.getNodeByName('earth') as BABYLON.Mesh
         const ev: BABYLON.Vector3 = new BABYLON.Vector3().copyFrom(earth.position)
         ev.subtractInPlace(camera.position)
-        let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
+        // let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
+        BABYLON.Spherical.FromVector3ToRef(ev, this.orbitSpherical)
+        // notfy the UI
 
-        const latitude = spherical.theta / Math.PI * 180 - 90
-        let longitude = spherical.phi / Math.PI * 180
+        const latitude = this.orbitSpherical.theta / Math.PI * 180 - 90
+        let longitude = this.orbitSpherical.phi / Math.PI * 180
         if (longitude < 0 ) {
             longitude += 180
         } else {
