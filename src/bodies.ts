@@ -21,7 +21,6 @@ export default class Bodies {
         const textureAdjust = Math.PI / 2
         const beta = (tod / 24) * Math.PI * 2 + textureAdjust
         this.earth.rotation = new BABYLON.Vector3(0, beta, 0)
-        return beta
     }
     private createEarth(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         let earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: settings.earth.diameter, sideOrientation: BABYLON.Mesh.FRONTSIDE}, scene)
