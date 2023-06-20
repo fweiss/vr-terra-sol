@@ -4,7 +4,7 @@ import { Vector2 } from 'babylonjs'
 import settings from './settings'
 
 export default class Camera {
-    orbitCamera: BABYLON.TargetCamera
+    orbitCamera: BABYLON.ArcRotateCamera
     orbitSpherical: BABYLON.Spherical
     nearSpaceCamera: BABYLON.TargetCamera
     activeCamera: BABYLON.TargetCamera
@@ -48,10 +48,47 @@ export default class Camera {
 
         // camera.checkCollisions = true
         this.orbitCamera.maxZ = 1000010
+        // this.orbitCamera.noRotationConstraint = true
         this.orbitCamera.onViewMatrixChangedObservable.add(() => {
             // console.log(this.orbitCamera.position.toString())
+            // actually update latlon relative to earth
             this.updateCameraPosition(this.orbitCamera, scene)
         })
+    }
+    // keep camera over current latlon as earth spins
+    trackOrbitCamera(earth: BABYLON.Mesh, beta: number) {
+        // let rotation = this.orbitCamera.rotation
+        // rotation.y = earth.rotation.y
+        // console.log(earth.rotation.y)
+        // this.orbitCamera.alpha = rotation.y
+        // // this.orbitCamera.setPosition(position)
+        // // this.orbitCamera.position.x = .5
+        // this.orbitCamera.rebuildAnglesAndRadius()
+        // this.orbitCamera.setPosition(new BABYLON.Vector3(0, 0, 0))
+
+        // const radius = 0
+        // const theta = 0
+        // const phi = 0
+        // let s: BABYLON.Spherical = BABYLON.Spherical.FromVector3(earth.rotation)
+        // s.radius = this.orbitCamera.radius
+        // this.orbitCamera.setPosition(s.toVector3())
+
+        // let rotation = this.orbitCamera.rotation
+        // console.log(rotation.y)
+        // this.orbitCamera.alpha = rotation.y
+
+        let s: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
+        console.log(earth.rotation.y + ":" + s.phi)
+        // we're trying to get the camera to stay over the same latlon as earth spins
+        // but the problem seems to be that when the camera position changes, it also rotates the earth
+        // this can be seen when the following is uncommented, the earth rotates rotates as far as it should
+        // if we could somehow change the position of the camera but stop it from rotating the earth, that would be ideal
+        s.phi = -earth.rotation.y
+        this.orbitCamera.setPosition(s.toVector3())
+
+        // this.orbitCamera.rebuildAnglesAndRadius()
+        // earth.rotation.y = s.phi
+        // this.orbitCamera.markAsDirty()
     }
     private updateCameraPosition(camera: BABYLON.TargetCamera, scene: BABYLON.Scene) {
         const earth = scene.getNodeByName('earth') as BABYLON.Mesh

@@ -30,7 +30,8 @@ controls.target.addEventListener('camera', (event: CustomEvent) => {
 })
 controls.target.addEventListener('tod', (event: CustomEvent) => {
     console.log(event.detail)
-    bodies.setEarth(event.detail)
+    let beta = bodies.setEarth(event.detail)
+    camera.trackOrbitCamera(bodies.earth, beta)
 })
 bodies.setEarth(0)
 
