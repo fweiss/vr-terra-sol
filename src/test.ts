@@ -11,13 +11,15 @@ const createScene = function () {
         engine.resize()
     });
         
-    const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, BABYLON.Vector3.Zero(), scene);
-    camera.attachControl(canvas, true);
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
+    const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.attachControl(true);
 
-    const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {});
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 0, 0), scene);
+    light.specular = new BABYLON.Color3()
+    light.lightmapMode = BABYLON.Light.LIGHTMAP_DEFAULT
+    light.falloffType = BABYLON.Light.FALLOFF_DEFAULT     
 
-    return scene;
+    const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1 });
 
 };
 createScene();
