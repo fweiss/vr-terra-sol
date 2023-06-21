@@ -1,21 +1,15 @@
 import * as BABYLON from 'babylonjs'
-import { Vector2, Vector3 } from 'babylonjs'
 import settings from './settings'
 
 export default class Bodies {
     earth: BABYLON.Mesh
+    starfield: BABYLON.Mesh
 
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
-        const starfield = createStarfield(scene, universe)
+        this.starfield = createStarfield(scene, universe)
         this.createSun(scene, universe)
         this.createEarth(scene, universe)
- 
-        // todo move to lights
-        const sunlight = new BABYLON.DirectionalLight('sunlight', new BABYLON.Vector3(1, 0, 0), scene)
-        sunlight.excludedMeshes =  [ starfield ]
-        sunlight.intensity = 5
-        sunlight.specular = new BABYLON.Color3()
-    }
+     }
     setEarth(tod) {
         // because texture.uOffset doens't work
         const textureAdjust = Math.PI / 2

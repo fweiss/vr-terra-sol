@@ -3,6 +3,7 @@ import settings from './settings'
 import Controls from './gui-controls';
 import Camera from './camera'
 import Bodies from './bodies'
+import Lights from './lights';
 
 export default class App {
     // should be const or private, but BABYLONJS makes it global anyway
@@ -16,10 +17,9 @@ export default class App {
         const scaling = 0.001
         universe.scaling = new BABYLON.Vector3(scaling, scaling, scaling)
         
-        this.createLights(universe)
+        const lights = new Lights(this.scene)
         const camera = new Camera(this.scene, universe)
         const bodies = new Bodies(this.scene, universe)
-        
         const controls: Controls = new Controls()
         this.registerPanelEvents(controls, camera, bodies, universe)
 
@@ -42,17 +42,6 @@ export default class App {
         });
         this.scene = scene
     }
-    createLights(universe: BABYLON.AbstractMesh) {
-        // use two oposing hemisphere lights to provide full ambient
-        const intensity = .5
-        let light = new BABYLON.HemisphericLight("hemilight_north", new BABYLON.Vector3(0, 100000, 0), this.scene)
-        light.diffuse = new BABYLON.Color3(intensity, intensity, intensity)
-        light.specular = new BABYLON.Color3(0, 0, 0);
-    
-        let light2 = new BABYLON.HemisphericLight("hemilight_south", new BABYLON.Vector3(0, -100000, 0), this.scene)
-        light2.diffuse = new BABYLON.Color3(intensity, intensity, intensity)
-        light2.specular = new BABYLON.Color3(0, 0, 0);
-    }
     debugmodes() {
         if (settings.debug.inspector) {
             this.scene.debugLayer.show()
@@ -67,7 +56,6 @@ export default class App {
             camera.switchCamera(cameraName, this.scene, universe)
         })
         controls.target.addEventListener('tod', (event: CustomEvent) => {
-            console.log(event.detail)
             bodies.setEarth(event.detail)
             camera.trackOrbitCamera(bodies.earth)
         })
