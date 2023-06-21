@@ -21,33 +21,13 @@ export default class App {
         const bodies = new Bodies(this.scene, universe)
         
         const controls: Controls = new Controls()
-        controls.target.addEventListener('camera', (event: CustomEvent) => {
-            const cameraName = event.detail
-            camera.switchCamera(cameraName, this.scene, universe)
-        })
-        controls.target.addEventListener('tod', (event: CustomEvent) => {
-            console.log(event.detail)
-            bodies.setEarth(event.detail)
-            camera.trackOrbitCamera(bodies.earth)
-        })
+        this.registerPanelEvents(controls, camera, bodies, universe)
+
         bodies.setEarth(0)
         
         this.debugmodes()
                 
-        camera.onCameraChangeObservable.add((cameraName: string) => {
-            const latitude = camera.orbitSpherical.theta / Math.PI * 180 - 90
-            let longitude = camera.orbitSpherical.phi / Math.PI * 180
-            if (longitude < 0 ) {
-                longitude += 180
-            } else {
-                longitude -= 180
-            }
-        
-            const latElem: HTMLInputElement = document.getElementById('lat') as HTMLInputElement
-            latElem.value = latitude.toFixed(4).toString()
-            const lonElem: HTMLInputElement = document.getElementById('lon') as HTMLInputElement
-            lonElem.value = longitude.toFixed(4).toString()
-        })
+        this.registerCameraEvents(camera)
     }
     createRenderLoop() {
         const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
@@ -81,6 +61,32 @@ export default class App {
             new BABYLON.AxesViewer(this.scene, 2000)
         }    
     }
+    registerPanelEvents(controls: Controls, camera: Camera, bodies: Bodies, universe: BABYLON.AbstractMesh) {
+        controls.target.addEventListener('camera', (event: CustomEvent) => {
+            const cameraName = event.detail
+            camera.switchCamera(cameraName, this.scene, universe)
+        })
+        controls.target.addEventListener('tod', (event: CustomEvent) => {
+            console.log(event.detail)
+            bodies.setEarth(event.detail)
+            camera.trackOrbitCamera(bodies.earth)
+        })
+    }
+    registerCameraEvents(camera: Camera) {
+        camera.onCameraChangeObservable.add((cameraName: string) => {
+            const latitude = camera.orbitSpherical.theta / Math.PI * 180 - 90
+            let longitude = camera.orbitSpherical.phi / Math.PI * 180
+            if (longitude < 0 ) {
+                longitude += 180
+            } else {
+                longitude -= 180
+            }
+        
+            const latElem: HTMLInputElement = document.getElementById('lat') as HTMLInputElement
+            latElem.value = latitude.toFixed(4).toString()
+            const lonElem: HTMLInputElement = document.getElementById('lon') as HTMLInputElement
+            lonElem.value = longitude.toFixed(4).toString()
+        })
 
-
+    }
 }
