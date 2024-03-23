@@ -30,7 +30,7 @@ export default class Camera {
         const camera = scene.getNodeByName(cameraName) as BABYLON.TargetCamera
 
         // we want to rotate so that y points to zenith
-        if (cameraName == 'surface') {
+        if (cameraName == 'xsurface') {
             const rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 0, 1), Math.PI / 2)
             universe.rotationQuaternion =rotationQuaternion
         }
@@ -83,7 +83,12 @@ export default class Camera {
         const orbitHeight = ((settings.earth.diameter / 2) + 180)
         const position2 = new BABYLON.Vector3(0, 0, orbitHeight)
         const camera = new BABYLON.UniversalCamera('surface', position2, scene)
-        camera.target = new BABYLON.Vector3(0, 0, orbitHeight + 120000)
+
+
+        // camera.target = new BABYLON.Vector3(0, 0, orbitHeight + 120000)
+        camera.target = new BABYLON.Vector3(-(orbitHeight + 120000), 0, 0)
+        camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2)
+
         // camera.upVector = new BABYLON.Vector3(0, 0, orbitHeight + 120000)
         camera.maxZ = 1000010
         this.surfaceCamera = camera
