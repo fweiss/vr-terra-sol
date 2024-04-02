@@ -21,9 +21,9 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "babylonjs": "^5.26.1",
-    "babylonjs-gui": "^5.26.1",
-    "babylonjs-loaders": "^5.26.1",
-    "babylonjs-materials": "^5.26.1"
+    "babylonjs": "^6.48.1",
+    "babylonjs-gui": "^6.48.1",
+    "babylonjs-loaders": "^6.48.1",
+    "babylonjs-materials": "^6.48.1"
   }
 }
