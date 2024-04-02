@@ -23,8 +23,8 @@ export default class Bodies {
 
         let material = new BABYLON.StandardMaterial('earth_no_clouds', scene)
     
-        let res = [ '8k', '16k' ]
-        const url = 'assets/' + res[0] + '/2_no_clouds_' + res[0] + '.jpg'
+        let res = [ '8k', '16k' ][0]
+        const url = 'assets/' + res + '/2_no_clouds_' + res + '.jpg'
         const noMipmapOrOptions = false
         const invertY = false // since default is oddly, true
         const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
