@@ -82,8 +82,9 @@ export default class Camera {
 
         const orbitHeight = ((settings.earth.diameter / 2) + 180)
         const position2 = new BABYLON.Vector3(0, 0, orbitHeight)
-        const camera = new BABYLON.UniversalCamera('surface', position2, scene)
-
+        const camera = new BABYLON.FlyCamera('surface', position2, scene)
+        // roolCorrect is a hack to keep camera from rolling
+        camera.rollCorrect = 100000
 
         // camera.target = new BABYLON.Vector3(0, 0, orbitHeight + 120000)
         camera.target = new BABYLON.Vector3(-(orbitHeight + 120000), 0, 0)
