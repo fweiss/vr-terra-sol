@@ -69,7 +69,7 @@ export default class Camera {
         BABYLON.Spherical.FromVector3ToRef(ev, this.orbitSpherical)
         this.onCameraChangeObservable.notifyObservers("spherical")
     }
-    private createSurfaceCamera(scene: BABYLON.Scene) {
+    private xcreateSurfaceCamera(scene: BABYLON.Scene) {
         const elevation = 8000 + 2500
         const radius = (settings.earth.diameter / 2) + elevation
         const theta = Math.PI / 2
@@ -91,6 +91,55 @@ export default class Camera {
         camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2)
 
         // camera.upVector = new BABYLON.Vector3(0, 0, orbitHeight + 120000)
+        camera.maxZ = 1000010
+        this.surfaceCamera = camera
+    }
+    private ycreateSurfaceCamera(scene: BABYLON.Scene) {
+        const dummyPosition = new BABYLON.Vector3(0, 0, 0)
+        const camera = new BABYLON.FlyCamera('surface', dummyPosition, scene)
+
+        const orbitHeight = ((settings.earth.diameter / 2) + 180)
+        camera.target = new BABYLON.Vector3(-(orbitHeight + 120000), 0, 0)
+        camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2)
+
+        const elevation = 8000 + 2500
+        const radius = (settings.earth.diameter / 2) + elevation
+        const theta = Math.PI / 2
+        const phi = Math.PI / 2
+        const spherical = new BABYLON.Spherical(radius, theta, phi)
+        camera.position = spherical.toVector3()
+   
+        this.surfaceCamera = camera
+    }
+    private createSurfaceCamera(scene: BABYLON.Scene) {
+        // const elevation = 8000 + 2500
+        // const radius = (settings.earth.diameter / 2) + elevation
+        // const theta = Math.PI / 2
+        // const phi = Math.PI / 2
+        // const spherical = new BABYLON.Spherical(radius, theta, phi)
+        // const position = spherical.toVector3()
+
+        // this.surfaceCamera = new BABYLON.FreeCamera('surface', position, scene)
+        // this.surfaceCamera.target = new BABYLON.Vector3(0,0,0)
+        // this.surfaceCamera.maxZ = 1000010
+
+        const orbitHeight = ((settings.earth.diameter / 2) + 180)
+        // const position2 = new BABYLON.Vector3(0, 0, orbitHeight)
+
+        const camera = new BABYLON.FlyCamera('surface', BABYLON.Vector3.Zero(), scene)
+        // rollCorrect is a hack to keep camera from rolling
+        camera.rollCorrect = 100000
+
+        camera.target = new BABYLON.Vector3(-(orbitHeight + 120000), 0, 0)
+        camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2) // phi, theta?
+
+        const r = orbitHeight
+        const t = Math.PI / 2 //3
+        const p = Math.PI / 2 //4
+        const sp = new BABYLON.Spherical(r, t, p)
+        // camera.position = position2
+        camera.position = sp.toVector3()
+
         camera.maxZ = 1000010
         this.surfaceCamera = camera
     }
