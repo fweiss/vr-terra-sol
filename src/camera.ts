@@ -76,11 +76,12 @@ export default class Camera {
         // rollCorrect is a hack to keep camera from rolling
         camera.rollCorrect = 100000
 
-        const theta = Math.PI / 2
-        const phi = Math.PI / 2
+        const theta = Math.PI * 0.25
+        const phi = Math.PI * 0.25
 
         camera.target = new BABYLON.Vector3(-(orbitHeight + 120000), 0, 0)
-        camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2) // phi, theta?
+        // camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2) // phi, theta?
+        camera.rotation = new BABYLON.Vector3(0, -phi, -theta) // phi, theta?
 
         const spherical = new BABYLON.Spherical(orbitHeight, theta, phi)
         camera.position = spherical.toVector3()
