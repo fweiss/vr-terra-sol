@@ -8,6 +8,7 @@ export default class Bodies {
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         this.starfield = createStarfield(scene, universe)
         this.createSun(scene, universe)
+        this.createSunTrail(scene, universe)
         this.createEarth(scene, universe)
      }
     setEarth(tod) {
@@ -52,7 +53,18 @@ export default class Bodies {
         universe.addChild(sun)
 
     }
+    private createSunTrail(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
+        const options = {
+            diameter: 149_600_000 / 1000,
+            thickness: 100,
+            tessellation: 64,
+            sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        }
+        const torus = BABYLON.MeshBuilder.CreateTorus("suntrail", options, scene)
+        universe.addChild(torus)
+    }
 }
+
 
 function createStarfield(scene, universe: BABYLON.AbstractMesh) {
     const diameter = 1000000
