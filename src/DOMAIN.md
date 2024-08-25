@@ -29,3 +29,19 @@ Contains:
 - orbit around earth
 - surface from a particular spot above earth surface
 - 
+
+## Interactions
+### Hover
+The point above the earth defining the POV
+
+### Orbit camera
+- does not change the universe
+- does not change target of the camera
+- only changes position of the camera
+- updates the hover lat long
+
+### Surface camera
+- synced with the current hover
+- does not change the hover
+- pan around the horizon
+- tilt to see what's below

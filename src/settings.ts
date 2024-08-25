@@ -6,7 +6,7 @@ export default {
         diameter: 12000000,
     },
     debug: {
-        inspector: true,
-        axesViewer: true,
+        inspector: false,
+        axesViewer: false,
     }
 }
