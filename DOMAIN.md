@@ -32,7 +32,9 @@ Contains:
 
 ## Interactions
 ### Hover
-The point above the earth defining the POV
+- the point above the earth defining the POV
+- a spherical
+- equal to a latlng
 
 ### Orbit camera
 - does not change the universe

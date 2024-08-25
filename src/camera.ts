@@ -84,8 +84,8 @@ export default class Camera {
         const earth = scene.getNodeByName('earth') as BABYLON.Mesh
         const ev: BABYLON.Vector3 = new BABYLON.Vector3().copyFrom(earth.position)
         ev.subtractInPlace(camera.position)
-        // let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
-        // BABYLON.Spherical.FromVector3ToRef(ev, this.orbitSpherical)
+        let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
+        BABYLON.Spherical.FromVector3ToRef(ev, this.orbitSpherical)
         this.onCameraChangeObservable.notifyObservers(this.orbitSpherical)
     }
     private createSurfaceCamera(scene: BABYLON.Scene) {

@@ -7,5 +7,7 @@
     height: auto;
 }
 #controls .latlon input {
-    display: block
+    display: block;
+    width: 5em;
+    text-align: right;
 }
