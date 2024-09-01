@@ -43,7 +43,7 @@ export default class Bodies {
         // scaled down to make it visible, even though 1/2 degree of arc should scale
         // make the dimesions not-to-scale to emphasize the sun in the view
         const sunDiameter = 695_700 / 250
-        const sunDistance = 149_600_000 / 1000
+        const sunDistance = settings.sun.distance
         const sun = BABYLON.CreateSphere('sun', { diameter: sunDiameter, sideOrientation: BABYLON.Mesh.FRONTSIDE }, scene)
         sun.position = new BABYLON.Vector3(-sunDistance, 0, 0)
         const myMaterial = new BABYLON.StandardMaterial("myMaterial", scene)
@@ -55,7 +55,8 @@ export default class Bodies {
     }
     private createSunTrail(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         const options = {
-            diameter: 149_600_000 / 1000,
+            // the sun oddly is between *1 and *2
+            diameter: settings.sun.distance * 2,
             thickness: 100,
             tessellation: 64,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
