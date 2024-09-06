@@ -1,7 +1,7 @@
 import * as BABYLON from 'babylonjs'
 import settings from './settings'
 import Controls from './gui-controls';
-import Camera from './camera'
+import Cameras from './camera'
 import Bodies from './bodies'
 import Lights from './lights';
 
@@ -18,16 +18,16 @@ export default class App {
         universe.scaling = new BABYLON.Vector3(scaling, scaling, scaling)
         
         const lights = new Lights(this.scene)
-        const camera = new Camera(this.scene, universe)
+        const cameras = new Cameras(this.scene, universe)
         const bodies = new Bodies(this.scene, universe)
         const controls: Controls = new Controls()
-        this.registerPanelEvents(controls, camera, bodies, universe)
+        this.registerPanelEvents(controls, cameras, bodies, universe)
 
         bodies.setEarth(0)
         
         this.debugmodes()
                 
-        this.registerCameraEvents(camera)
+        this.registerCameraEvents(cameras)
     }
     createRenderLoop() {
         const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
@@ -50,7 +50,7 @@ export default class App {
             new BABYLON.AxesViewer(this.scene, 2000)
         }    
     }
-    registerPanelEvents(controls: Controls, camera: Camera, bodies: Bodies, universe: BABYLON.AbstractMesh) {
+    registerPanelEvents(controls: Controls, camera: Cameras, bodies: Bodies, universe: BABYLON.AbstractMesh) {
         controls.target.addEventListener('camera', (event: CustomEvent) => {
             const cameraName = event.detail
             camera.switchCamera(cameraName, this.scene, universe)
@@ -60,7 +60,7 @@ export default class App {
             camera.trackOrbitCamera(bodies.earth)
         })
     }
-    registerCameraEvents(camera: Camera) {
+    registerCameraEvents(camera: Cameras) {
         camera.onCameraChangeObservable.add((hover: BABYLON.Spherical) => {
             // const latitude = camera.orbitSpherical.theta / Math.PI * 180 - 90
             // let longitude = camera.orbitSpherical.phi / Math.PI * 180

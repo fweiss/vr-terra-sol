@@ -20,8 +20,8 @@ import { Vector2 } from 'babylonjs'
 
 import settings from './settings'
 
-export default class Camera {
-    orbitSpherical: BABYLON.Spherical // aka hover
+export default class Cameras {
+    hover: BABYLON.Spherical // aka hover
 
     orbitCamera: BABYLON.ArcRotateCamera
     nearSpaceCamera: BABYLON.TargetCamera
@@ -32,7 +32,7 @@ export default class Camera {
 
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         // this.orbitSpherical = new BABYLON.Spherical(1, 0, 0)
-        this.orbitSpherical = this.initialOrbitSpherical()
+        this.hover = this.initialOrbitSpherical()
 
         const orbitHeight = ((settings.earth.diameter / 2) + 18000)
         const position = new BABYLON.Vector3(0, 0, orbitHeight)
@@ -55,7 +55,7 @@ export default class Camera {
         return new BABYLON.Spherical(1, theta, phi)
     }
     switchCamera(cameraName: string, scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
-        console.log('hover: ', this.orbitSpherical.toString())
+        console.log('hover: ', this.hover.toString())
         const camera = scene.getNodeByName(cameraName) as BABYLON.TargetCamera
 
         // we want to rotate so that y points to zenith
@@ -67,8 +67,8 @@ export default class Camera {
             // conserve radius and keep camera over current latlon as earth spins
             let cameraSpherical = BABYLON.Spherical.FromVector3(camera.position)
             console.log('cameraSpherical: ' + cameraSpherical.toString())
-            cameraSpherical.theta = this.orbitSpherical.theta
-            cameraSpherical.phi = this.orbitSpherical.phi
+            cameraSpherical.theta = this.hover.theta
+            cameraSpherical.phi = this.hover.phi
             camera.position = cameraSpherical.toVector3()
         }
 
@@ -103,8 +103,8 @@ export default class Camera {
         const ev: BABYLON.Vector3 = new BABYLON.Vector3().copyFrom(earth.position)
         ev.subtractInPlace(camera.position)
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
-        BABYLON.Spherical.FromVector3ToRef(ev, this.orbitSpherical)
-        this.onCameraChangeObservable.notifyObservers(this.orbitSpherical)
+        BABYLON.Spherical.FromVector3ToRef(ev, this.hover)
+        this.onCameraChangeObservable.notifyObservers(this.hover)
     }
     private createSurfaceCamera(scene: BABYLON.Scene) {
         const orbitHeight = ((settings.earth.diameter / 2) + 180)
@@ -117,8 +117,8 @@ export default class Camera {
         // const lng = -122
         // const theta = Math.PI * (90 - lat) / 180
         // const phi = Math.PI * lng / 180
-        const theta = this.orbitSpherical.theta
-        const phi = this.orbitSpherical.phi
+        const theta = this.hover.theta
+        const phi = this.hover.phi
 
         camera.target = new BABYLON.Vector3(-(orbitHeight + 120000), 0, 0)
         // camera.rotation = new BABYLON.Vector3(0, -Math.PI / 2, -Math.PI / 2) // phi, theta?

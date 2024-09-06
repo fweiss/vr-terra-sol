@@ -1,7 +1,7 @@
 // length dimensions are in kilometers
 export default {
     earth: {
-        diameter: 12756
+        diameter: 12756,
         textureResolution: '16k', // e.g. assets/16k
     },
     sun: {
