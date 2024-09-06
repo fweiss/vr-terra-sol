@@ -1,3 +1,20 @@
+/*
+ * orbit mode
+ * ArcRotateCamera
+ * it looks toward the center of the earth
+ * pan and roll have the apparent effect
+ * of changing the location of the camera above the earth
+ * and simultaneously, the hover latlon
+ * the tod rotates the universe around the earth axis
+ * 
+ * surface mode
+ * Fly Camera
+ * like a camera at a point above the surface
+ * and pan a tilt like that
+ * the hover latlon is fixed, like the orbit mode
+ * put possibly holding control key allows changing elevation
+ * 
+*/
 import * as BABYLON from 'babylonjs'
 import { Vector2 } from 'babylonjs'
 
@@ -8,8 +25,9 @@ export default class Camera {
 
     orbitCamera: BABYLON.ArcRotateCamera
     nearSpaceCamera: BABYLON.TargetCamera
-    activeCamera: BABYLON.TargetCamera
     surfaceCamera:  BABYLON.TargetCamera
+    activeCamera: BABYLON.TargetCamera
+
     onCameraChangeObservable = new BABYLON.Observable<BABYLON.Spherical>()
 
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {

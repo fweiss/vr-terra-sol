@@ -24,7 +24,7 @@ export default class Bodies {
 
         let material = new BABYLON.StandardMaterial('earth_no_clouds', scene)
     
-        let res = [ '8k', '16k' ][0]
+        let res = settings.earth.textureResolution
         const url = 'assets/' + res + '/2_no_clouds_' + res + '.jpg'
         const noMipmapOrOptions = false
         const invertY = false // since default is oddly, true
