@@ -29,6 +29,7 @@ export default class Cameras {
     activeCamera: BABYLON.TargetCamera
 
     onCameraChangeObservable = new BABYLON.Observable<BABYLON.Spherical>()
+    onHoverChangeObservable = new BABYLON.Observable<BABYLON.Spherical>()
 
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         // this.orbitSpherical = new BABYLON.Spherical(1, 0, 0)
@@ -104,7 +105,8 @@ export default class Cameras {
         ev.subtractInPlace(camera.position)
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
         BABYLON.Spherical.FromVector3ToRef(ev, this.hover)
-        this.onCameraChangeObservable.notifyObservers(this.hover)
+        this.onCameraChangeObservable.notifyObservers(this.hover) // maybe not necessary
+        this.onHoverChangeObservable.notifyObservers(this.hover)
     }
     private createSurfaceCamera(scene: BABYLON.Scene) {
         const orbitHeight = ((settings.earth.diameter / 2) + 180)

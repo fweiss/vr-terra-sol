@@ -60,8 +60,9 @@ export default class App {
             camera.trackOrbitCamera(bodies.earth)
         })
     }
-    registerCameraEvents(camera: Cameras) {
-        camera.onCameraChangeObservable.add((hover: BABYLON.Spherical) => {
+    registerCameraEvents(cameras: Cameras) {
+        // move to gui-controls?
+        cameras.onHoverChangeObservable.add((hover: BABYLON.Spherical) => {
             // const latitude = camera.orbitSpherical.theta / Math.PI * 180 - 90
             // let longitude = camera.orbitSpherical.phi / Math.PI * 180
             const latitude = hover.theta / Math.PI * 180 - 90
