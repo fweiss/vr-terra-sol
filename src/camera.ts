@@ -49,8 +49,8 @@ export default class Cameras {
     }
     private initialOrbitSpherical() {
         // 37°46′39″N 122°24′59″W
-        const lat = 37 + 46/60 + 39/3600
-        const lng = -122 - 24/60 - 59/3600
+        const lat = settings.cameras.latitude
+        const lng = settings.cameras.longitude
         const theta = Math.PI * (90 - lat) / 180
         const phi = Math.PI * lng / 180
         return new BABYLON.Spherical(1, theta, phi)

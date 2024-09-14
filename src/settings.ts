@@ -1,8 +1,12 @@
 // length dimensions are in kilometers
 export default {
+    cameras: {
+        latitude: 37 + 46/60 + 39/3600,
+        longitude: -122 - 24/60 - 59/3600,
+    },
     earth: {
         diameter: 12756,
-        textureResolution: '16k', // e.g. assets/16k
+        textureResolution: '8k', // e.g. assets/16k
     },
     sun: {
         // following need to be scaled for best appearance
