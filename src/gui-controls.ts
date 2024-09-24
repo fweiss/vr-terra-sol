@@ -22,10 +22,18 @@ export default class Controls {
             }
 
             document.getElementById('tod').addEventListener<'input'>('input', (event) => {
-              const result = (event.target as HTMLInputElement).value
-              this.model.tod = 24 * parseFloat(result) / 100
-              target.dispatchEvent(new CustomEvent('tod', { detail: self.model.tod }))
+                const result = (event.target as HTMLInputElement).value
+                this.model.tod = 24 * parseFloat(result) / 100
+                //   target.dispatchEvent(new CustomEvent('tod', { detail: self.model.tod }))
+                const hours = Math.floor(this.model.tod)
+                const minutes = Math.floor((this.model.tod - hours) * 60)
+                target.dispatchEvent(new CustomEvent('tod', { detail: new Date(0, 0, 0, hours, minutes, 0) }))
           })
         }
+    }
+    setMeridianTime(tod: Date) {
+        const merdianTimeElem: HTMLInputElement = document.getElementById('tod_value') as HTMLInputElement
+        // merdianTimeElem.value = (tod * 100 / 24).toFixed(2)
+        merdianTimeElem.value = tod.getHours() + ":" + tod.getMinutes()
     }
 }

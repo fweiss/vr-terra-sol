@@ -4,10 +4,12 @@ import Controls from './gui-controls';
 import Cameras from './camera'
 import Bodies from './bodies'
 import Lights from './lights';
+import Model from './model'
 
 export default class App {
     // should be const or private, but BABYLONJS makes it global anyway
     scene: BABYLON.Scene
+    model: Model = new Model()
     
     constructor() {
         this.createRenderLoop()
@@ -28,6 +30,13 @@ export default class App {
         this.debugmodes()
                 
         this.registerCameraEvents(cameras)
+
+        this.model.onMeridianTimeObservable.add((tod: Date) => {
+            // bodies.setEarth(tod)
+            const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
+            bodies.setEarth(beta)
+            cameras.trackOrbitCamera(bodies.earth)
+        })
     }
     createRenderLoop() {
         const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
@@ -56,8 +65,16 @@ export default class App {
             camera.switchCamera(cameraName, this.scene, universe)
         })
         controls.target.addEventListener('tod', (event: CustomEvent) => {
-            bodies.setEarth(event.detail)
-            camera.trackOrbitCamera(bodies.earth)
+            // bodies.setEarth(event.detail)
+            // camera.trackOrbitCamera(bodies.earth)
+
+            this.model.setMeridianTime(event.detail)
+        })
+        this.model.onMeridianTimeObservable.add((tod: Date) => {
+            controls.setMeridianTime(tod)
+            // const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
+            // bodies.setEarth(beta)
+
         })
     }
     registerCameraEvents(cameras: Cameras) {
