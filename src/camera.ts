@@ -96,7 +96,10 @@ export default class Cameras {
     // keep camera over current latlon as earth spins
     trackOrbitCamera(earth: BABYLON.Mesh) {
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
-        spherical.phi = -earth.rotation.y
+        // unexplained kludge to keep earth from rotating
+        const adjust = (90 + settings.cameras.longitude) / 360 * Math.PI * 2
+        // spherical.phi = -earth.rotation.y -((32)/360) * Math.PI * 2
+        spherical.phi = - earth.rotation.y + adjust
         this.orbitCamera.setPosition(spherical.toVector3())
     }
     private updateCameraPosition(camera: BABYLON.TargetCamera, scene: BABYLON.Scene) {
