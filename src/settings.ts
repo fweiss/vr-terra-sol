@@ -1,6 +1,6 @@
 // length dimensions are in kilometers
 export default {
-    cameras: {
+    zenith: {
         latitude: 37 + 46/60 + 39/3600,
         longitude: -122 - 24/60 - 59/3600,
     },

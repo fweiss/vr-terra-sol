@@ -49,8 +49,8 @@ export default class Cameras {
     }
     private initialOrbitSpherical() {
         // 37°46′39″N 122°24′59″W
-        const lat = settings.cameras.latitude
-        const lng = settings.cameras.longitude
+        const lat = settings.zenith.latitude
+        const lng = settings.zenith.longitude
         const theta = Math.PI * (90 - lat) / 180
         const phi = Math.PI * lng / 180
         return new BABYLON.Spherical(1, theta, phi)
@@ -97,7 +97,7 @@ export default class Cameras {
     trackOrbitCamera(earth: BABYLON.Mesh) {
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
         // unexplained kludge to keep earth from rotating
-        const adjust = (90 + settings.cameras.longitude) / 360 * Math.PI * 2
+        const adjust = (90 + settings.zenith.longitude) / 360 * Math.PI * 2
         // spherical.phi = -earth.rotation.y -((32)/360) * Math.PI * 2
         spherical.phi = - earth.rotation.y + adjust
         this.orbitCamera.setPosition(spherical.toVector3())
