@@ -12,7 +12,6 @@ export default class Bodies {
         this.createEarth(scene, universe)
      }
     setEarth(beta) {
-        console.log('beta', beta)
 
         // because texture.uOffset doens't work
         const textureAdjust = Math.PI / 2

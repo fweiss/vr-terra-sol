@@ -16,7 +16,7 @@
  * 
 */
 import * as BABYLON from 'babylonjs'
-import { Vector2 } from 'babylonjs'
+import Model from './model'
 
 import settings from './settings'
 
@@ -91,13 +91,15 @@ export default class Cameras {
             // console.log(this.orbitCamera.position.toString())
             // actually update latlon relative to earth
             this.updateCameraPosition(this.orbitCamera, scene)
+
+            // this.model.setZenith(latitude, longitude)
         })
     }
     // keep camera over current latlon as earth spins
-    trackOrbitCamera(earth: BABYLON.Mesh) {
+    trackOrbitCamera(earth: BABYLON.Mesh, model: Model) {
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
         // unexplained kludge to keep earth from rotating
-        const adjust = (90 + settings.zenith.longitude) / 360 * Math.PI * 2
+        const adjust = (90 + model.zenith.longitude) / 360 * Math.PI * 2
         // spherical.phi = -earth.rotation.y -((32)/360) * Math.PI * 2
         spherical.phi = - earth.rotation.y + adjust
         this.orbitCamera.setPosition(spherical.toVector3())

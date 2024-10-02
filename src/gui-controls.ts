@@ -4,6 +4,9 @@ export default class Controls {
         height: 100,
         tod: 0,
     }
+    latitudeElem = document.getElementById('lat') as HTMLInputElement
+    longitudeElem = document.getElementById('lon') as HTMLInputElement
+
     target: EventTarget = new EventTarget()
 
     constructor() {
@@ -35,5 +38,9 @@ export default class Controls {
         const merdianTimeElem: HTMLInputElement = document.getElementById('tod_value') as HTMLInputElement
         // merdianTimeElem.value = (tod * 100 / 24).toFixed(2)
         merdianTimeElem.value = tod.getHours() + ":" + tod.getMinutes()
+    }
+    setZenith(latitude: number, longitude: number) {
+        this.latitudeElem.value = latitude.toFixed(4).toString()
+        this.longitudeElem.value = longitude.toFixed(4).toString()
     }
 }

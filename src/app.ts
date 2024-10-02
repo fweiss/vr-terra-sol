@@ -35,7 +35,14 @@ export default class App {
             // bodies.setEarth(tod)
             const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
             bodies.setEarth(beta)
-            cameras.trackOrbitCamera(bodies.earth)
+            cameras.trackOrbitCamera(bodies.earth, this.model)
+        })
+        cameras.onCameraChangeObservable.add((hover: BABYLON.Spherical) => {
+            // this.model.setZenith(hover.theta / Math.PI * 180 - 90, hover.phi / Math.PI * 180)
+            this.model.setZenith(hover.theta / Math.PI * 180, hover.phi / Math.PI * 180)
+        })
+        this.model.onZenithObservable.add((zenith: {latitude: number, longitude: number}) => {
+            controls.setZenith(zenith.latitude, zenith.longitude)
         })
     }
     createRenderLoop() {
@@ -90,6 +97,8 @@ export default class App {
                 longitude -= 180
             }
             const altitude = hover.radius
+
+            this.model.setZenith(latitude, longitude)
         
             const latElem: HTMLInputElement = document.getElementById('lat') as HTMLInputElement
             latElem.value = latitude.toFixed(4).toString()
