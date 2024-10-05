@@ -94,10 +94,21 @@ export default class Cameras {
             // actually update latlon relative to earth
 
             if (!this.isSettingCameraPosition) {
-                this.updateCameraPosition(this.orbitCamera, scene)
+                // this.updateCameraPosition(this.orbitCamera, scene)
             }
 
-            // this.model.setZenith(latitude, longitude)
+        })
+    }
+    attachModel(model: Model) {
+        this.orbitCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
+            const latitude = 90 - camera.beta / Math.PI * 180 // polar angle
+            let longitude = camera.alpha / Math.PI * 180 - 180 // azimuthal angle
+            if (longitude < 0 ) {
+                longitude += 180
+            } else {
+                longitude -= 180
+            }
+            model.setZenith(latitude, longitude)
         })
     }
     // keep camera over current latlon as earth spins

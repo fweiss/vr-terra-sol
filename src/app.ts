@@ -45,6 +45,7 @@ export default class App {
             controls.setZenith(zenith.latitude, zenith.longitude)
         })
         controls.todEvent(this.model)
+        cameras.attachModel(this.model)
     }
     createRenderLoop() {
         const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
