@@ -44,6 +44,7 @@ export default class App {
         this.model.onZenithObservable.add((zenith: {latitude: number, longitude: number}) => {
             controls.setZenith(zenith.latitude, zenith.longitude)
         })
+        controls.todEvent(this.model)
     }
     createRenderLoop() {
         const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement

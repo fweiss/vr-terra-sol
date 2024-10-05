@@ -1,8 +1,9 @@
+import Model from './model'
+
 export default class Controls {
     model = {
         camera: '',
         height: 100,
-        tod: 0,
     }
     latitudeElem = document.getElementById('lat') as HTMLInputElement
     longitudeElem = document.getElementById('lon') as HTMLInputElement
@@ -24,15 +25,25 @@ export default class Controls {
               });
             }
 
-            document.getElementById('tod').addEventListener<'input'>('input', (event) => {
-                const result = (event.target as HTMLInputElement).value
-                this.model.tod = 24 * parseFloat(result) / 100
-                //   target.dispatchEvent(new CustomEvent('tod', { detail: self.model.tod }))
-                const hours = Math.floor(this.model.tod)
-                const minutes = Math.floor((this.model.tod - hours) * 60)
-                target.dispatchEvent(new CustomEvent('tod', { detail: new Date(0, 0, 0, hours, minutes, 0) }))
-          })
+            // document.getElementById('tod').addEventListener<'input'>('input', (event) => {
+            //     const result = (event.target as HTMLInputElement).value
+            //     const tod = 24 * parseFloat(result) / 100
+            //     //   target.dispatchEvent(new CustomEvent('tod', { detail: self.model.tod }))
+            //     const hours = Math.floor(tod)
+            //     const minutes = Math.floor((tod - hours) * 60)
+            //     model.setMeridianTime(new Date(0, 0, 0, hours, minutes))
+            // })
         }
+    }
+    todEvent(model: Model) {
+        document.getElementById('tod').addEventListener<'input'>('input', (event) => {
+            const result = (event.target as HTMLInputElement).value
+            const tod = 24 * parseFloat(result) / 100
+            //   target.dispatchEvent(new CustomEvent('tod', { detail: self.model.tod }))
+            const hours = Math.floor(tod)
+            const minutes = Math.floor((tod - hours) * 60)
+            model.setMeridianTime(new Date(0, 0, 0, hours, minutes))
+        })
     }
     setMeridianTime(tod: Date) {
         const merdianTimeElem: HTMLInputElement = document.getElementById('tod_value') as HTMLInputElement

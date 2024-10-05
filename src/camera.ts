@@ -31,6 +31,8 @@ export default class Cameras {
     onCameraChangeObservable = new BABYLON.Observable<BABYLON.Spherical>()
     onHoverChangeObservable = new BABYLON.Observable<BABYLON.Spherical>()
 
+    isSettingCameraPosition: boolean = false
+
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         // this.orbitSpherical = new BABYLON.Spherical(1, 0, 0)
         this.hover = this.initialOrbitSpherical()
@@ -90,7 +92,10 @@ export default class Cameras {
         this.orbitCamera.onViewMatrixChangedObservable.add(() => {
             // console.log(this.orbitCamera.position.toString())
             // actually update latlon relative to earth
-            this.updateCameraPosition(this.orbitCamera, scene)
+
+            if (!this.isSettingCameraPosition) {
+                this.updateCameraPosition(this.orbitCamera, scene)
+            }
 
             // this.model.setZenith(latitude, longitude)
         })
@@ -102,7 +107,9 @@ export default class Cameras {
         const adjust = (90 + model.zenith.longitude) / 360 * Math.PI * 2
         // spherical.phi = -earth.rotation.y -((32)/360) * Math.PI * 2
         spherical.phi = - earth.rotation.y + adjust
+        this.isSettingCameraPosition = true
         this.orbitCamera.setPosition(spherical.toVector3())
+        this.isSettingCameraPosition = false
     }
     private updateCameraPosition(camera: BABYLON.TargetCamera, scene: BABYLON.Scene) {
         const earth = scene.getNodeByName('earth') as BABYLON.Mesh
@@ -110,8 +117,8 @@ export default class Cameras {
         ev.subtractInPlace(camera.position)
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(ev)
         BABYLON.Spherical.FromVector3ToRef(ev, this.hover)
-        this.onCameraChangeObservable.notifyObservers(this.hover) // maybe not necessary
-        this.onHoverChangeObservable.notifyObservers(this.hover)
+        // this.onCameraChangeObservable.notifyObservers(this.hover) // maybe not necessary
+        // this.onHoverChangeObservable.notifyObservers(this.hover)
     }
     private createSurfaceCamera(scene: BABYLON.Scene) {
         const orbitHeight = ((settings.earth.diameter / 2) + 180)
