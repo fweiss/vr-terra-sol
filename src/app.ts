@@ -32,10 +32,10 @@ export default class App {
         this.registerCameraEvents(cameras)
 
         this.model.onMeridianTimeObservable.add((tod: Date) => {
-            // bodies.setEarth(tod)
             const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
             bodies.setEarth(beta)
-            cameras.trackOrbitCamera(bodies.earth, this.model)
+            // cameras.trackOrbitCamera(bodies.earth, this.model)
+            // cameras.trackOrbitCamera2(beta)
         })
         cameras.onCameraChangeObservable.add((hover: BABYLON.Spherical) => {
             // this.model.setZenith(hover.theta / Math.PI * 180 - 90, hover.phi / Math.PI * 180)
@@ -81,9 +81,6 @@ export default class App {
         })
         this.model.onMeridianTimeObservable.add((tod: Date) => {
             controls.setMeridianTime(tod)
-            // const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
-            // bodies.setEarth(beta)
-
         })
     }
     registerCameraEvents(cameras: Cameras) {

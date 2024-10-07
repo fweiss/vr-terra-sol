@@ -88,19 +88,12 @@ export default class Cameras {
 
         // camera.checkCollisions = true
         this.orbitCamera.maxZ = 1000010
-        // this.orbitCamera.noRotationConstraint = true
-        this.orbitCamera.onViewMatrixChangedObservable.add(() => {
-            // console.log(this.orbitCamera.position.toString())
-            // actually update latlon relative to earth
-
-            if (!this.isSettingCameraPosition) {
-                // this.updateCameraPosition(this.orbitCamera, scene)
-            }
-
-        })
     }
     attachModel(model: Model) {
         this.orbitCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
+            if (this.isSettingCameraPosition) {
+                return
+            }
             const latitude = 90 - camera.beta / Math.PI * 180 // polar angle
             let longitude = camera.alpha / Math.PI * 180 - 180 // azimuthal angle
             if (longitude < 0 ) {
@@ -118,6 +111,14 @@ export default class Cameras {
         const adjust = (90 + model.zenith.longitude) / 360 * Math.PI * 2
         // spherical.phi = -earth.rotation.y -((32)/360) * Math.PI * 2
         spherical.phi = - earth.rotation.y + adjust
+        this.isSettingCameraPosition = true
+        this.orbitCamera.setPosition(spherical.toVector3())
+        this.isSettingCameraPosition = false
+    }
+    trackOrbitCamera2(beta: number) {
+        let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
+        // spherical.theta = Math.PI / 2 - beta
+        spherical.phi = beta - Math.PI / 2
         this.isSettingCameraPosition = true
         this.orbitCamera.setPosition(spherical.toVector3())
         this.isSettingCameraPosition = false
@@ -158,15 +159,6 @@ export default class Cameras {
             const spherical = new BABYLON.Spherical(orbitHeight, theta, phi)
             camera.position = spherical.toVector3()
             camera.rotation = new BABYLON.Vector3(0, -phi, -theta)
-        })
-
-        let p = new BABYLON.Vector3(0, 0, 0)
-        camera.onViewMatrixChangedObservable.add(() => {
-            if (p.equals(camera.position)) { return }
-            p.copyFrom(camera.position)
-            console.log('surface camera position: ' + camera.position.toString())
-            // console.log(camera.rotation.toString())
-            // console.log(camera.target.toString())
         })
 
         camera.maxZ = 1000010

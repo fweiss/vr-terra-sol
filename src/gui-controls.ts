@@ -39,7 +39,6 @@ export default class Controls {
         document.getElementById('tod').addEventListener<'input'>('input', (event) => {
             const result = (event.target as HTMLInputElement).value
             const tod = 24 * parseFloat(result) / 100
-            //   target.dispatchEvent(new CustomEvent('tod', { detail: self.model.tod }))
             const hours = Math.floor(tod)
             const minutes = Math.floor((tod - hours) * 60)
             model.setMeridianTime(new Date(0, 0, 0, hours, minutes))
