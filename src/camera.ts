@@ -101,14 +101,15 @@ export default class Cameras {
             } else {
                 longitude -= 180
             }
-            model.setZenith(latitude, longitude)
+            model.setZenithCoordinates(latitude, longitude)
         })
     }
     // keep camera over current latlon as earth spins
     trackOrbitCamera(earth: BABYLON.Mesh, model: Model) {
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
         // unexplained kludge to keep earth from rotating
-        const adjust = (90 + model.zenith.longitude) / 360 * Math.PI * 2
+        // const adjust = (90 + model.zenith.longitude) / 360 * Math.PI * 2
+        const adjust = Math.PI / 4 + model.zenith.theta
         // spherical.phi = -earth.rotation.y -((32)/360) * Math.PI * 2
         spherical.phi = - earth.rotation.y + adjust
         this.isSettingCameraPosition = true
@@ -118,7 +119,7 @@ export default class Cameras {
     trackOrbitCamera2(beta: number) {
         let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
         // spherical.theta = Math.PI / 2 - beta
-        spherical.phi = beta - Math.PI / 2
+        spherical.phi = beta //- Math.PI / 2
         this.isSettingCameraPosition = true
         this.orbitCamera.setPosition(spherical.toVector3())
         this.isSettingCameraPosition = false

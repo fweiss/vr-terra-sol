@@ -33,16 +33,22 @@ export default class App {
 
         this.model.onMeridianTimeObservable.add((tod: Date) => {
             const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
-            bodies.setEarth(beta)
+            // bodies.setEarth(beta)
             // cameras.trackOrbitCamera(bodies.earth, this.model)
-            // cameras.trackOrbitCamera2(beta)
+            cameras.trackOrbitCamera2(beta)
         })
         cameras.onCameraChangeObservable.add((hover: BABYLON.Spherical) => {
             // this.model.setZenith(hover.theta / Math.PI * 180 - 90, hover.phi / Math.PI * 180)
-            this.model.setZenith(hover.theta / Math.PI * 180, hover.phi / Math.PI * 180)
+            // this.model.setZenith(hover.theta / Math.PI * 180, hover.phi / Math.PI * 180)
+            // fixme remove hover
+            this.model.setZenith(hover.theta, hover.phi, hover.radius)
         })
-        this.model.onZenithObservable.add((zenith: {latitude: number, longitude: number}) => {
-            controls.setZenith(zenith.latitude, zenith.longitude)
+        // is the correct cut line for this in app.ts?
+        this.model.onZenithObservable.add((zenith: BABYLON.Spherical) => {
+            const latitude = 90 - zenith.theta / Math.PI * 180
+            const longitude = zenith.phi / Math.PI * 180 - (zenith.phi > Math.PI ? 360 : 0);
+            const elevation = zenith.radius
+            controls.setZenith(latitude, longitude)
         })
         controls.todEvent(this.model)
         cameras.attachModel(this.model)
@@ -97,7 +103,7 @@ export default class App {
             }
             const altitude = hover.radius
 
-            this.model.setZenith(latitude, longitude)
+            this.model.setZenithCoordinates(latitude, longitude)
         
             const latElem: HTMLInputElement = document.getElementById('lat') as HTMLInputElement
             latElem.value = latitude.toFixed(4).toString()
