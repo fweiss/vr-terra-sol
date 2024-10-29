@@ -23,6 +23,7 @@ export default class App {
         const cameras = new Cameras(this.scene, universe)
         const bodies = new Bodies(this.scene, universe)
         const controls: Controls = new Controls()
+        controls.registerModelEvents(this.model)
         this.registerPanelEvents(controls, cameras, bodies, universe)
 
         bodies.setEarth(0)
@@ -113,6 +114,5 @@ export default class App {
             const altElem: HTMLInputElement = document.getElementById('alt') as HTMLInputElement
             altElem.value = altitude.toFixed(0).toString()
         })
-
     }
 }

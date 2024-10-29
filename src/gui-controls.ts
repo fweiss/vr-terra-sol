@@ -7,6 +7,7 @@ export default class Controls {
     }
     latitudeElem = document.getElementById('lat') as HTMLInputElement
     longitudeElem = document.getElementById('lon') as HTMLInputElement
+    timeOfDayElem = document.getElementById('tod') as HTMLInputElement
 
     target: EventTarget = new EventTarget()
 
@@ -52,5 +53,12 @@ export default class Controls {
     setZenith(latitude: number, longitude: number) {
         this.latitudeElem.value = latitude.toFixed(4).toString()
         this.longitudeElem.value = longitude.toFixed(4).toString()
+    }
+    registerModelEvents(model: Model) {
+        model.onMeridianTimeObservable.add((tod: Date) => {
+            const hours = tod.getHours() + tod.getMinutes() / 60
+            const fraction = hours / 24
+            this.timeOfDayElem.value = String(fraction * 100)
+        })
     }
 }
