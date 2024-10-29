@@ -89,7 +89,9 @@ export default class Cameras {
         // camera.checkCollisions = true
         this.orbitCamera.maxZ = 1000010
     }
+    // bridge between camera events and model
     attachModel(model: Model) {
+        // when the orbit camera moves, update the model
         this.orbitCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
             if (this.isSettingCameraPosition) {
                 return
@@ -102,6 +104,13 @@ export default class Cameras {
                 longitude -= 180
             }
             model.setZenithCoordinates(latitude, longitude)
+
+            const meridianTime = model.zenith.phi / Math.PI * 12
+            const meridianHours = model.zenith.phi / Math.PI * 12
+            const merdianDate = new Date()
+            merdianDate.setHours(meridianHours)
+            merdianDate.setMinutes(0)
+            model.setMeridianTime(merdianDate)
         })
     }
     // keep camera over current latlon as earth spins

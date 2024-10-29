@@ -31,7 +31,7 @@ Contains:
 - 
 
 ## Interactions
-### Hover
+### Hover aka zenith
 - the point above the earth defining the POV
 - a spherical
 - equal to a latlng
@@ -47,3 +47,34 @@ Contains:
 - does not change the hover
 - pan around the horizon
 - tilt to see what's below
+
+## Dependencies
+What modules does each module depend on?
+
+### Model
+Should not depend on others.
+Expose observable for broadcasting events.
+Expose model read-only?
+
+### Bodies
+
+### App
+Nothing should depend on this.
+It can depend on any.
+It's the controller, so it registers handlers
+on observables, and communicates with
+other modules
+
+### Cameras
+Expose observables for:
+- camera movement originating from pointer/touch inputs
+- camera change
+
+### Gui-controls
+Handle direct events from GUI
+- mouse
+- keyboard
+
+Expose observables for:
+- tod scrubber
+- camera selector

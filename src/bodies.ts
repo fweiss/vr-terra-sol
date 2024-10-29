@@ -1,8 +1,10 @@
 import * as BABYLON from 'babylonjs'
 import settings from './settings'
+import Model from './model'
 
 export default class Bodies {
     earth: BABYLON.Mesh
+    sun: BABYLON.Mesh
     starfield: BABYLON.Mesh
 
     constructor(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
@@ -52,7 +54,7 @@ export default class Bodies {
         // myMaterial.emissiveColor = BABYLON.Color3.FromHexString('#ff2020') // make it stand out
         sun.material = myMaterial
         universe.addChild(sun)
-
+        this.sun = sun
     }
     private createSunTrail(scene: BABYLON.Scene, universe: BABYLON.AbstractMesh) {
         const options = {
@@ -64,6 +66,13 @@ export default class Bodies {
         }
         const torus = BABYLON.MeshBuilder.CreateTorus("suntrail", options, scene)
         universe.addChild(torus)
+    }
+    getCurrentMeridian(model: Model) {
+        let sun = new BABYLON.Spherical(1, model.zenith.theta, model.zenith.phi)
+        BABYLON.Spherical.FromVector3ToRef(this.sun.position, sun)
+        const mta = model.zenith.phi - sun.phi
+        const mt = mta / Math.PI * 12
+        console.log("time: ", mt)
     }
 }
 
@@ -78,4 +87,3 @@ function createStarfield(scene, universe: BABYLON.AbstractMesh) {
     universe.addChild(starfield)
     return starfield
 }
-
