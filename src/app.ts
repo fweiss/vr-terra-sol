@@ -23,6 +23,7 @@ export default class App {
         const cameras = new Cameras(this.scene, universe)
         const bodies = new Bodies(this.scene, universe)
         const controls: Controls = new Controls()
+
         controls.registerModelEvents(this.model)
         this.registerPanelEvents(controls, cameras, bodies, universe)
 
@@ -32,12 +33,13 @@ export default class App {
                 
         this.registerCameraEvents(cameras)
 
-        // maybe from a gui event?
         this.model.onMeridianTimeObservable.add((tod: Date) => {
             const beta = (tod.getHours() + tod.getMinutes() / 60) / 24 * Math.PI * 2
             // bodies.setEarth(beta)
             // cameras.trackOrbitCamera(bodies.earth, this.model)
             // cameras.trackOrbitCamera2(beta)
+
+            controls.setMeridianTime(tod)
         })
         cameras.onCameraChangeObservable.add((hover: BABYLON.Spherical) => {
             // this.model.setZenith(hover.theta / Math.PI * 180 - 90, hover.phi / Math.PI * 180)
@@ -86,9 +88,6 @@ export default class App {
             // camera.trackOrbitCamera(bodies.earth)
 
             this.model.setMeridianTime(event.detail)
-        })
-        this.model.onMeridianTimeObservable.add((tod: Date) => {
-            controls.setMeridianTime(tod)
         })
     }
     registerCameraEvents(cameras: Cameras) {

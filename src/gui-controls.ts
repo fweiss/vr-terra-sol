@@ -37,6 +37,7 @@ export default class Controls {
         }
     }
     todEvent(model: Model) {
+        // the meridian time of day scrubber changed
         document.getElementById('tod').addEventListener<'input'>('input', (event) => {
             const result = (event.target as HTMLInputElement).value
             const tod = 24 * parseFloat(result) / 100
