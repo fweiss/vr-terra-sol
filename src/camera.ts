@@ -133,6 +133,19 @@ export default class Cameras {
         this.orbitCamera.setPosition(spherical.toVector3())
         this.isSettingCameraPosition = false
     }
+    trackOrbitCamera3(beta: number) {
+        let spherical: BABYLON.Spherical = BABYLON.Spherical.FromVector3(this.orbitCamera.position)
+        // spherical.theta = Math.PI / 2 - beta
+        spherical.phi = beta //- Math.PI / 2
+        // spherical.phi = - Math.PI / 2
+
+        // disable observers
+        const observers = this.orbitCamera.onViewMatrixChangedObservable.observers.slice();
+        this.orbitCamera.onViewMatrixChangedObservable.clear();
+        this.orbitCamera.setPosition(spherical.toVector3())
+        observers.forEach(observer => this.orbitCamera.onViewMatrixChangedObservable.add(observer.callback))
+    }
+
     private updateCameraPosition(camera: BABYLON.TargetCamera, scene: BABYLON.Scene) {
         const earth = scene.getNodeByName('earth') as BABYLON.Mesh
         const ev: BABYLON.Vector3 = new BABYLON.Vector3().copyFrom(earth.position)

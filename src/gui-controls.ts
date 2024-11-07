@@ -59,7 +59,7 @@ export default class Controls {
         model.onMeridianTimeObservable.add((tod: Date) => {
             const hours = tod.getHours() + tod.getMinutes() / 60
             const fraction = hours / 24
-            this.timeOfDayElem.value = String(fraction * 100)
+            // this.timeOfDayElem.value = String(fraction * 100)
         })
     }
 }
