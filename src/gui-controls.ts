@@ -1,4 +1,5 @@
 import Model from './model'
+import Cameras from './camera'
 
 export default class Controls {
     model = {
@@ -36,7 +37,7 @@ export default class Controls {
             // })
         }
     }
-    todEvent(model: Model) {
+    todEvent(model: Model, cameras: Cameras) {  
         // the meridian time of day scrubber changed
         document.getElementById('tod').addEventListener<'input'>('input', (event) => {
             const result = (event.target as HTMLInputElement).value
@@ -44,6 +45,7 @@ export default class Controls {
             const hours = Math.floor(tod)
             const minutes = Math.floor((tod - hours) * 60)
             model.setMeridianTime(new Date(0, 0, 0, hours, minutes))
+            cameras.trackOrbitCamera3(tod)
         })
     }
     setMeridianTime(tod: Date) {
@@ -59,7 +61,7 @@ export default class Controls {
         model.onMeridianTimeObservable.add((tod: Date) => {
             const hours = tod.getHours() + tod.getMinutes() / 60
             const fraction = hours / 24
-            // this.timeOfDayElem.value = String(fraction * 100)
+            this.timeOfDayElem.value = String(fraction * 100)
         })
     }
 }

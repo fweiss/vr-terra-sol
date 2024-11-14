@@ -54,7 +54,7 @@ export default class App {
             const elevation = zenith.radius
             controls.setZenith(latitude, longitude)
         })
-        controls.todEvent(this.model)
+        controls.todEvent(this.model, cameras)
         cameras.attachModel(this.model)
     }
     createRenderLoop() {
