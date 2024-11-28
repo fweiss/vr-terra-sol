@@ -15,7 +15,7 @@ const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, z
 camera.attachControl(canvas, true);
 
 // Add a hemispheric light
-const light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(1, 0, 0), scene);
+const light = new BABYLON.PointLight("light", new BABYLON.Vector3(0, 0, 0), scene);
 
 const solarRadiance = new BABYLON.StandardMaterial("solarRadiance", scene);
 solarRadiance.emissiveColor = new BABYLON.Color3(1.0, 1.0, 0.0)
@@ -35,10 +35,19 @@ const earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: 2 }, scene);
 earth.material = paleBlueMaterial;
 earth.position = new BABYLON.Vector3(5, 0, 0);
 
+let phi = Math.PI / 2
+const phiDelta = Math.PI * 2 / (60 * 20)
+const earthSpherical = new BABYLON.Spherical(5, phi, 0)
+
 // Render loop
 engine.runRenderLoop(() => {
+    earth.position = earthSpherical.toVector3()
+    phi += phiDelta
+    earthSpherical.phi = phi
+
     scene.render();
 });
+
 
 // Resize the engine on window resize
 window.addEventListener("resize", () => {
