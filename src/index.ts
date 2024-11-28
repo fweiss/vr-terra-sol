@@ -11,11 +11,15 @@ const scene = new BABYLON.Scene(engine);
 
 // Create and position a camera
 const zenith = 50
-const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
-camera.attachControl(canvas, true);
+const spaceCamera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
 
-// Add a hemispheric light
-const light = new BABYLON.PointLight("light", new BABYLON.Vector3(0, 0, 0), scene);
+const earthCamera = new BABYLON.ArcRotateCamera("earthCamera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
+
+const activeCamera = earthCamera
+scene.activeCamera = activeCamera
+activeCamera.attachControl(canvas, true);
+
+const sunLight = new BABYLON.PointLight("sunLight", new BABYLON.Vector3(0, 0, 0), scene);
 
 const solarRadiance = new BABYLON.StandardMaterial("solarRadiance", scene);
 solarRadiance.emissiveColor = new BABYLON.Color3(1.0, 1.0, 0.0)
@@ -39,9 +43,14 @@ let phi = Math.PI / 2
 const phiDelta = Math.PI * 2 / (60 * 20)
 const earthSpherical = new BABYLON.Spherical(5, phi, 0)
 
+const offset = new BABYLON.Vector3(2, 2, 2)
+
 // Render loop
 engine.runRenderLoop(() => {
     earth.position = earthSpherical.toVector3()
+    earthCamera.setTarget(earth.position)
+    earthCamera.position = earth.position.add(offset)
+
     phi += phiDelta
     earthSpherical.phi = phi
 
