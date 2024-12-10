@@ -33,6 +33,7 @@ sun.position = new BABYLON.Vector3(0, 0, 0);
 // Create a pale blue material
 const paleBlueMaterial = new BABYLON.StandardMaterial("paleBlueMaterial", scene);
 paleBlueMaterial.diffuseColor = new BABYLON.Color3(0.68, 0.85, 0.9); // Pale blue color
+paleBlueMaterial.specularColor = BABYLON.Color3.Black()
 
 // Create a sphere and apply the material
 const earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: 2 }, scene);
