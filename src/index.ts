@@ -1,8 +1,9 @@
 import App from './app'
-
-// const app: App = new App()
-
 import * as BABYLON from "babylonjs";
+
+if (true) {
+    const app: App = new App()
+} else {
 
 // Initialize the scene
 const canvas = document.getElementById("renderCanvas") as unknown as HTMLCanvasElement
@@ -65,3 +66,5 @@ window.addEventListener("resize", () => {
 });
 
 scene.debugLayer.show()
+
+}
