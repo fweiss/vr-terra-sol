@@ -31,8 +31,7 @@ export default class App {
 
         this.createSun(this.scene)
 
-        // fixme extract lambda
-        this.engine.runRenderLoop(() => {
+        this.scene.onBeforeRenderObservable.add(() => {
             const phiDelta = Math.PI * 2 / (60 * 20)
             const heightOfEarthCamera = 5
             const earthSpherical = new BABYLON.Spherical(heightOfEarthCamera, phi, 0)
@@ -43,8 +42,9 @@ export default class App {
             this.earthCamera.position = this.earth.position.add(earthCameraOffset)
         
             phi += phiDelta
-            earthSpherical.phi = phi
-        
+            earthSpherical.phi = phi    
+        })
+        this.engine.runRenderLoop(() => {
             this.scene.render();
         });
 
