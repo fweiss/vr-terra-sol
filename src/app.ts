@@ -1,18 +1,9 @@
 import * as BABYLON from 'babylonjs'
 import { float } from 'babylonjs/types'
-// import settings from './settings'
-// import Controls from './gui-controls';
-// import Cameras from './camera'
-// import Bodies from './bodies'
-// import Lights from './lights';
-// import Model from './model'
 
-export default class App {
-    // should be const or private, but BABYLONJS makes it global anyway
-    private canvas: HTMLCanvasElement
-    private scene: BABYLON.Scene
-    private engine: BABYLON.Engine
+import AppBase from './app-base'
 
+export default class App extends AppBase {
     private earthCamera: BABYLON.TargetCamera
     private spaceCamera: BABYLON.TargetCamera
     private earth: BABYLON.Mesh
@@ -20,9 +11,7 @@ export default class App {
     private sun: BABYLON.Mesh
 
     constructor() {
-        this.canvas = document.getElementById("renderCanvas") as unknown as HTMLCanvasElement
-        this.engine = new BABYLON.Engine(this.canvas, true);
-        this.scene = new BABYLON.Scene(this.engine);
+        super()
 
         this.createCameras(this.scene)
         this.createSunlight(this.scene)
@@ -44,22 +33,16 @@ export default class App {
             phi += phiDelta
             earthSpherical.phi = phi    
         })
-        this.engine.runRenderLoop(() => {
-            this.scene.render();
-        });
-
-        window.addEventListener("resize", () => {
-            this.engine.resize();
-        });      
     }
 
-    private createCameras(scene: BABYLON.Scene) {
+    // overrie
+    createCameras(scene: BABYLON.Scene) {
         const zenith = 50
         this.spaceCamera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
         
         this.earthCamera = new BABYLON.ArcRotateCamera("earthCamera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
         
-        const activeCamera = this.spaceCamera
+        const activeCamera = this.earthCamera
         scene.activeCamera = activeCamera
         activeCamera.attachControl(this.canvas, true);
     }
