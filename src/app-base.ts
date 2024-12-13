@@ -10,7 +10,7 @@ export default class AppBase {
         this.engine = new BABYLON.Engine(this.canvas, true)
         this.scene = new BABYLON.Scene(this.engine)
 
-        this.createCameras(this.scene)
+        // this.createCameras()
 
         this.engine.runRenderLoop(() => {
             this.scene.render();
@@ -22,8 +22,8 @@ export default class AppBase {
     }
 
     // create dummy camera: override this method in a subclass
-    createCameras(scene: BABYLON.Scene) {
-        const defaultCamera: BABYLON.Camera = new BABYLON.Camera("default camera", new BABYLON.Vector3(0, 0, 0), scene);
+    createCameras() {
+        const defaultCamera: BABYLON.Camera = new BABYLON.Camera("default camera", new BABYLON.Vector3(0, 0, 0), this.scene);
         defaultCamera.attachControl(this.canvas, true);
     }
 }

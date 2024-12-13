@@ -2,8 +2,11 @@ import * as BABYLON from 'babylonjs'
 import { float } from 'babylonjs/types'
 
 import AppBase from './app-base'
+import Cameras from './cameras'
 
 export default class App extends AppBase {
+    private cameras: Cameras
+
     private earthCamera: BABYLON.TargetCamera
     private spaceCamera: BABYLON.TargetCamera
     private earth: BABYLON.Mesh
@@ -13,7 +16,10 @@ export default class App extends AppBase {
     constructor() {
         super()
 
-        this.createCameras(this.scene)
+        this.cameras = new Cameras(this.scene)
+        this.cameras.setActiveCamera(this.cameras.spaceCamera, this.scene, this.canvas)
+
+        // this.createCameras(this.scene)
         this.createSunlight(this.scene)
         this.createEarth(this.scene)
         let phi = Math.PI / 2
@@ -27,8 +33,8 @@ export default class App extends AppBase {
             const earthCameraOffset = new BABYLON.Vector3(2, 2, 2)
 
             this.earth.position = earthSpherical.toVector3()
-            this.earthCamera.setTarget(this.earth.position)
-            this.earthCamera.position = this.earth.position.add(earthCameraOffset)
+            this.cameras.earthCamera.setTarget(this.earth.position)
+            this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
         
             phi += phiDelta
             earthSpherical.phi = phi    
@@ -36,15 +42,9 @@ export default class App extends AppBase {
     }
 
     // overrie
-    createCameras(scene: BABYLON.Scene) {
-        const zenith = 50
-        this.spaceCamera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
-        
-        this.earthCamera = new BABYLON.ArcRotateCamera("earthCamera", Math.PI / 2, Math.PI / 2, zenith, BABYLON.Vector3.Zero(), scene);
-        
-        const activeCamera = this.earthCamera
-        scene.activeCamera = activeCamera
-        activeCamera.attachControl(this.canvas, true);
+    createCameras() {
+        // this.cameras = new Cameras()
+        this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
     }
 
     private createSunlight(scene: BABYLON.Scene) {      
