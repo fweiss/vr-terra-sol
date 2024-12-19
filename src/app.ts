@@ -36,9 +36,14 @@ export default class App extends AppBase {
             this.cameras.earthCamera.setTarget(this.earth.position)
             this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
         
-            phi += phiDelta
+            phi -= phiDelta // counter clockwise
             earthSpherical.phi = phi    
         })
+
+    this.scene.debugLayer.show()
+    
+    // new BABYLON.AxesViewer(this.scene, 2000)
+
     }
 
     // overrie
