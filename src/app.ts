@@ -17,7 +17,7 @@ export default class App extends AppBase {
         super()
 
         this.cameras = new Cameras(this.scene)
-        this.cameras.setActiveCamera(this.cameras.spaceCamera, this.scene, this.canvas)
+        this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
 
         // this.createCameras(this.scene)
         this.createSunlight(this.scene)
@@ -30,9 +30,15 @@ export default class App extends AppBase {
             const phiDelta = Math.PI * 2 / (60 * 20)
             const heightOfEarthCamera = 5
             const earthSpherical = new BABYLON.Spherical(heightOfEarthCamera, phi, 0)
+
+            // earth orbit in xy plane
+            const rotationMatrix = BABYLON.Matrix.RotationX(Math.PI / 2);
+            const positionVector = BABYLON.Vector3.TransformCoordinates(earthSpherical.toVector3(), rotationMatrix)
+
             const earthCameraOffset = new BABYLON.Vector3(2, 2, 2)
 
-            this.earth.position = earthSpherical.toVector3()
+            // this.earth.position = earthSpherical.toVector3()
+            this.earth.position = positionVector
             this.cameras.earthCamera.setTarget(this.earth.position)
             this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
         
@@ -72,7 +78,6 @@ export default class App extends AppBase {
         texture.uOffset = alignSphericalTexture
         material.diffuseTexture = texture
         material.specularColor = BABYLON.Color3.Black()
-
 
         // Create a sphere and apply the material
         this.earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: 2 }, scene);
