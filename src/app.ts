@@ -14,12 +14,9 @@ export default class App extends AppBase {
     private sun: BABYLON.Mesh
 
     constructor() {
+        // implicitly calls createCameras, createLights, createObject
         super()
 
-        this.cameras = new Cameras(this.scene)
-        this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
-
-        // this.createCameras(this.scene)
         this.createEarth(this.scene)
         let phi = Math.PI / 2
 
@@ -51,10 +48,10 @@ export default class App extends AppBase {
 
     }
 
-    // overrie
+    // override base class skeleton
     createCameras() {
-        // this.cameras = new Cameras()
-        this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
+        this.cameras = new Cameras(this.scene)
+        this.cameras.setActiveCamera(this.cameras.spaceCamera, this.scene, this.canvas)
     }
 
     createLights() {
@@ -66,7 +63,6 @@ export default class App extends AppBase {
         const southHemispherLight = new BABYLON.HemisphericLight("south hemisphere light", new BABYLON.Vector3(0, -1, 0), this.scene);
         southHemispherLight.intensity = intensity
     }
-
 
     private createEarth(scene: BABYLON.Scene) {
         const paleBlueMaterial = new BABYLON.StandardMaterial("paleBlueMaterial", scene);
