@@ -11,6 +11,8 @@ export default class AppBase {
         this.scene = new BABYLON.Scene(this.engine)
 
         // this.createCameras()
+        this.createLights()
+        this.createObjects()
 
         this.engine.runRenderLoop(() => {
             this.scene.render();
@@ -26,4 +28,6 @@ export default class AppBase {
         const defaultCamera: BABYLON.Camera = new BABYLON.Camera("default camera", new BABYLON.Vector3(0, 0, 0), this.scene);
         defaultCamera.attachControl(this.canvas, true);
     }
+    createLights() {}
+    createObjects() {}
 }

@@ -20,7 +20,6 @@ export default class App extends AppBase {
         this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
 
         // this.createCameras(this.scene)
-        this.createSunlight(this.scene)
         this.createEarth(this.scene)
         let phi = Math.PI / 2
 
@@ -46,7 +45,7 @@ export default class App extends AppBase {
             earthSpherical.phi = phi    
         })
 
-    this.scene.debugLayer.show()
+    // this.scene.debugLayer.show()
     
     // new BABYLON.AxesViewer(this.scene, 2000)
 
@@ -58,9 +57,16 @@ export default class App extends AppBase {
         this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
     }
 
-    private createSunlight(scene: BABYLON.Scene) {      
-        const sunLight = new BABYLON.PointLight("sunLight", new BABYLON.Vector3(0, 0, 0), scene);
+    createLights() {
+        const sunLight = new BABYLON.PointLight("sunLight", new BABYLON.Vector3(0, 0, 0), this.scene);
+
+        const intensity = 0.3
+        const northHemispherLight = new BABYLON.HemisphericLight("north hemisphere light", new BABYLON.Vector3(0, 1, 0), this.scene);
+        northHemispherLight.intensity = intensity
+        const southHemispherLight = new BABYLON.HemisphericLight("south hemisphere light", new BABYLON.Vector3(0, -1, 0), this.scene);
+        southHemispherLight.intensity = intensity
     }
+
 
     private createEarth(scene: BABYLON.Scene) {
         const paleBlueMaterial = new BABYLON.StandardMaterial("paleBlueMaterial", scene);
