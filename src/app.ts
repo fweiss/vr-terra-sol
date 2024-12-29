@@ -3,9 +3,11 @@ import { float } from 'babylonjs/types'
 
 import AppBase from './app-base'
 import Cameras from './cameras'
+import Controls from './controls'
 
 export default class App extends AppBase {
     private cameras: Cameras
+    private controls: Controls
 
     private earthCamera: BABYLON.TargetCamera
     private spaceCamera: BABYLON.TargetCamera
@@ -41,6 +43,16 @@ export default class App extends AppBase {
             phi -= phiDelta // counter clockwise
             earthSpherical.phi = phi    
         })
+
+        this.controls = new Controls()
+        this.controls.onCameraSelect = (camera: string) => {
+            console.log('camera selected:', camera)
+            if (camera === 'earth') {
+                this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
+            } else if (camera === 'space') {
+                this.cameras.setActiveCamera(this.cameras.spaceCamera, this.scene, this.canvas)
+            }
+        }
 
     // this.scene.debugLayer.show()
     
