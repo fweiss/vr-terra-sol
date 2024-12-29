@@ -31,3 +31,8 @@ https://reddotblues.medium.com/babylon-js-typescript-project-setup-for-the-impat
 http://shadedrelief.com/
 
 https://blog.mastermaps.com/2013/09/creating-webgl-earth-with-threejs.html
+
+A nice solor system model with orbits, rotation, moons, asteroids, constellations
+[Solar System Scope](solarsystemscope.com)
+
+[Solor System Textures](github.com/homer-jay/solar-system-textures)
