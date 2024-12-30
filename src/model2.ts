@@ -5,11 +5,10 @@ export default class model {
     // solar time where zero is when the sun is at the meridian
     solarTime: Date = new Date()
     axialTilt: number = 23.5
+    siderealTimeDelta: number = 1000000
 
     tick() {
-        // update the sidereal time
-        this.siderealTime = new Date(this.siderealTime.getTime() + 100000)
-        // update the solar time
+        this.siderealTime = new Date(this.siderealTime.getTime() + this.siderealTimeDelta)
         this.solarTime = new Date(this.solarTime.getTime() + 1000)
     }
     get siderealTimeRadians() {
