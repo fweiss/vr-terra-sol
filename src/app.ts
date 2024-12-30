@@ -4,6 +4,7 @@ import { float } from 'babylonjs/types'
 import AppBase from './app-base'
 import Cameras from './cameras'
 import Controls from './controls'
+import Model from './model2'
 
 export default class App extends AppBase {
     private cameras: Cameras
@@ -14,10 +15,13 @@ export default class App extends AppBase {
     private earth: BABYLON.Mesh
     private phi: float
     private sun: BABYLON.Mesh
+    private model: Model
 
     constructor() {
         // implicitly calls createCameras, createLights, createObjects
         super()
+
+        this.model = new Model()
 
         this.createEarth(this.scene)
         let phi = Math.PI / 2
@@ -25,6 +29,8 @@ export default class App extends AppBase {
         this.createSun(this.scene)
 
         this.scene.onBeforeRenderObservable.add(() => {
+            this.model.tick()
+
             const phiDelta = Math.PI * 2 / (60 * 20)
             const heightOfEarthCamera = 5
             const earthSpherical = new BABYLON.Spherical(heightOfEarthCamera, phi, 0)
@@ -37,6 +43,8 @@ export default class App extends AppBase {
 
             // this.earth.position = earthSpherical.toVector3()
             this.earth.position = positionVector
+            // note that earth rotates ccw
+            this.earth.rotation.y = -this.model.siderealTimeRadians
             this.cameras.earthCamera.setTarget(this.earth.position)
             this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
         
