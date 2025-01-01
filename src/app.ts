@@ -13,7 +13,6 @@ export default class App extends AppBase {
     private earthCamera: BABYLON.TargetCamera
     private spaceCamera: BABYLON.TargetCamera
     private earth: BABYLON.Mesh
-    private phi: float
     private sun: BABYLON.Mesh
     private model: Model
 
@@ -31,25 +30,23 @@ export default class App extends AppBase {
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
 
-            const phiDelta = Math.PI * 2 / (60 * 20)
+            const millisPerTick = 1000
             const heightOfEarthCamera = 5
-            const earthSpherical = new BABYLON.Spherical(heightOfEarthCamera, phi, 0)
 
             // earth orbit in xy plane
             const rotationMatrix = BABYLON.Matrix.RotationX(Math.PI / 2);
-            const positionVector = BABYLON.Vector3.TransformCoordinates(earthSpherical.toVector3(), rotationMatrix)
+            let phi = this.model.solarDateRadians
+            let spherical = new BABYLON.Spherical(heightOfEarthCamera, -phi / millisPerTick, 0)
+            const positionVector = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
 
-            const earthCameraOffset = new BABYLON.Vector3(2, 2, 2)
-
-            // this.earth.position = earthSpherical.toVector3()
+            // adust earth, note that earth rotates ccw
             this.earth.position = positionVector
-            // note that earth rotates ccw
             this.earth.rotation.y = -this.model.siderealTimeRadians
+            
+            // ajust camera
+            const earthCameraOffset = new BABYLON.Vector3(2, 2, 2)
             this.cameras.earthCamera.setTarget(this.earth.position)
             this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
-        
-            phi -= phiDelta // counter clockwise
-            earthSpherical.phi = phi    
         })
 
         this.controls = new Controls()
@@ -102,10 +99,6 @@ export default class App extends AppBase {
         this.earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: 2 }, scene);
         this.earth.material = material;
         this.earth.position = new BABYLON.Vector3(5, 0, 0);
-
-        let phi = Math.PI / 2
-        const phiDelta = Math.PI * 2 / (60 * 20)
-        const earthSpherical = new BABYLON.Spherical(5, phi, 0)
     }
 
     private createSun(scene: BABYLON.Scene) {

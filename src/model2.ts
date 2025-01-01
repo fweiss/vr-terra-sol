@@ -3,15 +3,23 @@ export default class model {
     // the GMT meridian and the March equinox coincide
     siderealTime: Date = new Date()
     // solar time where zero is when the sun is at the meridian
-    solarTime: Date = new Date()
+    solarDate: Date = new Date()
+
+    millisPerDay: number = 24 * 60 * 60 * 1000
+
     axialTilt: number = 23.5
+
     siderealTimeDelta: number = 1000000
+    solarDateDelta: number = 150 * this.millisPerDay
 
     tick() {
         this.siderealTime = new Date(this.siderealTime.getTime() + this.siderealTimeDelta)
-        this.solarTime = new Date(this.solarTime.getTime() + 1000)
+        this.solarDate = new Date(this.solarDate.getTime() + this.solarDateDelta)
     }
     get siderealTimeRadians() {
         return this.siderealTime.getTime() * Math.PI / 1000 / 60 / 60 / 24
+    }
+    get solarDateRadians() {
+        return this.solarDate.getTime() / this.millisPerDay / 180 * Math.PI
     }
 }

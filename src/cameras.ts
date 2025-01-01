@@ -6,7 +6,7 @@ export default class Cameras {
 
     constructor(scene: BABYLON.Scene) {
         const upVectorZ = new BABYLON.Vector3(0, 0, 1)
-        const zenith = 50
+        const zenith = 10
         this.spaceCamera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, 0, zenith, BABYLON.Vector3.Zero(), scene);      
         this.spaceCamera.upVector = upVectorZ
         this.spaceCamera.lowerBetaLimit = null
