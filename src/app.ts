@@ -43,8 +43,9 @@ export default class App extends AppBase {
             this.earth.position = positionVector
             this.earth.rotation.y = -this.model.siderealTimeRadians
             
-            // ajust camera
-            const earthCameraOffset = new BABYLON.Vector3(2, 2, 2)
+            // ajust earth camera
+            const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, -this.earth.rotation.y)
+            const earthCameraOffset = zenithSpherical.toVector3()
             this.cameras.earthCamera.setTarget(this.earth.position)
             this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
         })

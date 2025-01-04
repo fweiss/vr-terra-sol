@@ -1,3 +1,5 @@
+import * as BABYLON from 'babylonjs'
+
 export default class model {
     // earth rotation angle where zero is when
     // the GMT meridian and the March equinox coincide
@@ -8,6 +10,7 @@ export default class model {
     millisPerDay: number = 24 * 60 * 60 * 1000
 
     axialTilt: number = 23.5
+    private earthCameraHeight: number = 10
 
     siderealTimeDelta: number = 1000000
     solarDateDelta: number = 150 * this.millisPerDay
@@ -21,5 +24,9 @@ export default class model {
     }
     get solarDateRadians() {
         return this.solarDate.getTime() / this.millisPerDay / 180 * Math.PI
+    }
+    get earthCameraSpherical(): BABYLON.Spherical {
+        // return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2 - this.axialTilt)
+        return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2)
     }
 }
