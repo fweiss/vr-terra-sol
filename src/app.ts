@@ -13,7 +13,7 @@ export default class App extends AppBase {
 
     private earthCamera: BABYLON.TargetCamera
     private spaceCamera: BABYLON.TargetCamera
-    private earth: BABYLON.Mesh
+    private earth: BABYLON.AbstractMesh
     private sun: BABYLON.Mesh
     private model: Model
     private bodies: Bodies2

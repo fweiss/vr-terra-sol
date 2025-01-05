@@ -2,7 +2,7 @@ import * as BABYLON from 'babylonjs'
 
 export default class Bodies2 {
     scene: BABYLON.Scene
-    earth: BABYLON.Mesh
+    earth: BABYLON.AbstractMesh
     sun: BABYLON.Mesh
 
     constructor(scene: BABYLON.Scene) {
@@ -25,9 +25,14 @@ export default class Bodies2 {
         material.specularColor = BABYLON.Color3.Black()
 
         // Create a sphere and apply the material
-        this.earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: 2 }, scene);
-        this.earth.material = material;
+        const earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 }, scene);
+        earthGlobe.material = material;
+
+        // wrap the earth to separate orbit from rotation and tilt
+        this.earth = new BABYLON.AbstractMesh("earth", scene)
         this.earth.position = new BABYLON.Vector3(5, 0, 0);
+        this.earth.addChild(earthGlobe)
+        earthGlobe.position = new BABYLON.Vector3(0, 0, 0);
     }
 
     private createSun(scene: BABYLON.Scene) {
