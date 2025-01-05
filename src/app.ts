@@ -5,6 +5,7 @@ import AppBase from './app-base'
 import Cameras from './cameras'
 import Controls from './controls'
 import Model from './model2'
+import Bodies2 from './bodies2'
 
 export default class App extends AppBase {
     private cameras: Cameras
@@ -15,17 +16,13 @@ export default class App extends AppBase {
     private earth: BABYLON.Mesh
     private sun: BABYLON.Mesh
     private model: Model
+    private bodies: Bodies2
 
     constructor() {
         // implicitly calls createCameras, createLights, createObjects
         super()
 
         this.model = new Model()
-
-        this.createEarth(this.scene)
-        let phi = Math.PI / 2
-
-        this.createSun(this.scene)
 
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
@@ -66,7 +63,7 @@ export default class App extends AppBase {
 
     }
 
-    // override base class skeleton
+    // override base class skeletons
     createCameras() {
         this.cameras = new Cameras(this.scene)
         this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
@@ -82,37 +79,8 @@ export default class App extends AppBase {
         const southHemispherLight = new BABYLON.HemisphericLight("south hemisphere light", new BABYLON.Vector3(0, -1, 0), this.scene);
         southHemispherLight.intensity = intensity
     }
-
-    private createEarth(scene: BABYLON.Scene) {
-        let material = new BABYLON.StandardMaterial('earth_no_clouds', scene)
-        let res = '8k'
-        const url = 'assets/' + res + '/2_no_clouds_' + res + '.jpg'
-        const noMipmapOrOptions = false
-        const invertY = false // since default is oddly, true
-        const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
-        texture.uScale = -1.0 // since texture wraps backwards
-        const alignSphericalTexture = 0.25
-        texture.uOffset = alignSphericalTexture
-        material.diffuseTexture = texture
-        material.specularColor = BABYLON.Color3.Black()
-
-        // Create a sphere and apply the material
-        this.earth = BABYLON.MeshBuilder.CreateSphere("earth", { diameter: 2 }, scene);
-        this.earth.material = material;
-        this.earth.position = new BABYLON.Vector3(5, 0, 0);
-    }
-
-    private createSun(scene: BABYLON.Scene) {
-        // const solarRadiance = new BABYLON.StandardMaterial("solarRadiance", scene);
-        // solarRadiance.emissiveColor = new BABYLON.Color3(1.0, 1.0, 0.0)
-
-        const sunMaterial = new BABYLON.StandardMaterial("sunMaterial", scene)
-        const sunTexture = new BABYLON.Texture("assets/2k/sun.jpg", scene)
-        sunMaterial.emissiveTexture = sunTexture
-        sunMaterial.specularColor = BABYLON.Color3.Black()
-
-        this.sun = BABYLON.MeshBuilder.CreateSphere("sun", { diameter: 2 }, scene);
-        this.sun.material = sunMaterial;
-        this.sun.position = new BABYLON.Vector3(0, 0, 0);
+    createObjects() {
+        this.bodies = new Bodies2(this.scene)
+        this.earth = this.bodies.earth
     }
 }
