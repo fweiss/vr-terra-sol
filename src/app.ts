@@ -6,17 +6,15 @@ import Cameras from './cameras'
 import Controls from './controls'
 import Model from './model2'
 import Bodies2 from './bodies2'
+import EarthGroup from './earth-group'
 
 export default class App extends AppBase {
     private cameras: Cameras
     private controls: Controls
 
-    private earthCamera: BABYLON.TargetCamera
-    private spaceCamera: BABYLON.TargetCamera
-    private earth: BABYLON.AbstractMesh
-    private sun: BABYLON.Mesh
     private model: Model
     private bodies: Bodies2
+    private earthGroup: EarthGroup
 
     constructor() {
         // implicitly calls createCameras, createLights, createObjects
@@ -37,14 +35,15 @@ export default class App extends AppBase {
             const positionVector = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
 
             // adust earth, note that earth rotates ccw
-            this.earth.position = positionVector
-            this.earth.rotation.y = -this.model.siderealTimeRadians
-            
-            // ajust earth camera
-            const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, -this.earth.rotation.y)
+            this.earthGroup.earthGroup.position = positionVector
+            this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
+
+            // adust earth camera
+            const absoluteEarthGlobePosition = this.earthGroup.earthGlobe.getAbsolutePosition()
+            const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, -this.earthGroup.earthGlobe.rotation.y)
             const earthCameraOffset = zenithSpherical.toVector3()
-            this.cameras.earthCamera.setTarget(this.earth.position)
-            this.cameras.earthCamera.position = this.earth.position.add(earthCameraOffset)
+            this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
+            this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
         })
 
         this.controls = new Controls()
@@ -81,6 +80,7 @@ export default class App extends AppBase {
     }
     createObjects() {
         this.bodies = new Bodies2(this.scene)
-        this.earth = this.bodies.earth
+
+        this.earthGroup = new EarthGroup(this.scene)
     }
 }

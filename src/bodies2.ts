@@ -9,30 +9,6 @@ export default class Bodies2 {
         this.scene = scene
 
         this.createSun(scene)
-        this.createEarth(scene)
-    }
-    private createEarth(scene: BABYLON.Scene) {
-        let material = new BABYLON.StandardMaterial('earth_no_clouds', scene)
-        let res = '8k'
-        const url = 'assets/' + res + '/2_no_clouds_' + res + '.jpg'
-        const noMipmapOrOptions = false
-        const invertY = false // since default is oddly, true
-        const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
-        texture.uScale = -1.0 // since texture wraps backwards
-        const alignSphericalTexture = 0.25
-        texture.uOffset = alignSphericalTexture
-        material.diffuseTexture = texture
-        material.specularColor = BABYLON.Color3.Black()
-
-        // Create a sphere and apply the material
-        const earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 }, scene);
-        earthGlobe.material = material;
-
-        // wrap the earth to separate orbit from rotation and tilt
-        this.earth = new BABYLON.AbstractMesh("earth", scene)
-        this.earth.position = new BABYLON.Vector3(5, 0, 0);
-        this.earth.addChild(earthGlobe)
-        earthGlobe.position = new BABYLON.Vector3(0, 0, 0);
     }
 
     private createSun(scene: BABYLON.Scene) {
