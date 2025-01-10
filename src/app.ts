@@ -29,9 +29,12 @@ export default class App extends AppBase {
             const heightOfEarthCamera = 5
 
             // earth orbit in xy plane
-            const rotationMatrix = BABYLON.Matrix.RotationX(Math.PI / 2);
+            const rotationMatrix = BABYLON.Matrix.RotationY(Math.PI / 2);
             let phi = this.model.solarDateRadians
-            let spherical = new BABYLON.Spherical(heightOfEarthCamera, -phi / millisPerTick, 0)
+            // NB theta cannot be zero or 180
+            // earth meander a tiny bit when phi and theta are switched
+            // phi positive = ccw
+            let spherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI/2, phi / millisPerTick)
             const positionVector = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
 
             // adust earth, note that earth rotates ccw
@@ -39,11 +42,18 @@ export default class App extends AppBase {
             this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
 
             // adust earth camera
+            const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
+            const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
+            const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
+            // this.cameras.earthCamera.upVector = worldUpVector
+
+
             const absoluteEarthGlobePosition = this.earthGroup.earthGlobe.getAbsolutePosition()
-            const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, -this.earthGroup.earthGlobe.rotation.y)
+            const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
             const earthCameraOffset = zenithSpherical.toVector3()
             this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
             this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
+            // this.cameras.earthCamera.upVector = worldUpVector
         })
 
         this.controls = new Controls()

@@ -10,6 +10,7 @@ export default class EarthGroup {
         this.earthGroup = new BABYLON.TransformNode('earthGroup', scene)
         this.createEarthGlobe()
         this.earthGlobe.parent = this.earthGroup
+        this.earthGroup.rotation.x = 0 //Math.PI/6
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
     }
@@ -25,6 +26,7 @@ export default class EarthGroup {
         texture.uOffset = alignSphericalTexture
         material.diffuseTexture = texture
         material.specularColor = BABYLON.Color3.Black()
+        // material.wireframe = true
 
         // Create a sphere and apply the material
         this.earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 }, this.scene);
