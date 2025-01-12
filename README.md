@@ -5,6 +5,7 @@ Visualization of the spatial relationship between earth and sun
 A realistic earth sphere and radiant sun with variety of POVs and animations.
 
 ## Development
+- run ``npm install``
 - run ``npx webpack-cli serve``
 - open [http://localhost:8080/]
 
