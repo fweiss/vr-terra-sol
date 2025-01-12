@@ -1,16 +1,18 @@
 import * as BABYLON from 'babylonjs'
+import Model from './model2'
 
 export default class EarthGroup {
     private scene: BABYLON.Scene
     earthGroup: BABYLON.TransformNode
     earthGlobe: BABYLON.Mesh
+    private model: Model
 
-    constructor(scene: BABYLON.Scene) {
+    constructor(scene: BABYLON.Scene, model: Model) {   
         this.scene = scene
         this.earthGroup = new BABYLON.TransformNode('earthGroup', scene)
         this.createEarthGlobe()
         this.earthGlobe.parent = this.earthGroup
-        this.earthGroup.rotation.x = 0 //Math.PI/6
+        this.earthGroup.rotation.x = model.axisTiltRadians
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
     }

@@ -25,6 +25,9 @@ export default class model {
     get solarDateRadians() {
         return this.solarDate.getTime() / this.millisPerDay / 180 * Math.PI
     }
+    get axisTiltRadians() {
+        return this.axialTilt * Math.PI / 180
+    }
     get earthCameraSpherical(): BABYLON.Spherical {
         // return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2 - this.axialTilt)
         return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2)

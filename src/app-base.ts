@@ -10,6 +10,8 @@ export default class AppBase {
         this.engine = new BABYLON.Engine(this.canvas, true)
         this.scene = new BABYLON.Scene(this.engine)
 
+        // sub constructors defined in subclass
+        this.createModel()
         this.createCameras()
         this.createLights()
         this.createObjects()
@@ -30,4 +32,5 @@ export default class AppBase {
     }
     createLights() {}
     createObjects() {}
+    createModel() {}
 }

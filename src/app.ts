@@ -17,10 +17,8 @@ export default class App extends AppBase {
     private earthGroup: EarthGroup
 
     constructor() {
-        // implicitly calls createCameras, createLights, createObjects
+        // implicitly calls createModel, createCameras, createLights, createObjects
         super()
-
-        this.model = new Model()
 
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
@@ -71,7 +69,9 @@ export default class App extends AppBase {
     // new BABYLON.AxesViewer(this.scene, 2000)
 
     }
-
+    createModel() { // override base class
+        this.model = new Model()
+    }
     // override base class skeletons
     createCameras() {
         this.cameras = new Cameras(this.scene)
@@ -91,6 +91,6 @@ export default class App extends AppBase {
     createObjects() {
         this.bodies = new Bodies2(this.scene)
 
-        this.earthGroup = new EarthGroup(this.scene)
+        this.earthGroup = new EarthGroup(this.scene, this.model)
     }
 }
