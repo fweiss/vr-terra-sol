@@ -6,6 +6,7 @@ export default class EarthGroup {
     earthGroup: BABYLON.TransformNode
     earthGlobe: BABYLON.Mesh
     private model: Model
+    earthZenithHeight: number = 5
 
     constructor(scene: BABYLON.Scene, model: Model) {   
         this.scene = scene
@@ -24,7 +25,7 @@ export default class EarthGroup {
         const invertY = false // since default is oddly, true
         const texture: BABYLON.Texture = new BABYLON.Texture(url, this.scene, noMipmapOrOptions, invertY)
         texture.uScale = -1.0 // since texture wraps backwards
-        const alignSphericalTexture = 0.25
+        const alignSphericalTexture = 0.5
         texture.uOffset = alignSphericalTexture
         material.diffuseTexture = texture
         material.specularColor = BABYLON.Color3.Black()
@@ -34,4 +35,15 @@ export default class EarthGroup {
         this.earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 }, this.scene);
         this.earthGlobe.material = material;
     }
+    getAbsoluteEarthZenithVector(model: Model): BABYLON.Vector3 {
+        // const tilt = Math.PI / 2 - model.axisTiltRadians
+        const theta = Math.PI / 2 - model.latitudeRadians
+        const phi = model.siderealTimeRadians + model.longitudeRadians
+        const zenithSpherical = new BABYLON.Spherical(model.earthCameraHeight, theta, phi)
+        // const zenithSpherical = new BABYLON.Spherical(model.earthCameraHeight, tilt, model.longitudeRadians)
+        const zenithOffset = zenithSpherical.toVector3()
+        const worldMatrix = this.earthGroup.getWorldMatrix();
+        return BABYLON.Vector3.TransformNormal(zenithOffset, worldMatrix);
+    }
+
 }

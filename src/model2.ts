@@ -1,5 +1,9 @@
 import * as BABYLON from 'babylonjs'
 
+class Zenith {
+    latitude: number = 37 + 46/60 + 39/3600
+    longitude: number =  -122 - 24/60 - 59/3600
+}
 export default class model {
     // earth rotation angle where zero is when
     // the GMT meridian and the March equinox coincide
@@ -10,10 +14,12 @@ export default class model {
     millisPerDay: number = 24 * 60 * 60 * 1000
 
     axialTilt: number = 23.5
-    private earthCameraHeight: number = 10
+    earthCameraHeight: number = 10
 
     siderealTimeDelta: number = 1000000
     solarDateDelta: number = 150 * this.millisPerDay
+
+    zenith: Zenith = new Zenith()
 
     tick() {
         this.siderealTime = new Date(this.siderealTime.getTime() + this.siderealTimeDelta)
@@ -28,8 +34,14 @@ export default class model {
     get axisTiltRadians() {
         return this.axialTilt * Math.PI / 180
     }
-    get earthCameraSpherical(): BABYLON.Spherical {
+    get earthCameraSphericalx(): BABYLON.Spherical {
         // return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2 - this.axialTilt)
         return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2)
+    }
+    get latitudeRadians() {
+        return this.zenith.latitude * Math.PI / 180
+    }
+    get longitudeRadians() {
+        return this.zenith.longitude * Math.PI / 180
     }
 }

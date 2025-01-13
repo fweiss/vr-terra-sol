@@ -16,6 +16,8 @@ export default class App extends AppBase {
     private bodies: Bodies2
     private earthGroup: EarthGroup
 
+    private line: BABYLON.LinesMesh
+
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
@@ -49,6 +51,16 @@ export default class App extends AppBase {
             const absoluteEarthGlobePosition = this.earthGroup.earthGlobe.getAbsolutePosition()
             const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
             const earthCameraOffset = zenithSpherical.toVector3()
+
+            // track zenith
+            // const tilt = Math.PI / 2 - this.model.axisTiltRadians
+            // const zenithSpherical2 = new BABYLON.Spherical(heightOfEarthCamera, tilt, this.model.siderealTimeRadians)
+            // const earthCameraOffset2 = zenithSpherical2.toVector3()
+            // const ww = this.earthGroup.earthGroup.getWorldMatrix();
+            // const zz = BABYLON.Vector3.TransformNormal(earthCameraOffset2, ww);
+            // this.updateLineEndpoint(this.line, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(zz))
+            this.updateLineEndpoint(this.line, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(this.earthGroup.getAbsoluteEarthZenithVector(this.model)))
+
             this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
             this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
             // this.cameras.earthCamera.upVector = worldUpVector
@@ -92,5 +104,19 @@ export default class App extends AppBase {
         this.bodies = new Bodies2(this.scene)
 
         this.earthGroup = new EarthGroup(this.scene, this.model)
+        this.line = BABYLON.MeshBuilder.CreateLines("line", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+    }
+    private updateLineEndpoint(lineMesh: BABYLON.LinesMesh, newStart, newEnd) {
+        // Define the new points
+        const updatedPoints = [newStart, newEnd];
+    
+        // Update the vertices
+        const positions = [];
+        updatedPoints.forEach(p => {
+            positions.push(p.x, p.y, p.z);
+        });
+    
+        // Access the geometry of the LineMesh and update its data
+        lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
     }
 }
