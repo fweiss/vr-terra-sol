@@ -50,20 +50,13 @@ export default class App extends AppBase {
 
             const absoluteEarthGlobePosition = this.earthGroup.earthGlobe.getAbsolutePosition()
             const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
-            const earthCameraOffset = zenithSpherical.toVector3()
+            const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
 
-            // track zenith
-            // const tilt = Math.PI / 2 - this.model.axisTiltRadians
-            // const zenithSpherical2 = new BABYLON.Spherical(heightOfEarthCamera, tilt, this.model.siderealTimeRadians)
-            // const earthCameraOffset2 = zenithSpherical2.toVector3()
-            // const ww = this.earthGroup.earthGroup.getWorldMatrix();
-            // const zz = BABYLON.Vector3.TransformNormal(earthCameraOffset2, ww);
-            // this.updateLineEndpoint(this.line, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(zz))
-            this.updateLineEndpoint(this.line, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(this.earthGroup.getAbsoluteEarthZenithVector(this.model)))
+            this.updateLineEndpoint(this.line, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(earthCameraOffset))
 
             this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
             this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
-            // this.cameras.earthCamera.upVector = worldUpVector
+            this.cameras.earthCamera.upVector = worldUpVector
         })
 
         this.controls = new Controls()

@@ -14,7 +14,7 @@ export default class model {
     millisPerDay: number = 24 * 60 * 60 * 1000
 
     axialTilt: number = 23.5
-    earthCameraHeight: number = 10
+    earthCameraHeight: number = 5
 
     siderealTimeDelta: number = 1000000
     solarDateDelta: number = 150 * this.millisPerDay
@@ -33,10 +33,6 @@ export default class model {
     }
     get axisTiltRadians() {
         return this.axialTilt * Math.PI / 180
-    }
-    get earthCameraSphericalx(): BABYLON.Spherical {
-        // return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2 - this.axialTilt)
-        return new BABYLON.Spherical(this.earthCameraHeight, -this.siderealTimeRadians, Math.PI / 2)
     }
     get latitudeRadians() {
         return this.zenith.latitude * Math.PI / 180

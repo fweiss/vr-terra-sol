@@ -12,9 +12,6 @@ export default class Bodies2 {
     }
 
     private createSun(scene: BABYLON.Scene) {
-        // const solarRadiance = new BABYLON.StandardMaterial("solarRadiance", scene);
-        // solarRadiance.emissiveColor = new BABYLON.Color3(1.0, 1.0, 0.0)
-
         const sunMaterial = new BABYLON.StandardMaterial("sunMaterial", scene)
         const sunTexture = new BABYLON.Texture("assets/2k/sun.jpg", scene)
         sunMaterial.emissiveTexture = sunTexture

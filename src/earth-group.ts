@@ -36,11 +36,9 @@ export default class EarthGroup {
         this.earthGlobe.material = material;
     }
     getAbsoluteEarthZenithVector(model: Model): BABYLON.Vector3 {
-        // const tilt = Math.PI / 2 - model.axisTiltRadians
         const theta = Math.PI / 2 - model.latitudeRadians
         const phi = model.siderealTimeRadians + model.longitudeRadians
         const zenithSpherical = new BABYLON.Spherical(model.earthCameraHeight, theta, phi)
-        // const zenithSpherical = new BABYLON.Spherical(model.earthCameraHeight, tilt, model.longitudeRadians)
         const zenithOffset = zenithSpherical.toVector3()
         const worldMatrix = this.earthGroup.getWorldMatrix();
         return BABYLON.Vector3.TransformNormal(zenithOffset, worldMatrix);
