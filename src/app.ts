@@ -68,6 +68,9 @@ export default class App extends AppBase {
                 this.cameras.setActiveCamera(this.cameras.spaceCamera, this.scene, this.canvas)
             }
         }
+        this.model.onYearDateChange = (date: Date) => {
+            this.controls.updateYearDate(date)
+        }
 
     // this.scene.debugLayer.show()
     

@@ -21,9 +21,12 @@ export default class model {
 
     zenith: Zenith = new Zenith()
 
+    onYearDateChange: (date: Date) => void = () => {}
+
     tick() {
         this.siderealTime = new Date(this.siderealTime.getTime() + this.siderealTimeDelta)
         this.solarDate = new Date(this.solarDate.getTime() + this.solarDateDelta)
+        this.onYearDateChange(this.solarDate)
     }
     get siderealTimeRadians() {
         return this.siderealTime.getTime() * Math.PI / 1000 / 60 / 60 / 24
