@@ -16,7 +16,8 @@ export default class App extends AppBase {
     private bodies: Bodies2
     private earthGroup: EarthGroup
 
-    private line: BABYLON.LinesMesh
+    private zenithBeacon: BABYLON.LinesMesh
+    private horizonBeacon: BABYLON.LinesMesh
 
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
@@ -52,21 +53,48 @@ export default class App extends AppBase {
             const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
             const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
 
-            this.updateLineEndpoint(this.line, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(earthCameraOffset))
+            this.updateLineEndpoint(this.zenithBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(earthCameraOffset))
 
             this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
             this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
             this.cameras.earthCamera.upVector = worldUpVector
+
+            // adust surface camera
+            // target is perpendicular to zenith rotated around z-axis
+            // this.cameras.surfaceCamera.setTarget(absoluteEarthGlobePosition)
+            this.cameras.surfaceCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
+            // this.cameras.surfaceCamera.upVector = worldUpVector
+            this.cameras.surfaceCamera.radius = 1.1
+            // const axis = new BABYLON.Vector3(0, 0, 1)
+            let zaxis = BABYLON.Vector3.TransformNormal(
+                new BABYLON.Vector3(0, 1, 0), // Z-axis in local space
+                this.earthGroup.earthGlobe.getWorldMatrix()
+            );
+            zaxis.normalize(); // Optional, normalize to unit vector
+            
+            const surfaceRotationMatrix = BABYLON.Matrix.RotationAxis(zaxis, Math.PI / 2);
+            const rotatedVector = BABYLON.Vector3.TransformCoordinates(earthCameraOffset, surfaceRotationMatrix);
+            // this.cameras.surfaceCamera.setTarget(rotatedVector)
+
+            const ss = new BABYLON.Spherical(10, Math.PI/1200, 0)
+            const vv = ss.toVector3()
+            // const vv = new BABYLON.Vector3(0, 10, 0)
+            const mm = this.earthGroup.earthGlobe.getWorldMatrix()
+            const be = BABYLON.Vector3.TransformCoordinates(vv, mm);
+            this.updateLineEndpoint(this.horizonBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
         })
 
         this.controls = new Controls()
         this.controls.onCameraSelect = (camera: string) => {
             console.log('camera selected:', camera)
-            if (camera === 'earth') {
-                this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
-            } else if (camera === 'space') {
-                this.cameras.setActiveCamera(this.cameras.spaceCamera, this.scene, this.canvas)
+            const cameras = {
+                earth: this.cameras.earthCamera,
+                space: this.cameras.spaceCamera,
+                surface: this.cameras.surfaceCamera,
             }
+            const selectedCamera = cameras[camera] || this.cameras.earthCamera
+            this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
+            this.showBecaon(camera != 'surface')
         }
         this.model.onYearDateChange = (date: Date) => {
             this.controls.updateYearDate(date)
@@ -98,10 +126,14 @@ export default class App extends AppBase {
     }
     createObjects() {
         this.bodies = new Bodies2(this.scene)
-
         this.earthGroup = new EarthGroup(this.scene, this.model)
-        this.line = BABYLON.MeshBuilder.CreateLines("line", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
-    }
+
+        this.zenithBeacon = BABYLON.MeshBuilder.CreateLines("line", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+        this.horizonBeacon = BABYLON.MeshBuilder.CreateLines("line", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+        var redMaterial = new BABYLON.StandardMaterial("redMaterial", this.scene);
+        redMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // Red color
+        this.horizonBeacon.material = redMaterial;
+            }
     private updateLineEndpoint(lineMesh: BABYLON.LinesMesh, newStart, newEnd) {
         // Define the new points
         const updatedPoints = [newStart, newEnd];
@@ -114,5 +146,9 @@ export default class App extends AppBase {
     
         // Access the geometry of the LineMesh and update its data
         lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
+    }
+    // probably don't need this
+    private showBecaon(onoff: boolean) {
+        this.zenithBeacon.isVisible = onoff
     }
 }

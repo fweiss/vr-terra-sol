@@ -3,6 +3,7 @@ import * as BABYLON from 'babylonjs'
 export default class Cameras {
     public spaceCamera: BABYLON.ArcRotateCamera
     public earthCamera: BABYLON.ArcRotateCamera
+    public surfaceCamera: BABYLON.ArcRotateCamera
 
     constructor(scene: BABYLON.Scene) {
         const upVectorZ = new BABYLON.Vector3(0, 0, 1)
@@ -15,6 +16,9 @@ export default class Cameras {
         // this.spaceCamera.upperAlphaLimit = 0
 
         this.earthCamera = new BABYLON.ArcRotateCamera("earthCamera", Math.PI / 2, 0, zenith, BABYLON.Vector3.Zero(), scene);
+
+        const surfaceCameraHeight = 1.01 // half diameter plus a little
+        this.surfaceCamera = new BABYLON.ArcRotateCamera("surface Camera", Math.PI / 2, 0, surfaceCameraHeight, BABYLON.Vector3.Zero(), scene);
 
     }
 
