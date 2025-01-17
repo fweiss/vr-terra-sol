@@ -76,11 +76,13 @@ export default class App extends AppBase {
             const rotatedVector = BABYLON.Vector3.TransformCoordinates(earthCameraOffset, surfaceRotationMatrix);
             // this.cameras.surfaceCamera.setTarget(rotatedVector)
 
-            const ss = new BABYLON.Spherical(10, Math.PI/1200, 0)
-            const vv = ss.toVector3()
-            // const vv = new BABYLON.Vector3(0, 10, 0)
+            const ss = new BABYLON.Spherical(10, 0, 0)
+            // const vv = ss.toVector3()
+            // for some reason, an extreme y value is needed
+            const vv = new BABYLON.Vector3(0, 1000, 0)
             const mm = this.earthGroup.earthGlobe.getWorldMatrix()
             const be = BABYLON.Vector3.TransformCoordinates(vv, mm);
+
             this.updateLineEndpoint(this.horizonBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
         })
 
@@ -100,7 +102,7 @@ export default class App extends AppBase {
             this.controls.updateYearDate(date)
         }
 
-    // this.scene.debugLayer.show()
+    this.scene.debugLayer.show()
     
     // new BABYLON.AxesViewer(this.scene, 2000)
 
@@ -128,8 +130,8 @@ export default class App extends AppBase {
         this.bodies = new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
 
-        this.zenithBeacon = BABYLON.MeshBuilder.CreateLines("line", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
-        this.horizonBeacon = BABYLON.MeshBuilder.CreateLines("line", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+        this.zenithBeacon = BABYLON.MeshBuilder.CreateLines("zenith beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+        this.horizonBeacon = BABYLON.MeshBuilder.CreateLines("horizon beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
         var redMaterial = new BABYLON.StandardMaterial("redMaterial", this.scene);
         redMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // Red color
         this.horizonBeacon.material = redMaterial;

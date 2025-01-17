@@ -1,6 +1,17 @@
 import * as BABYLON from 'babylonjs'
 import Model from './model2'
 
+/**
+ * EarthGroup is a group of objects that represent the Earth.
+ * The container is a TransformNode that can be moved and rotated,
+ * but is not renderef.
+ * The EarthGlobe is a Sphere Mesh that has a texture of the Earth.
+ * 
+ * The earthGroup is rotated to the correct tilt of the Earth
+ * and is animated to orbit the sun, tracling the solar date.
+ * 
+ * The earthGlobe is rotated on its axis, tracking the sidereal time.
+ */
 export default class EarthGroup {
     private scene: BABYLON.Scene
     earthGroup: BABYLON.TransformNode
@@ -10,10 +21,11 @@ export default class EarthGroup {
 
     constructor(scene: BABYLON.Scene, model: Model) {   
         this.scene = scene
+
         this.earthGroup = new BABYLON.TransformNode('earthGroup', scene)
         this.createEarthGlobe()
         this.earthGlobe.parent = this.earthGroup
-        this.earthGroup.rotation.x = model.axisTiltRadians
+        this.earthGroup.rotation.y = model.axisTiltRadians
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
     }
