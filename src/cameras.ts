@@ -19,12 +19,16 @@ export default class Cameras {
 
         const surfaceCameraHeight = 1.01 // half diameter plus a little
         this.surfaceCamera = new BABYLON.ArcRotateCamera("surface Camera", Math.PI / 2, 0, surfaceCameraHeight, BABYLON.Vector3.Zero(), scene);
-
+        this.surfaceCamera.minZ = 0.01
     }
 
     setActiveCamera(camera: BABYLON.Camera, scene: BABYLON.Scene, canvas: HTMLCanvasElement) {
         scene.activeCamera = camera
         camera.attachControl(canvas, true);
     }
-
+    trackSurfaceamera(earthGroupPositionVector3: BABYLON.Vector3, positionOffset: BABYLON.Vector3, normalVector: BABYLON.Vector3, be: BABYLON.Vector3) {
+        this.surfaceCamera.position = earthGroupPositionVector3.add(positionOffset)
+        this.surfaceCamera.upVector = be.clone().normalize()
+        this.surfaceCamera.target = normalVector
+    }
 }

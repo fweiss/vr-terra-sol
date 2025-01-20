@@ -17,6 +17,7 @@ export default class App extends AppBase {
     private earthGroup: EarthGroup
 
     private zenithBeacon: BABYLON.LinesMesh
+    private axisBeacon: BABYLON.LinesMesh
     private horizonBeacon: BABYLON.LinesMesh
 
     constructor() {
@@ -36,10 +37,10 @@ export default class App extends AppBase {
             // earth meander a tiny bit when phi and theta are switched
             // phi positive = ccw
             let spherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI/2, phi / millisPerTick)
-            const positionVector = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
+            const earthGroupPositionVector3 = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
 
             // adust earth, note that earth rotates ccw
-            this.earthGroup.earthGroup.position = positionVector
+            this.earthGroup.earthGroup.position = earthGroupPositionVector3
             this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
 
             // adust earth camera
@@ -59,31 +60,23 @@ export default class App extends AppBase {
             this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
             this.cameras.earthCamera.upVector = worldUpVector
 
-            // adust surface camera
-            // target is perpendicular to zenith rotated around z-axis
-            // this.cameras.surfaceCamera.setTarget(absoluteEarthGlobePosition)
-            this.cameras.surfaceCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
-            // this.cameras.surfaceCamera.upVector = worldUpVector
-            this.cameras.surfaceCamera.radius = 1.1
-            // const axis = new BABYLON.Vector3(0, 0, 1)
-            let zaxis = BABYLON.Vector3.TransformNormal(
-                new BABYLON.Vector3(0, 1, 0), // Z-axis in local space
-                this.earthGroup.earthGlobe.getWorldMatrix()
-            );
-            zaxis.normalize(); // Optional, normalize to unit vector
-            
-            const surfaceRotationMatrix = BABYLON.Matrix.RotationAxis(zaxis, Math.PI / 2);
-            const rotatedVector = BABYLON.Vector3.TransformCoordinates(earthCameraOffset, surfaceRotationMatrix);
-            // this.cameras.surfaceCamera.setTarget(rotatedVector)
-
             const ss = new BABYLON.Spherical(10, 0, 0)
-            // const vv = ss.toVector3()
             // for some reason, an extreme y value is needed
             const vv = new BABYLON.Vector3(0, 1000, 0)
             const mm = this.earthGroup.earthGlobe.getWorldMatrix()
             const be = BABYLON.Vector3.TransformCoordinates(vv, mm);
 
-            this.updateLineEndpoint(this.horizonBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
+            const surfaceCameraHeight = 1.01 // half diameter plus a little
+            const positionOffset = earthCameraOffset.normalize().scale(surfaceCameraHeight)
+            let normalVector = BABYLON.Vector3.Cross(earthCameraOffset, be);
+            const surfaceCameraPosition = earthGroupPositionVector3.add(positionOffset)
+
+            const pk = this.earthGroup.earthGlobe.position
+            this.cameras.trackSurfaceamera(earthGroupPositionVector3, positionOffset, normalVector, earthCameraOffset)
+
+
+            this.updateLineEndpoint(this.axisBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
+            this.updateLineEndpoint(this.horizonBeacon, surfaceCameraPosition, normalVector)
         })
 
         this.controls = new Controls()
@@ -102,7 +95,7 @@ export default class App extends AppBase {
             this.controls.updateYearDate(date)
         }
 
-    this.scene.debugLayer.show()
+    // this.scene.debugLayer.show()
     
     // new BABYLON.AxesViewer(this.scene, 2000)
 
@@ -131,22 +124,19 @@ export default class App extends AppBase {
         this.earthGroup = new EarthGroup(this.scene, this.model)
 
         this.zenithBeacon = BABYLON.MeshBuilder.CreateLines("zenith beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+        this.axisBeacon = BABYLON.MeshBuilder.CreateLines("horizon beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
         this.horizonBeacon = BABYLON.MeshBuilder.CreateLines("horizon beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
         var redMaterial = new BABYLON.StandardMaterial("redMaterial", this.scene);
         redMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // Red color
-        this.horizonBeacon.material = redMaterial;
-            }
+        this.axisBeacon.material = redMaterial;
+    }
+    // display a line from start to end
     private updateLineEndpoint(lineMesh: BABYLON.LinesMesh, newStart, newEnd) {
-        // Define the new points
         const updatedPoints = [newStart, newEnd];
-    
-        // Update the vertices
         const positions = [];
         updatedPoints.forEach(p => {
             positions.push(p.x, p.y, p.z);
         });
-    
-        // Access the geometry of the LineMesh and update its data
         lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
     }
     // probably don't need this
