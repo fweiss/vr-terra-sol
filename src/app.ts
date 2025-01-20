@@ -123,12 +123,16 @@ export default class App extends AppBase {
         this.bodies = new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
 
-        this.zenithBeacon = BABYLON.MeshBuilder.CreateLines("zenith beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
-        this.axisBeacon = BABYLON.MeshBuilder.CreateLines("horizon beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
-        this.horizonBeacon = BABYLON.MeshBuilder.CreateLines("horizon beacon", { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
-        var redMaterial = new BABYLON.StandardMaterial("redMaterial", this.scene);
-        redMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // Red color
-        this.axisBeacon.material = redMaterial;
+        this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
+        this.axisBeacon = this.createBeacon("axis beacon", BABYLON.Color3.Red())
+        this.horizonBeacon = this.createBeacon("horizon beacon", BABYLON.Color3.Green())
+    }
+    createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
+        const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
+        const material = new BABYLON.StandardMaterial("beacon material", this.scene)
+        material.emissiveColor = color
+        mesh.material = material;
+        return mesh
     }
     // display a line from start to end
     private updateLineEndpoint(lineMesh: BABYLON.LinesMesh, newStart, newEnd) {
