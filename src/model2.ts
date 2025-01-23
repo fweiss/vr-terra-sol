@@ -16,6 +16,8 @@ export default class model {
     axialTilt: number = 23.5
     earthCameraHeight: number = 5
 
+    universeRadius: number = 1000000
+
     siderealTimeDelta: number = 1000000
     solarDateDelta: number = 150 * this.millisPerDay
 

@@ -24,6 +24,8 @@ export default class App extends AppBase {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
 
+        this.showBecaon(false)
+
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
 
@@ -105,7 +107,7 @@ export default class App extends AppBase {
     }
     // override base class skeletons
     createCameras() {
-        this.cameras = new Cameras(this.scene)
+        this.cameras = new Cameras(this.scene, this.model)
         this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
     }
 
@@ -122,10 +124,24 @@ export default class App extends AppBase {
     createObjects() {
         this.bodies = new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
+        this.createStarfield()
 
         this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
         this.axisBeacon = this.createBeacon("axis beacon", BABYLON.Color3.Red())
         this.horizonBeacon = this.createBeacon("horizon beacon", BABYLON.Color3.Green())
+    }
+    createStarfield() {
+        const diameter = 100 //this.model.universeRadius
+        let starfield = BABYLON.MeshBuilder.CreateSphere("starfield", { diameter: diameter, sideOrientation: BABYLON.Mesh.BACKSIDE }, this.scene)
+        starfield.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI)
+        // starfield.position = new BABYLON.Vector3(5, 5, 5)
+        let material = new BABYLON.StandardMaterial('stars', this.scene)
+        material.emissiveTexture = new BABYLON.Texture('assets/starfield.jpg', this.scene)
+        material.diffuseColor = new BABYLON.Color3(0, 0, 0)
+        material.specularColor = new BABYLON.Color3(0, 0, 0)
+        starfield.material = material
+        // universe.addChild(starfield)
+        return starfield
     }
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
         const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
@@ -142,9 +158,12 @@ export default class App extends AppBase {
             positions.push(p.x, p.y, p.z);
         });
         lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
+        this.showBecaon(false)
     }
     // probably don't need this
     private showBecaon(onoff: boolean) {
         this.zenithBeacon.isVisible = onoff
+        this.axisBeacon.isVisible = onoff
+        this.horizonBeacon.isVisible = onoff
     }
 }
