@@ -25,7 +25,7 @@ export default class EarthGroup {
         this.earthGroup = new BABYLON.TransformNode('earthGroup', scene)
         this.createEarthGlobe()
         this.earthGlobe.parent = this.earthGroup
-        this.earthGroup.rotation.y = model.axisTiltRadians
+        this.earthGroup.rotation.x = model.axisTiltRadians
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
     }

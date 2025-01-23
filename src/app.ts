@@ -20,11 +20,13 @@ export default class App extends AppBase {
     private axisBeacon: BABYLON.LinesMesh
     private horizonBeacon: BABYLON.LinesMesh
 
+    beaconsOn: boolean = true
+
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
 
-        this.showBecaon(false)
+        this.showBecaon(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
@@ -49,7 +51,6 @@ export default class App extends AppBase {
             const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
             const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
             const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
-            // this.cameras.earthCamera.upVector = worldUpVector
 
 
             const absoluteEarthGlobePosition = this.earthGroup.earthGlobe.getAbsolutePosition()
@@ -115,7 +116,7 @@ export default class App extends AppBase {
         const sunLight = new BABYLON.PointLight("sunLight", new BABYLON.Vector3(0, 0, 0), this.scene);
         sunLight.intensity = 1.0
 
-        const intensity = 0.4
+        const intensity = 0.2
         const northHemispherLight = new BABYLON.HemisphericLight("north hemisphere light", new BABYLON.Vector3(0, 1, 0), this.scene);
         northHemispherLight.intensity = intensity
         const southHemispherLight = new BABYLON.HemisphericLight("south hemisphere light", new BABYLON.Vector3(0, -1, 0), this.scene);
@@ -140,7 +141,6 @@ export default class App extends AppBase {
         material.diffuseColor = new BABYLON.Color3(0, 0, 0)
         material.specularColor = new BABYLON.Color3(0, 0, 0)
         starfield.material = material
-        // universe.addChild(starfield)
         return starfield
     }
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
@@ -158,7 +158,7 @@ export default class App extends AppBase {
             positions.push(p.x, p.y, p.z);
         });
         lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-        this.showBecaon(false)
+        this.showBecaon(this.beaconsOn)
     }
     // probably don't need this
     private showBecaon(onoff: boolean) {
