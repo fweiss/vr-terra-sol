@@ -14,3 +14,12 @@
 #controls .latlon input#alt {
     width: 3.5em;
 }
+fieldset#cameras,
+fieldSet#datetime {
+    display: inline-block;
+    vertical-align: top;
+}
+fieldset#datetime ol {
+    height: 6em;
+    overflow: scroll;
+}

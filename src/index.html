@@ -15,7 +15,7 @@
     <body>
         <canvas id="renderCanvas" touch-action="none"></canvas>
         <div id="controls">
-            <fieldset>
+            <fieldset id="cameras">
                 <legend>Selected camera</legend>          
                 <div>
                   <input type="radio" id="surface" name="camera" value="surface">
@@ -29,6 +29,23 @@
                   <input type="radio" id="space" name="camera" value="space">
                   <label for="space">Space</label>
                 </div>
+            </fieldset>
+            <fieldset id="datetime">
+                <legend>Date/Time</legend>
+                <ol>
+                    <li>January</li>
+                    <li>February</li>
+                    <li>March</li>
+                    <li>April</li>
+                    <li>May</li>
+                    <li>June</li>
+                    <li>July</li>
+                    <li>August</li>
+                    <li>September</li>
+                    <li>October</li>
+                    <li>November</li>
+                    <li>December</li>
+                </ol>
             </fieldset>
             <div>
                 <input type="text" id="year_date_value" value="0">

@@ -12,6 +12,7 @@ export default class model {
     solarDate: Date = new Date()
 
     millisPerDay: number = 24 * 60 * 60 * 1000
+    millisPeryear = 365 * this.millisPerDay
 
     axialTilt: number = 23.5
     earthCameraHeight: number = 5
@@ -19,7 +20,7 @@ export default class model {
     universeRadius: number = 1000000
 
     siderealTimeDelta: number = 1000000
-    solarDateDelta: number = 150 * this.millisPerDay
+    solarDateDelta: number = 1 * this.millisPerDay // 1 day per frame at 60 fps
 
     zenith: Zenith = new Zenith()
 
@@ -31,10 +32,12 @@ export default class model {
         this.onYearDateChange(this.solarDate)
     }
     get siderealTimeRadians() {
-        return this.siderealTime.getTime() * Math.PI / 1000 / 60 / 60 / 24
+        return this.siderealTime.getTime() * Math.PI / this.millisPerDay
     }
+    // getTime in ms, there are 365 * miilisPerDay in a year, which is 2 * PI radians, 
     get solarDateRadians() {
-        return this.solarDate.getTime() / this.millisPerDay / 180 * Math.PI
+        const fractionOfYear = (this.solarDate.getTime() % this.millisPeryear) / this.millisPeryear
+        return fractionOfYear * 2 * Math.PI
     }
     get axisTiltRadians() {
         return this.axialTilt * Math.PI / 180

@@ -1,6 +1,7 @@
 export default class Controls {
     onCameraSelect: (camera: string) => void = () => {};
     yearDateValue: HTMLInputElement;
+    yearSight: HTMLInputElement;
 
     constructor() {
         const self = this
@@ -20,5 +21,9 @@ export default class Controls {
             year: 'numeric',
           })
         this.yearDateValue.value = formattedDate
+
+        const month = date.getFullYear()
+        // this.yearDateValue.value = String(month)
+
     }
 }

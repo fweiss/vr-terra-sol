@@ -31,16 +31,16 @@ export default class App extends AppBase {
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
 
-            const millisPerTick = 1000
             const heightOfEarthCamera = 5
 
             // earth orbit in xy plane
             const rotationMatrix = BABYLON.Matrix.RotationY(Math.PI / 2);
             let phi = this.model.solarDateRadians
+            console.log('phi', phi)
             // NB theta cannot be zero or 180
-            // earth meander a tiny bit when phi and theta are switched
+            // earth meanders a tiny bit when phi and theta are switched
             // phi positive = ccw
-            let spherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI/2, phi / millisPerTick)
+            let spherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI/2, phi)
             const earthGroupPositionVector3 = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
 
             // adust earth, note that earth rotates ccw
