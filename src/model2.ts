@@ -1,23 +1,33 @@
-import * as BABYLON from 'babylonjs'
-
+/**
+ * This is a model of the universe. It is a simple model that is used to calculate the position of the sun in the sky.
+ * It is intentionally not to scale to emphasize the relative motions of the earth and the sun.
+ * It is agnostic WRT the rendering engine, it is up to the renderer to interpret the model and render it.
+ * 
+ * There are two time variables, siderealTime and solarDate.
+ * - siderealTime is the time in the sidereal day, where zero is when the GMT meridian and the March equinox coincide.
+ * - solarDate tracks to earth's position in its orbit around the sun, where zero is the March equinox.
+ * 
+ * There are helper functions to convert these times to radians.
+ * 
+ * Animation is done by calling the tick method, which advances the model by a small amount.
+ * 
+ * There is a callback onYearDateChange that is called when the solarDate changes.
+ */
 class Zenith {
     latitude: number = 37 + 46/60 + 39/3600
     longitude: number =  -122 - 24/60 - 59/3600
 }
 export default class model {
-    // earth rotation angle where zero is when
-    // the GMT meridian and the March equinox coincide
     siderealTime: Date = new Date()
-    // solar time where zero is when the sun is at the meridian
     solarDate: Date = new Date()
 
     millisPerDay: number = 24 * 60 * 60 * 1000
-    millisPeryear = 365 * this.millisPerDay
+    millisPerYear = 365 * this.millisPerDay
 
     axialTilt: number = 23.5
     earthCameraHeight: number = 5
 
-    universeRadius: number = 1000000
+    universeRadius: number = 1000000 // still used?
 
     siderealTimeDelta: number = 1000000
     solarDateDelta: number = 1 * this.millisPerDay // 1 day per frame at 60 fps
@@ -36,7 +46,7 @@ export default class model {
     }
     // getTime in ms, there are 365 * miilisPerDay in a year, which is 2 * PI radians, 
     get solarDateRadians() {
-        const fractionOfYear = (this.solarDate.getTime() % this.millisPeryear) / this.millisPeryear
+        const fractionOfYear = (this.solarDate.getTime() % this.millisPerYear) / this.millisPerYear
         return fractionOfYear * 2 * Math.PI
     }
     get axisTiltRadians() {
