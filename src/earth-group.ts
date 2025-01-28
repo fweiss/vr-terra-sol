@@ -55,5 +55,14 @@ export default class EarthGroup {
         const worldMatrix = this.earthGroup.getWorldMatrix();
         return BABYLON.Vector3.TransformNormal(zenithVector, worldMatrix);
     }
+    getPosition(model: Model): BABYLON.Vector3 {
+        const heightOfEarthCamera = 5
+        // earth orbit in xz plane
+        const rotationMatrix = BABYLON.Matrix.RotationY(Math.PI / 2);
+        let phi = model.solarDateRadians
+        // phi positive = ccw
+        let spherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI/2, phi)
+        return BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
+    }
 
 }

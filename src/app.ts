@@ -31,55 +31,9 @@ export default class App extends AppBase {
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
 
-            const heightOfEarthCamera = 5
-
-            // earth orbit in xy plane
-            const rotationMatrix = BABYLON.Matrix.RotationY(Math.PI / 2);
-            let phi = this.model.solarDateRadians
-            console.log('phi', phi)
-            // NB theta cannot be zero or 180
-            // earth meanders a tiny bit when phi and theta are switched
-            // phi positive = ccw
-            let spherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI/2, phi)
-            const earthGroupPositionVector3 = BABYLON.Vector3.TransformCoordinates(spherical.toVector3(), rotationMatrix)
-
-            // adust earth, note that earth rotates ccw
-            this.earthGroup.earthGroup.position = earthGroupPositionVector3
-            this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
-
-            // adust earth camera
-            const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
-            const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
-            const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
-
-
-            const absoluteEarthGlobePosition = earthGroupPositionVector3 //this.earthGroup.earthGlobe.getAbsolutePosition()
-            const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
-            const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
-
-            this.updateLineEndpoint(this.zenithBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(earthCameraOffset))
-
-            this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
-            this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
-            this.cameras.earthCamera.upVector = worldUpVector
-
-            const ss = new BABYLON.Spherical(10, 0, 0)
-            // for some reason, an extreme y value is needed
-            const vv = new BABYLON.Vector3(0, 1000, 0)
-            const mm = this.earthGroup.earthGlobe.getWorldMatrix()
-            const be = BABYLON.Vector3.TransformCoordinates(vv, mm);
-
-            const surfaceCameraHeight = 1.01 // half diameter plus a little
-            const positionOffset = earthCameraOffset.normalize().scale(surfaceCameraHeight)
-            let normalVector = BABYLON.Vector3.Cross(earthCameraOffset, be);
-            const surfaceCameraPosition = earthGroupPositionVector3.add(positionOffset)
-
-            const pk = this.earthGroup.earthGlobe.position
-            this.cameras.trackSurfaceamera(earthGroupPositionVector3, positionOffset, normalVector, earthCameraOffset)
-
-
-            this.updateLineEndpoint(this.axisBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
-            this.updateLineEndpoint(this.horizonBeacon, surfaceCameraPosition, normalVector)
+            const earthGroupPositionVector3 = this.earthGroup.getPosition(this.model)
+            this.updateObjectPositions(earthGroupPositionVector3)
+            this.updateCameras(earthGroupPositionVector3)
         })
 
         this.controls = new Controls()
@@ -165,5 +119,47 @@ export default class App extends AppBase {
         this.zenithBeacon.isVisible = onoff
         this.axisBeacon.isVisible = onoff
         this.horizonBeacon.isVisible = onoff
+    }
+    updateObjectPositions(earthGroupPositionVector4: BABYLON.Vector3) {
+        // adust earth, note that earth rotates ccw
+        this.earthGroup.earthGroup.position = earthGroupPositionVector4
+        this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
+    }
+    updateCameras(earthGroupPositionVector4: BABYLON.Vector3) {
+        const heightOfEarthCamera = 5
+
+        // adust earth camera
+        const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
+        const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
+        const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
+
+
+        const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
+        const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
+        const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
+
+        this.updateLineEndpoint(this.zenithBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(earthCameraOffset))
+
+        this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
+        this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
+        this.cameras.earthCamera.upVector = worldUpVector
+
+        const ss = new BABYLON.Spherical(10, 0, 0)
+        // for some reason, an extreme y value is needed
+        const vv = new BABYLON.Vector3(0, 1000, 0)
+        const mm = this.earthGroup.earthGlobe.getWorldMatrix()
+        const be = BABYLON.Vector3.TransformCoordinates(vv, mm);
+
+        const surfaceCameraHeight = 1.01 // half diameter plus a little
+        const positionOffset = earthCameraOffset.normalize().scale(surfaceCameraHeight)
+        let normalVector = BABYLON.Vector3.Cross(earthCameraOffset, be);
+        const surfaceCameraPosition = earthGroupPositionVector4.add(positionOffset)
+
+        const pk = this.earthGroup.earthGlobe.position
+        this.cameras.trackSurfaceamera(earthGroupPositionVector4, positionOffset, normalVector, earthCameraOffset)
+
+
+        this.updateLineEndpoint(this.axisBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
+        this.updateLineEndpoint(this.horizonBeacon, surfaceCameraPosition, normalVector)
     }
 }
