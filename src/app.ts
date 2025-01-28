@@ -53,7 +53,7 @@ export default class App extends AppBase {
             const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
 
 
-            const absoluteEarthGlobePosition = this.earthGroup.earthGlobe.getAbsolutePosition()
+            const absoluteEarthGlobePosition = earthGroupPositionVector3 //this.earthGroup.earthGlobe.getAbsolutePosition()
             const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
             const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
 
