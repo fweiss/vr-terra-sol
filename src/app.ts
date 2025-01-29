@@ -126,7 +126,7 @@ export default class App extends AppBase {
         this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
     }
     updateCameras(earthGroupPositionVector4: BABYLON.Vector3) {
-        const heightOfEarthCamera = this.model.earthCameraHeight //5
+        // const heightOfEarthCamera = this.model.earthCameraHeight
 
         // adust earth camera
         const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
@@ -134,14 +134,13 @@ export default class App extends AppBase {
         const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
 
 
-        const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
-        const zenithSpherical = new BABYLON.Spherical(heightOfEarthCamera, Math.PI / 2, this.model.siderealTimeRadians)
+        // const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
         const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
 
-        this.updateLineEndpoint(this.zenithBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(earthCameraOffset))
+        this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(earthCameraOffset))
 
-        this.cameras.earthCamera.setTarget(absoluteEarthGlobePosition)
-        this.cameras.earthCamera.position = absoluteEarthGlobePosition.add(earthCameraOffset)
+        this.cameras.earthCamera.setTarget(earthGroupPositionVector4)
+        this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
         this.cameras.earthCamera.upVector = worldUpVector
 
         const ss = new BABYLON.Spherical(10, 0, 0)
@@ -159,7 +158,7 @@ export default class App extends AppBase {
         this.cameras.trackSurfaceamera(earthGroupPositionVector4, positionOffset, normalVector, earthCameraOffset)
 
 
-        this.updateLineEndpoint(this.axisBeacon, absoluteEarthGlobePosition, absoluteEarthGlobePosition.add(be))
-        this.updateLineEndpoint(this.horizonBeacon, surfaceCameraPosition, normalVector)
+        this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
+        this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4, normalVector)
     }
 }
