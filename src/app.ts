@@ -126,7 +126,7 @@ export default class App extends AppBase {
         this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
     }
     updateCameras(earthGroupPositionVector4: BABYLON.Vector3) {
-        const heightOfEarthCamera = 5
+        const heightOfEarthCamera = this.model.earthCameraHeight //5
 
         // adust earth camera
         const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space

@@ -26,6 +26,7 @@ export default class model {
 
     axialTilt: number = 23.5
     earthCameraHeight: number = 5
+    earthOrbitRadius: number = 5
 
     universeRadius: number = 1000000 // still used?
 

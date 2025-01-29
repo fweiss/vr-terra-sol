@@ -56,7 +56,7 @@ export default class EarthGroup {
         return BABYLON.Vector3.TransformNormal(zenithVector, worldMatrix);
     }
     getPosition(model: Model): BABYLON.Vector3 {
-        const heightOfEarthCamera = 5
+        const heightOfEarthCamera = model.earthOrbitRadius
         // earth orbit in xz plane
         const rotationMatrix = BABYLON.Matrix.RotationY(Math.PI / 2);
         let phi = model.solarDateRadians
