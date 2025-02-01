@@ -1,5 +1,4 @@
 import * as BABYLON from 'babylonjs'
-import { float } from 'babylonjs/types'
 
 import AppBase from './app-base'
 import Cameras from './cameras'
@@ -7,13 +6,14 @@ import Controls from './controls'
 import Model from './model2'
 import Bodies2 from './bodies2'
 import EarthGroup from './earth-group'
+import ViewModel from './view-model'
 
 export default class App extends AppBase {
     private cameras: Cameras
     private controls: Controls
+    private viewModel: ViewModel
 
     private model: Model
-    private bodies: Bodies2
     private earthGroup: EarthGroup
 
     private zenithBeacon: BABYLON.LinesMesh
@@ -26,11 +26,17 @@ export default class App extends AppBase {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
 
+        this.viewModel = new ViewModel(this.model, this.earthGroup)
+
         this.showBecaon(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
             this.model.tick()
+            // synchronize the view model with the model
+            this.viewModel.update()
 
+            this.updateObjects()
+            
             const earthGroupPositionVector3 = this.earthGroup.getPosition(this.model)
             this.updateObjectPositions(earthGroupPositionVector3)
             this.updateCameras(earthGroupPositionVector3)
@@ -77,7 +83,7 @@ export default class App extends AppBase {
         southHemispherLight.intensity = intensity
     }
     createObjects() {
-        this.bodies = new Bodies2(this.scene)
+        new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
         this.createStarfield()
 
@@ -121,9 +127,8 @@ export default class App extends AppBase {
         this.horizonBeacon.isVisible = onoff
     }
     updateObjectPositions(earthGroupPositionVector4: BABYLON.Vector3) {
-        // adust earth, note that earth rotates ccw
-        this.earthGroup.earthGroup.position = earthGroupPositionVector4
-        this.earthGroup.earthGlobe.rotation.y = -this.model.siderealTimeRadians
+        this.earthGroup.earthGroup.position = this.viewModel.earthGroupPosition
+        this.earthGroup.earthGlobe.rotation.y = this.viewModel.earthGlobeRotation
     }
     updateCameras(earthGroupPositionVector4: BABYLON.Vector3) {
         // const heightOfEarthCamera = this.model.earthCameraHeight
@@ -139,8 +144,10 @@ export default class App extends AppBase {
 
         this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(earthCameraOffset))
 
-        this.cameras.earthCamera.setTarget(earthGroupPositionVector4)
+        // this.cameras.earthCamera.setTarget(earthGroupPositionVector4)
+        this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
+        // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.upVector = worldUpVector
 
         const ss = new BABYLON.Spherical(10, 0, 0)
@@ -160,5 +167,12 @@ export default class App extends AppBase {
 
         this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
         this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4, normalVector)
+    }
+    updateObjects() {
+        const earthGroupPosition : BABYLON.Vector3 = this.earthGroup.getPosition(this.model)
+        // this.model.siderealTimeRadians
+        const zenithVector = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
+        const axisVector = new BABYLON.Vector3(0, 0, 1)
+        const horizonVector = BABYLON.Vector3.Cross(zenithVector, axisVector)
     }
 }
