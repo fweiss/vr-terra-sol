@@ -37,9 +37,8 @@ export default class App extends AppBase {
 
             this.updateObjects()
             
-            const earthGroupPositionVector3 = this.earthGroup.getPosition(this.model)
-            this.updateObjectPositions(earthGroupPositionVector3)
-            this.updateCameras(earthGroupPositionVector3)
+            this.updateObjectPositions()
+            this.updateCameras()
         })
 
         this.controls = new Controls()
@@ -126,11 +125,12 @@ export default class App extends AppBase {
         this.axisBeacon.isVisible = onoff
         this.horizonBeacon.isVisible = onoff
     }
-    updateObjectPositions(earthGroupPositionVector4: BABYLON.Vector3) {
+    updateObjectPositions() {
         this.earthGroup.earthGroup.position = this.viewModel.earthGroupPosition
         this.earthGroup.earthGlobe.rotation.y = this.viewModel.earthGlobeRotation
     }
-    updateCameras(earthGroupPositionVector4: BABYLON.Vector3) {
+    updateCameras() {
+        const earthGroupPositionVector4 = this.viewModel.earthGroupPosition
         // const heightOfEarthCamera = this.model.earthCameraHeight
 
         // adust earth camera
