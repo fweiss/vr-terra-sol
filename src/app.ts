@@ -39,7 +39,7 @@ export default class App extends AppBase {
             
             this.updateObjectPositions()
             this.updateCameras()
-            // this.updateEarthCamera
+            this.updateEarthCamera()
         })
 
         this.controls = new Controls()
@@ -149,7 +149,7 @@ if (true) {
         // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
         // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
-        this.cameras.earthCamera.upVector = worldUpVector
+        // this.cameras.earthCamera.upVector = worldUpVector
 }
         const ss = new BABYLON.Spherical(10, 0, 0)
         // for some reason, an extreme y value is needed
@@ -177,14 +177,14 @@ if (true) {
         const horizonVector = BABYLON.Vector3.Cross(zenithVector, axisVector)
     }
     updateEarthCamera() {
-        const upVector = new BABYLON.Vector3(1, 0, 0); // Default up vector in local space
+        const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
         const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
         const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
 
         const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
 
-        this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
-        this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(earthCameraOffset)
+        // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
+        // this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(earthCameraOffset)
         // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.upVector = worldUpVector
     }
