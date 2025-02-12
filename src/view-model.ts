@@ -26,7 +26,7 @@ export default class ViewModel {
         this.earthGroup = earthGroup
 
         this.eclipticSpherical = new BABYLON.Spherical(this.model.earthOrbitRadius, Math.PI/2, 0)
-        this.equatorSpherical = new BABYLON.Spherical(1, 0, 0)
+        this.equatorSpherical = new BABYLON.Spherical(1, Math.PI / 2 - model.latitudeRadians, 0)
         this.horizonSpherical = new BABYLON.Spherical(1, 0, 0)
     }
     update() {
@@ -50,9 +50,8 @@ export default class ViewModel {
         return this.earthGroupPosition.add(BABYLON.Vector3.TransformNormal(zenithVector, worldMatrix))
     }
     get zenith(): BABYLON.Vector3 {
-        const earthPosition = this.eclipticSpherical.toVector3()
-        const equatorVector = this.equatorSpherical.toVector3()
-        return earthPosition.add(equatorVector)
+        let tiltRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
+        return this.equatorSpherical.toVector3().applyRotationQuaternion(tiltRotation)        
     }
     get northVector(): BABYLON.Vector3 {
         const earthPosition = this.eclipticSpherical.toVector3()

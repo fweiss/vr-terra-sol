@@ -142,9 +142,11 @@ export default class App extends AppBase {
 
         // const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
         const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
+        
+        const scaledZenith = this.viewModel.zenith.normalize().scale(10)
+        this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(scaledZenith))
 
-        this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(earthCameraOffset))
-if (true) {
+        if (true) {
         this.cameras.earthCamera.setTarget(earthGroupPositionVector4)
         // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
