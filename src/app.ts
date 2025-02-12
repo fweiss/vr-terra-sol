@@ -166,7 +166,9 @@ if (true) {
         this.cameras.trackSurfaceamera(earthGroupPositionVector4, positionOffset, normalVector, earthCameraOffset)
 
 
-        this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
+        // this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
+        const z = this.viewModel.earthAxis.normalize().scale(10)
+        this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(z))
         this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4, normalVector)
     }
     updateObjects() {
@@ -187,5 +189,8 @@ if (true) {
         // this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(earthCameraOffset)
         // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.upVector = worldUpVector
+        // this.cameras.earthCamera.upVector = this.viewModel.northVector
+
+
     }
 }
