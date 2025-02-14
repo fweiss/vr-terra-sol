@@ -35,7 +35,7 @@ export default class ViewModel {
     }
     get earthGroupPosition(): BABYLON.Vector3 {
         const rotationMatrix = BABYLON.Matrix.RotationY(Math.PI / 2);
-        this.eclipticSpherical.phi = this.model.solarDateRadians
+        // this.eclipticSpherical.phi = this.model.solarDateRadians
         return BABYLON.Vector3.TransformCoordinates(this.eclipticSpherical.toVector3(), rotationMatrix)
     }
     get earthGlobeRotation(): number {

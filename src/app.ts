@@ -39,7 +39,9 @@ export default class App extends AppBase {
             
             this.updateObjectPositions()
             this.updateCameras()
+            this.updateSurfaceCamera()
             this.updateEarthCamera()
+            this.updateSpaceCamera()
         })
 
         this.controls = new Controls()
@@ -152,7 +154,7 @@ export default class App extends AppBase {
         const surfaceCameraPosition = earthGroupPositionVector4.add(positionOffset)
 
         const pk = this.earthGroup.earthGlobe.position
-        this.cameras.trackSurfaceamera(earthGroupPositionVector4, positionOffset, normalVector, earthCameraOffset)
+        // this.cameras.trackSurfaceamera(earthGroupPositionVector4, positionOffset, normalVector, earthCameraOffset)
 
 
         // this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
@@ -170,10 +172,19 @@ export default class App extends AppBase {
         const axisVector = new BABYLON.Vector3(0, 0, 1)
         const horizonVector = BABYLON.Vector3.Cross(zenithVector, axisVector)
     }
+    updateSurfaceCamera() {
+        const offset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
+        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(offset)
+        this.cameras.surfaceCamera.upVector = this.viewModel.zenith
+        this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
+    }
     updateEarthCamera() {
         const scaledZenith = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(scaledZenith)
         this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         this.cameras.earthCamera.upVector = this.viewModel.northVector
+    }
+    updateSpaceCamera() {
+        // space camera is fixed
     }
 }
