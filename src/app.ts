@@ -134,25 +134,12 @@ export default class App extends AppBase {
         const earthGroupPositionVector4 = this.viewModel.earthGroupPosition
         // const heightOfEarthCamera = this.model.earthCameraHeight
 
-        // adust earth camera
-        const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
-        const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
-        const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
-
-
         // const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
         const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
 
         const scaledZenith = this.viewModel.zenith.normalize().scale(10)
         this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(scaledZenith))
 
-        if (true) {
-        this.cameras.earthCamera.setTarget(earthGroupPositionVector4)
-        // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
-//        this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
-        // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
-        // this.cameras.earthCamera.upVector = worldUpVector
-}
         const ss = new BABYLON.Spherical(10, 0, 0)
         // for some reason, an extreme y value is needed
         const vv = new BABYLON.Vector3(0, 1000, 0)
@@ -184,21 +171,9 @@ export default class App extends AppBase {
         const horizonVector = BABYLON.Vector3.Cross(zenithVector, axisVector)
     }
     updateEarthCamera() {
-        const upVector = new BABYLON.Vector3(0, 1, 0); // Default up vector in local space
-        const worldMatrix = this.earthGroup.earthGlobe.getWorldMatrix();
-        const worldUpVector = BABYLON.Vector3.TransformNormal(upVector, worldMatrix);
-
-        const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
-
-        // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
-        // this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(earthCameraOffset)
-        // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
-        const zz = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
-        this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(zz)
-
-        // this.cameras.earthCamera.upVector = worldUpVector
+        const scaledZenith = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
+        this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(scaledZenith)
+        this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         this.cameras.earthCamera.upVector = this.viewModel.northVector
-
-
     }
 }
