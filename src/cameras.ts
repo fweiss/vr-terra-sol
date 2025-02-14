@@ -28,9 +28,4 @@ export default class Cameras {
         scene.activeCamera = camera
         camera.attachControl(canvas, true);
     }
-    trackSurfaceamera(earthGroupPositionVector3: BABYLON.Vector3, positionOffset: BABYLON.Vector3, normalVector: BABYLON.Vector3, be: BABYLON.Vector3) {
-        this.surfaceCamera.position = earthGroupPositionVector3.add(positionOffset)
-        this.surfaceCamera.upVector = be.clone().normalize()
-        this.surfaceCamera.target = normalVector
-    }
 }

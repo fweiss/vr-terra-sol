@@ -1,6 +1,5 @@
 import * as BABYLON from 'babylonjs'
 import Model from './model2'
-import EarthGroup from './earth-group'
 
 // given the sidereal time and solar date, update the positions of the objects
 // need to calculate:
@@ -21,9 +20,8 @@ export default class ViewModel {
     private equatorSpherical: BABYLON.Spherical
     private horizonSpherical: BABYLON.Spherical
 
-    constructor(model: Model, private earthGroup: EarthGroup) {
+    constructor(model: Model) {
         this.model = model
-        this.earthGroup = earthGroup
 
         this.eclipticSpherical = new BABYLON.Spherical(this.model.earthOrbitRadius, Math.PI/2, 0)
         this.equatorSpherical = new BABYLON.Spherical(1, Math.PI / 2 - model.latitudeRadians, 0)
@@ -42,13 +40,6 @@ export default class ViewModel {
         // earth rotates ccw
         return -this.model.siderealTimeRadians
     }
-    get xzenith(): BABYLON.Vector3 {
-        this.equatorSpherical.theta = Math.PI / 2 - this.model.latitudeRadians
-        this.equatorSpherical.phi = this.model.siderealTimeRadians + this.model.longitudeRadians
-        const zenithVector = this.equatorSpherical.toVector3()
-        const worldMatrix = this.earthGroup.earthGroup.getWorldMatrix();
-        return this.earthGroupPosition.add(BABYLON.Vector3.TransformNormal(zenithVector, worldMatrix))
-    }
     get zenith(): BABYLON.Vector3 {
         let tiltRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
         return this.equatorSpherical.toVector3().applyRotationQuaternion(tiltRotation)        
@@ -61,7 +52,6 @@ export default class ViewModel {
     }
     get earthAxis(): BABYLON.Vector3 {
         let quaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
-        let axis = BABYLON.Vector3.Up().applyRotationQuaternion(quaternion)
-        return axis
+        return BABYLON.Vector3.Up().applyRotationQuaternion(quaternion)
     }
 }

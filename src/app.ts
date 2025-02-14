@@ -26,7 +26,7 @@ export default class App extends AppBase {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
 
-        this.viewModel = new ViewModel(this.model, this.earthGroup)
+        this.viewModel = new ViewModel(this.model)
 
         this.showBecaon(this.beaconsOn)
 
@@ -34,11 +34,10 @@ export default class App extends AppBase {
             this.model.tick()
             // synchronize the view model with the model
             this.viewModel.update()
-
-            this.updateObjects()
             
             this.updateObjectPositions()
-            this.updateCameras()
+            
+            this.updateBeacons()
             this.updateSurfaceCamera()
             this.updateEarthCamera()
             this.updateSpaceCamera()
@@ -132,46 +131,6 @@ export default class App extends AppBase {
         this.earthGroup.earthGroup.position = this.viewModel.earthGroupPosition
         this.earthGroup.earthGlobe.rotation.y = this.viewModel.earthGlobeRotation
     }
-    updateCameras() {
-        const earthGroupPositionVector4 = this.viewModel.earthGroupPosition
-        // const heightOfEarthCamera = this.model.earthCameraHeight
-
-        // const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
-        const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
-
-        const scaledZenith = this.viewModel.zenith.normalize().scale(10)
-        this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(scaledZenith))
-
-        const ss = new BABYLON.Spherical(10, 0, 0)
-        // for some reason, an extreme y value is needed
-        const vv = new BABYLON.Vector3(0, 1000, 0)
-        const mm = this.earthGroup.earthGlobe.getWorldMatrix()
-        const be = BABYLON.Vector3.TransformCoordinates(vv, mm);
-
-        const surfaceCameraHeight = 1.01 // half diameter plus a little
-        const positionOffset = earthCameraOffset.normalize().scale(surfaceCameraHeight)
-        let normalVector = BABYLON.Vector3.Cross(earthCameraOffset, be);
-        const surfaceCameraPosition = earthGroupPositionVector4.add(positionOffset)
-
-        const pk = this.earthGroup.earthGlobe.position
-        // this.cameras.trackSurfaceamera(earthGroupPositionVector4, positionOffset, normalVector, earthCameraOffset)
-
-
-        // this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
-        const z = this.viewModel.earthAxis.normalize().scale(10)
-        this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(z))
-        // this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4, normalVector)
-        const eastScaled = this.viewModel.eastVector.normalize().scale(10)
-        const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
-        this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4.add(point), earthGroupPositionVector4.add(eastScaled))
-    }
-    updateObjects() {
-        const earthGroupPosition : BABYLON.Vector3 = this.earthGroup.getPosition(this.model)
-        // this.model.siderealTimeRadians
-        const zenithVector = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
-        const axisVector = new BABYLON.Vector3(0, 0, 1)
-        const horizonVector = BABYLON.Vector3.Cross(zenithVector, axisVector)
-    }
     updateSurfaceCamera() {
         const offset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
         this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(offset)
@@ -186,5 +145,18 @@ export default class App extends AppBase {
     }
     updateSpaceCamera() {
         // space camera is fixed
+    }
+    updateBeacons() {
+        const earthGposition = this.viewModel.earthGroupPosition
+        const axisScaled = this.viewModel.earthAxis.normalize().scale(10)
+        this.updateLineEndpoint(this.axisBeacon, earthGposition, earthGposition.add(axisScaled))
+
+        const zenithScaled = this.viewModel.zenith.normalize().scale(10)
+        this.updateLineEndpoint(this.zenithBeacon, earthGposition, earthGposition.add(zenithScaled))
+
+        const eastScaled = this.viewModel.eastVector.normalize().scale(10)
+        const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
+        this.updateLineEndpoint(this.horizonBeacon, earthGposition.add(point), earthGposition.add(eastScaled))
+
     }
 }
