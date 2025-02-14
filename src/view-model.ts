@@ -57,7 +57,7 @@ export default class ViewModel {
         return BABYLON.Vector3.Cross(this.zenith, this.earthAxis)
     }
     get northVector(): BABYLON.Vector3 {
-        return BABYLON.Vector3.Cross(this.zenith, this.eastVector)
+        return BABYLON.Vector3.Cross(this.eastVector, this.zenith)
     }
     get earthAxis(): BABYLON.Vector3 {
         let quaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)

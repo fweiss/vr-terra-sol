@@ -24,7 +24,7 @@ export default class model {
     millisPerDay: number = 24 * 60 * 60 * 1000
     millisPerYear = 365 * this.millisPerDay
 
-    axialTilt: number = 23.5
+    axialTilt: number = 0 //23.5
     earthCameraHeight: number = 5
     earthOrbitRadius: number = 5
     earthRadius: number = 1

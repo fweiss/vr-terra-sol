@@ -196,8 +196,8 @@ export default class App extends AppBase {
         const zz = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(zz)
 
-        this.cameras.earthCamera.upVector = worldUpVector
-        // this.cameras.earthCamera.upVector = this.viewModel.northVector
+        // this.cameras.earthCamera.upVector = worldUpVector
+        this.cameras.earthCamera.upVector = this.viewModel.northVector
 
 
     }
