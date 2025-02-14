@@ -142,14 +142,14 @@ export default class App extends AppBase {
 
         // const absoluteEarthGlobePosition = earthGroupPositionVector4 //this.earthGroup.earthGlobe.getAbsolutePosition()
         const earthCameraOffset = this.earthGroup.getAbsoluteEarthZenithVector(this.model)
-        
+
         const scaledZenith = this.viewModel.zenith.normalize().scale(10)
         this.updateLineEndpoint(this.zenithBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(scaledZenith))
 
         if (true) {
         this.cameras.earthCamera.setTarget(earthGroupPositionVector4)
         // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
-        this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
+//        this.cameras.earthCamera.position = earthGroupPositionVector4.add(earthCameraOffset)
         // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         // this.cameras.earthCamera.upVector = worldUpVector
 }
@@ -171,7 +171,10 @@ export default class App extends AppBase {
         // this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(be))
         const z = this.viewModel.earthAxis.normalize().scale(10)
         this.updateLineEndpoint(this.axisBeacon, earthGroupPositionVector4, earthGroupPositionVector4.add(z))
-        this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4, normalVector)
+        // this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4, normalVector)
+        const eastScaled = this.viewModel.eastVector.normalize().scale(10)
+        const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
+        this.updateLineEndpoint(this.horizonBeacon, earthGroupPositionVector4.add(point), earthGroupPositionVector4.add(eastScaled))
     }
     updateObjects() {
         const earthGroupPosition : BABYLON.Vector3 = this.earthGroup.getPosition(this.model)
@@ -190,6 +193,9 @@ export default class App extends AppBase {
         // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         // this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(earthCameraOffset)
         // this.cameras.earthCamera.position = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
+        const zz = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
+        this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(zz)
+
         this.cameras.earthCamera.upVector = worldUpVector
         // this.cameras.earthCamera.upVector = this.viewModel.northVector
 

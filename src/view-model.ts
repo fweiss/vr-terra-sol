@@ -53,11 +53,11 @@ export default class ViewModel {
         let tiltRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
         return this.equatorSpherical.toVector3().applyRotationQuaternion(tiltRotation)        
     }
+    get eastVector(): BABYLON.Vector3 {
+        return BABYLON.Vector3.Cross(this.zenith, this.earthAxis)
+    }
     get northVector(): BABYLON.Vector3 {
-        const earthPosition = this.eclipticSpherical.toVector3()
-        const equatorVector = this.equatorSpherical.toVector3()
-        const northPoleVector = this.horizonSpherical.toVector3()
-        return earthPosition.add(equatorVector).add(northPoleVector)
+        return BABYLON.Vector3.Cross(this.zenith, this.eastVector)
     }
     get earthAxis(): BABYLON.Vector3 {
         let quaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
