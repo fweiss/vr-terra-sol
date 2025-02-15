@@ -20,6 +20,8 @@ export default class App extends AppBase {
     private axisBeacon: BABYLON.LinesMesh
     private horizonBeacon: BABYLON.LinesMesh
 
+    private sunTrail: BABYLON.Mesh
+
     beaconsOn: boolean = true
 
     constructor() {
@@ -42,10 +44,12 @@ export default class App extends AppBase {
             this.updateEarthCamera()
             this.updateSpaceCamera()
         })
+        this.cameras.earthCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
+            // console.log('earth camera view matrix changed ', camera.position.toString())
+        })
 
         this.controls = new Controls()
         this.controls.onCameraSelect = (camera: string) => {
-            console.log('camera selected:', camera)
             const cameras = {
                 earth: this.cameras.earthCamera,
                 space: this.cameras.spaceCamera,
@@ -59,7 +63,7 @@ export default class App extends AppBase {
             this.controls.updateYearDate(date)
         }
 
-    // this.scene.debugLayer.show()
+    this.scene.debugLayer.show()
     
     // new BABYLON.AxesViewer(this.scene, 2000)
 
@@ -77,7 +81,7 @@ export default class App extends AppBase {
         const sunLight = new BABYLON.PointLight("sunLight", new BABYLON.Vector3(0, 0, 0), this.scene);
         sunLight.intensity = 1.0
 
-        const intensity = 0.2
+        const intensity = 0.4
         const northHemispherLight = new BABYLON.HemisphericLight("north hemisphere light", new BABYLON.Vector3(0, 1, 0), this.scene);
         northHemispherLight.intensity = intensity
         const southHemispherLight = new BABYLON.HemisphericLight("south hemisphere light", new BABYLON.Vector3(0, -1, 0), this.scene);
@@ -91,6 +95,8 @@ export default class App extends AppBase {
         this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
         this.axisBeacon = this.createBeacon("axis beacon", BABYLON.Color3.Red())
         this.horizonBeacon = this.createBeacon("horizon beacon", BABYLON.Color3.Green())
+
+        this.createSunTrail()
     }
     createStarfield() {
         const diameter = 100 //this.model.universeRadius
@@ -104,6 +110,23 @@ export default class App extends AppBase {
         starfield.material = material
         return starfield
     }
+    private createSunTrail() {
+        const options = {
+            // the sun oddly is between *1 and *2
+            diameter: 10, //this.model.earthOrbitRadius * 2,
+            thickness: 0.01,
+            tessellation: 64,
+            sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        }
+        this.sunTrail = BABYLON.MeshBuilder.CreateTorus("suntrail", options, this.scene)
+        this.sunTrail.parent = this.earthGroup.earthGroup
+        this.sunTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
+
+        const material = new BABYLON.StandardMaterial("suntrail material", this.scene)
+        material.emissiveColor = new BABYLON.Color3(1, 1, 0)
+        this.sunTrail.material = material
+    }
+
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
         const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
         const material = new BABYLON.StandardMaterial("beacon material", this.scene)
