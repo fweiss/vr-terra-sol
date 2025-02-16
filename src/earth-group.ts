@@ -27,10 +27,10 @@ export default class EarthGroup {
         this.earthGroup = new BABYLON.TransformNode('earthGroup', scene)
         this.earthTilt = new BABYLON.TransformNode('earth tilt', scene)
         this.earthTilt.parent = this.earthGroup
+        this.earthTilt.rotation.x = model.axisTiltRadians
 
         this.createEarthGlobe()
         this.earthGlobe.parent = this.earthTilt
-        this.earthTilt.rotation.x = model.axisTiltRadians
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
 
@@ -62,7 +62,7 @@ export default class EarthGroup {
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
         })
         this.equatorTrace.parent = this.earthTilt
-        const material = new BABYLON.StandardMaterial("suntrail material")
+        const material = new BABYLON.StandardMaterial("equator trace material")
         material.emissiveColor = new BABYLON.Color3(1, 1, 0)
         this.equatorTrace.material = material
     }

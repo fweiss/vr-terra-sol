@@ -20,12 +20,16 @@ export default class ViewModel {
     private equatorSpherical: BABYLON.Spherical
     private horizonSpherical: BABYLON.Spherical
 
+    private earthTiltQuaternion: BABYLON.Quaternion
+
     constructor(model: Model) {
         this.model = model
 
         this.eclipticSpherical = new BABYLON.Spherical(this.model.earthOrbitRadius, Math.PI/2, 0)
         this.equatorSpherical = new BABYLON.Spherical(1, Math.PI / 2 - model.latitudeRadians, 0)
         this.horizonSpherical = new BABYLON.Spherical(1, 0, 0)
+
+        this.earthTiltQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
     }
     update() {
         this.eclipticSpherical.phi = this.model.solarDateRadians
@@ -41,8 +45,7 @@ export default class ViewModel {
         return -this.model.siderealTimeRadians
     }
     get zenith(): BABYLON.Vector3 {
-        let tiltRotation = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
-        return this.equatorSpherical.toVector3().applyRotationQuaternion(tiltRotation)        
+        return this.equatorSpherical.toVector3().applyRotationQuaternion(this.earthTiltQuaternion)        
     }
     get eastVector(): BABYLON.Vector3 {
         return BABYLON.Vector3.Cross(this.zenith, this.earthAxis)
@@ -51,7 +54,6 @@ export default class ViewModel {
         return BABYLON.Vector3.Cross(this.eastVector, this.zenith)
     }
     get earthAxis(): BABYLON.Vector3 {
-        let quaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
-        return BABYLON.Vector3.Up().applyRotationQuaternion(quaternion)
+        return BABYLON.Vector3.Up().applyRotationQuaternion(this.earthTiltQuaternion)
     }
 }
