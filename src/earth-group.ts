@@ -15,7 +15,9 @@ import Model from './model2'
 export default class EarthGroup {
     private scene: BABYLON.Scene
     earthGroup: BABYLON.TransformNode
+    earthTilt: BABYLON.TransformNode
     earthGlobe: BABYLON.Mesh
+    equatorTrace: BABYLON.Mesh
     private model: Model
     earthZenithHeight: number = 5
 
@@ -23,11 +25,16 @@ export default class EarthGroup {
         this.scene = scene
 
         this.earthGroup = new BABYLON.TransformNode('earthGroup', scene)
+        this.earthTilt = new BABYLON.TransformNode('earth tilt', scene)
+        this.earthTilt.parent = this.earthGroup
+
         this.createEarthGlobe()
-        this.earthGlobe.parent = this.earthGroup
-        this.earthGroup.rotation.x = model.axisTiltRadians
+        this.earthGlobe.parent = this.earthTilt
+        this.earthTilt.rotation.x = model.axisTiltRadians
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
+
+        this.createEquatorTrace(model)
     }
     private createEarthGlobe() {
         let material = new BABYLON.StandardMaterial('earth_no_clouds', this.scene)
@@ -44,7 +51,19 @@ export default class EarthGroup {
         // material.wireframe = true
 
         // Create a sphere and apply the material
-        this.earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 }, this.scene);
+        this.earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 });
         this.earthGlobe.material = material;
+    }
+    createEquatorTrace(model: Model) {
+        this.equatorTrace = BABYLON.MeshBuilder.CreateTorus("equator trace", {
+            diameter: model.earthRadius * 2 + .001,
+            thickness: 0.01,
+            tessellation: 64,
+            sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        })
+        this.equatorTrace.parent = this.earthTilt
+        const material = new BABYLON.StandardMaterial("suntrail material")
+        material.emissiveColor = new BABYLON.Color3(1, 1, 0)
+        this.equatorTrace.material = material
     }
 }

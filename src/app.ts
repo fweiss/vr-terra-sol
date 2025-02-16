@@ -63,7 +63,7 @@ export default class App extends AppBase {
             this.controls.updateYearDate(date)
         }
 
-    this.scene.debugLayer.show()
+    // this.scene.debugLayer.show()
     
     // new BABYLON.AxesViewer(this.scene, 2000)
 
@@ -120,7 +120,7 @@ export default class App extends AppBase {
         }
         this.sunTrail = BABYLON.MeshBuilder.CreateTorus("suntrail", options, this.scene)
         this.sunTrail.parent = this.earthGroup.earthGroup
-        this.sunTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
+        // this.sunTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
 
         const material = new BABYLON.StandardMaterial("suntrail material", this.scene)
         material.emissiveColor = new BABYLON.Color3(1, 1, 0)
