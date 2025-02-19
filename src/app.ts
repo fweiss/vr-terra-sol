@@ -98,16 +98,21 @@ export default class App extends AppBase {
 
         this.createSunTrail()
     }
+    // At diameter < 1000 there are artifacts due to the earth's northVector
+    // being off-center. The starfield is centered on the sun position
+    // not the earth position. Maybe try making it a child of the earthGroup.
     createStarfield() {
-        const diameter = 100 //this.model.universeRadius
+        const diameter = 1000 //this.model.universeRadius
         let starfield = BABYLON.MeshBuilder.CreateSphere("starfield", { diameter: diameter, sideOrientation: BABYLON.Mesh.BACKSIDE }, this.scene)
-        starfield.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI)
+        // starfield.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI)
+        starfield.rotate(new BABYLON.Vector3(1, 0, 0), this.model.axisTiltRadians)
         // starfield.position = new BABYLON.Vector3(5, 5, 5)
         let material = new BABYLON.StandardMaterial('stars', this.scene)
         material.emissiveTexture = new BABYLON.Texture('assets/starfield.jpg', this.scene)
         material.diffuseColor = new BABYLON.Color3(0, 0, 0)
         material.specularColor = new BABYLON.Color3(0, 0, 0)
         starfield.material = material
+        material.wireframe = true
         return starfield
     }
     private createSunTrail() {
@@ -160,6 +165,16 @@ export default class App extends AppBase {
         this.cameras.surfaceCamera.upVector = this.viewModel.zenith
         this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
     }
+    // used to check alignment of northVector and the pole of the starfield
+    updateSurfaceCamera2() {
+        const offset: BABYLON.Vector3 = this.viewModel.earthAxis.normalize().scale(1.01)
+        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(offset)
+        this.cameras.surfaceCamera.target = this.viewModel.earthAxis.scale(1000) // large for stbility
+        // this.cameras.surfaceCamera.upVector = this.viewModel.eastVector
+        this.cameras.surfaceCamera.upVector = new BABYLON.Vector3(0, 100, 0)
+        const zz = BABYLON.Vector3.Cross(this.viewModel.eastVector, this.viewModel.earthAxis)
+        // this.cameras.surfaceCamera.upVector = zz
+    }
     updateEarthCamera() {
         const scaledZenith = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(scaledZenith)
@@ -171,7 +186,7 @@ export default class App extends AppBase {
     }
     updateBeacons() {
         const earthGposition = this.viewModel.earthGroupPosition
-        const axisScaled = this.viewModel.earthAxis.normalize().scale(10)
+        const axisScaled = this.viewModel.earthAxis.normalize().scale(1000)
         this.updateLineEndpoint(this.axisBeacon, earthGposition, earthGposition.add(axisScaled))
 
         const zenithScaled = this.viewModel.zenith.normalize().scale(10)
