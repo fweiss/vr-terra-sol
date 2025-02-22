@@ -31,7 +31,10 @@ export default class model {
 
     universeRadius: number = 1000000 // still used?
 
-    siderealTimeDelta: number = 1000000
+    // siderealTimeDelta: number = 1000000
+    // siderealTimeDelta: number = this.millisPerDay * 0.001157
+    siderealTimeDelta: number = this.millisPerDay / 10 // 1 second per frame at 60 fps
+
     solarDateDelta: number = 1 * this.millisPerDay // 1 day per frame at 60 fps
 
     zenith: Zenith = new Zenith()

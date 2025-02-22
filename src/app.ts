@@ -175,6 +175,21 @@ export default class App extends AppBase {
         const zz = BABYLON.Vector3.Cross(this.viewModel.eastVector, this.viewModel.earthAxis)
         // this.cameras.surfaceCamera.upVector = zz
     }
+    // backup camera to get wider field of view
+    updateSurfaceCamera3() {
+        const zenithOffset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
+        const eastOffset: BABYLON.Vector3 = this.viewModel.eastVector.normalize().scale(-1.5)
+        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(zenithOffset).add(eastOffset)
+        this.cameras.surfaceCamera.upVector = this.viewModel.zenith
+        this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
+    }
+    // gaze at the zenith
+    updateSurfaceCamera4() {
+        const zenithOffset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
+        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(zenithOffset)
+        this.cameras.surfaceCamera.upVector = this.viewModel.northVector
+        this.cameras.surfaceCamera.target = this.viewModel.zenith.scale(1000) // large for stbility
+    }
     updateEarthCamera() {
         const scaledZenith = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(scaledZenith)
