@@ -17,7 +17,7 @@ export default class Bodies2 {
         sunMaterial.emissiveTexture = sunTexture
         sunMaterial.specularColor = BABYLON.Color3.Black()
 
-        this.sun = BABYLON.MeshBuilder.CreateSphere("sun", { diameter: 2 }, scene);
+        this.sun = BABYLON.MeshBuilder.CreateSphere("sun", { diameter: .2 }, scene);
         this.sun.material = sunMaterial;
         this.sun.position = new BABYLON.Vector3(0, 0, 0);
     }

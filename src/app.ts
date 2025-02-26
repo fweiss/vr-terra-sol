@@ -20,6 +20,7 @@ export default class App extends AppBase {
     private axisBeacon: BABYLON.LinesMesh
     private horizonBeacon: BABYLON.LinesMesh
 
+    private eclipticTrail: BABYLON.Mesh
     private sunTrail: BABYLON.Mesh
 
     beaconsOn: boolean = true
@@ -43,6 +44,7 @@ export default class App extends AppBase {
             this.updateSurfaceCamera()
             this.updateEarthCamera()
             this.updateSpaceCamera()
+            this.updateSunTrail()
         })
         this.cameras.earthCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
             // console.log('earth camera view matrix changed ', camera.position.toString())
@@ -115,6 +117,22 @@ export default class App extends AppBase {
         material.wireframe = true
         return starfield
     }
+    private createEclipticTrail() {
+        const options = {
+            // the sun oddly is between *1 and *2
+            diameter: 10, //this.model.earthOrbitRadius * 2,
+            thickness: 0.01,
+            tessellation: 64,
+            sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        }
+        this.eclipticTrail = BABYLON.MeshBuilder.CreateTorus("ecliptic trail", options, this.scene)
+        this.eclipticTrail.parent = this.earthGroup.earthGroup
+        // this.eclipticTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
+
+        const material = new BABYLON.StandardMaterial("ecliptic trail material", this.scene)
+        material.emissiveColor = new BABYLON.Color3(1, 1, 0)
+        this.eclipticTrail.material = material
+    }
     private createSunTrail() {
         const options = {
             // the sun oddly is between *1 and *2
@@ -123,15 +141,14 @@ export default class App extends AppBase {
             tessellation: 64,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
         }
-        this.sunTrail = BABYLON.MeshBuilder.CreateTorus("suntrail", options, this.scene)
-        this.sunTrail.parent = this.earthGroup.earthGroup
+        this.sunTrail = BABYLON.MeshBuilder.CreateTorus("sun trail", options, this.scene)
+        this.sunTrail.parent = this.earthGroup.earthGlobe
         // this.sunTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
 
-        const material = new BABYLON.StandardMaterial("suntrail material", this.scene)
+        const material = new BABYLON.StandardMaterial("sun trail material", this.scene)
         material.emissiveColor = new BABYLON.Color3(1, 1, 0)
         this.sunTrail.material = material
     }
-
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
         const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
         const material = new BABYLON.StandardMaterial("beacon material", this.scene)
@@ -211,5 +228,13 @@ export default class App extends AppBase {
         const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
         this.updateLineEndpoint(this.horizonBeacon, earthGposition.add(point), earthGposition.add(eastScaled))
 
+    }
+    updateSunTrail() {
+        // const st = Math.sin(this.model.axisTiltRadians) * Math.cos(this.model.solarDateRadians)
+        const st = Math.cos(this.model.solarDateRadians)
+        // const sunTrailOffest = this.viewModel.earthGroupPosition.add(this.viewModel.earthAxis.normalize().scale(1.01))
+        // this.sunTrail.rotation.y = this.model.solarDateRadians
+        const sunTrailOffset = this.viewModel.earthAxis.normalize().scale(st) 
+        this.sunTrail.position = sunTrailOffset
     }
 }
