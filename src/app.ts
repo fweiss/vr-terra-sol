@@ -143,7 +143,6 @@ export default class App extends AppBase {
         }
         this.sunTrail = BABYLON.MeshBuilder.CreateTorus("sun trail", options, this.scene)
         this.sunTrail.parent = this.earthGroup.earthGlobe
-        // this.sunTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
 
         const material = new BABYLON.StandardMaterial("sun trail material", this.scene)
         material.emissiveColor = new BABYLON.Color3(1, 1, 0)
@@ -217,24 +216,23 @@ export default class App extends AppBase {
         // space camera is fixed
     }
     updateBeacons() {
-        const earthGposition = this.viewModel.earthGroupPosition
+        const earthGroupPosition = this.viewModel.earthGroupPosition
         const axisScaled = this.viewModel.earthAxis.normalize().scale(1000)
-        this.updateLineEndpoint(this.axisBeacon, earthGposition, earthGposition.add(axisScaled))
+        this.updateLineEndpoint(this.axisBeacon, earthGroupPosition, earthGroupPosition.add(axisScaled))
 
         const zenithScaled = this.viewModel.zenith.normalize().scale(10)
-        this.updateLineEndpoint(this.zenithBeacon, earthGposition, earthGposition.add(zenithScaled))
+        this.updateLineEndpoint(this.zenithBeacon, earthGroupPosition, earthGroupPosition.add(zenithScaled))
 
         const eastScaled = this.viewModel.eastVector.normalize().scale(10)
         const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
-        this.updateLineEndpoint(this.horizonBeacon, earthGposition.add(point), earthGposition.add(eastScaled))
+        this.updateLineEndpoint(this.horizonBeacon, earthGroupPosition.add(point), earthGroupPosition.add(eastScaled))
 
     }
     updateSunTrail() {
         // const st = Math.sin(this.model.axisTiltRadians) * Math.cos(this.model.solarDateRadians)
         const st = Math.cos(this.model.solarDateRadians)
-        // const sunTrailOffest = this.viewModel.earthGroupPosition.add(this.viewModel.earthAxis.normalize().scale(1.01))
-        // this.sunTrail.rotation.y = this.model.solarDateRadians
-        const sunTrailOffset = this.viewModel.earthAxis.normalize().scale(st) 
+        // earthRadius is 1, so why is the scale * 2?
+        const sunTrailOffset = this.viewModel.earthAxis.normalize().scale(st * 2) 
         this.sunTrail.position = sunTrailOffset
     }
 }

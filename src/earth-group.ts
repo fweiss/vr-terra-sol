@@ -29,14 +29,14 @@ export default class EarthGroup {
         this.earthTilt.parent = this.earthGroup
         this.earthTilt.rotation.x = model.axisTiltRadians
 
-        this.createEarthGlobe()
+        this.createEarthGlobe(model)
         this.earthGlobe.parent = this.earthTilt
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
 
         this.createEquatorTrace(model)
     }
-    private createEarthGlobe() {
+    private createEarthGlobe(model: Model) {
         let material = new BABYLON.StandardMaterial('earth_no_clouds', this.scene)
         let res = '8k'
         const url = 'assets/' + res + '/2_no_clouds_' + res + '.jpg'
@@ -51,7 +51,8 @@ export default class EarthGroup {
         // material.wireframe = true
 
         // Create a sphere and apply the material
-        this.earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: 2 });
+        const diameter = 2 * model.earthRadius
+        this.earthGlobe = BABYLON.MeshBuilder.CreateSphere("earth globe", { diameter: diameter });
         this.earthGlobe.material = material;
     }
     createEquatorTrace(model: Model) {
