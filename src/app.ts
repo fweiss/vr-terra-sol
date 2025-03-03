@@ -209,11 +209,12 @@ export default class App extends AppBase {
         this.cameras.surfaceCamera.target = this.viewModel.zenith.scale(1000) // large for stbility
     }
     updateEarthCamera() {
-        const scaledZenith = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
-        this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(scaledZenith)
-        // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
         this.cameras.earthCamera.target = this.viewModel.earthGroupPosition
         this.cameras.earthCamera.upVector = this.viewModel.northVector
+
+        // set position last to avoid jerky motion
+        const zenithScaled = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
+        this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(zenithScaled)
     }
     updateSpaceCamera() {
         // space camera is fixed
