@@ -45,6 +45,8 @@ export default class App extends AppBase {
             this.updateEarthCamera()
             this.updateSpaceCamera()
             this.updateSunTrail()
+
+            this.controls.updateFrameRate(this.engine.performanceMonitor.averageFPS)
         })
         this.cameras.earthCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
             // console.log('earth camera view matrix changed ', camera.position.toString())
@@ -209,7 +211,8 @@ export default class App extends AppBase {
     updateEarthCamera() {
         const scaledZenith = this.viewModel.zenith.normalize().scale(this.model.earthCameraHeight)
         this.cameras.earthCamera.position = this.viewModel.earthGroupPosition.add(scaledZenith)
-        this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
+        // this.cameras.earthCamera.setTarget(this.viewModel.earthGroupPosition)
+        this.cameras.earthCamera.target = this.viewModel.earthGroupPosition
         this.cameras.earthCamera.upVector = this.viewModel.northVector
     }
     updateSpaceCamera() {

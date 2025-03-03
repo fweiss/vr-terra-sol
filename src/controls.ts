@@ -2,6 +2,7 @@ export default class Controls {
     onCameraSelect: (camera: string) => void = () => {};
     yearDateValue: HTMLInputElement;
     yearSight: HTMLInputElement;
+    frameRate: HTMLInputElement;
 
     constructor() {
         const self = this
@@ -13,6 +14,7 @@ export default class Controls {
             });
         });
         this.yearDateValue = document.getElementById("year_date_value") as HTMLInputElement;
+        this.frameRate = document.getElementById("tod_value") as HTMLInputElement;
     }
     updateYearDate(date: Date) {
         const formattedDate = date.toLocaleDateString('en-US', {
@@ -25,5 +27,8 @@ export default class Controls {
         const month = date.getFullYear()
         // this.yearDateValue.value = String(month)
 
+    }
+    updateFrameRate(frameRate: number) {
+        this.frameRate.value = String(frameRate)
     }
 }
