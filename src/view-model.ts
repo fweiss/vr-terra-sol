@@ -44,11 +44,17 @@ export default class ViewModel {
         // earth rotates ccw
         return -this.model.siderealTimeRadians
     }
+    get zenithVector(): BABYLON.Vector3 {
+        return this.equatorSpherical.toVector3()
+    }
     get zenith(): BABYLON.Vector3 {
         return this.equatorSpherical.toVector3().applyRotationQuaternion(this.earthTiltQuaternion)        
     }
     get eastVector(): BABYLON.Vector3 {
         return BABYLON.Vector3.Cross(this.zenith, this.earthAxis)
+    }
+    get westVector(): BABYLON.Vector3 {
+        return BABYLON.Vector3.Cross(this.earthAxis, this.zenith)
     }
     get northVector(): BABYLON.Vector3 {
         return BABYLON.Vector3.Cross(this.eastVector, this.zenith)

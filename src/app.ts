@@ -29,8 +29,6 @@ export default class App extends AppBase {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
 
-        this.viewModel = new ViewModel(this.model)
-
         this.showBecaon(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
@@ -41,7 +39,7 @@ export default class App extends AppBase {
             this.updateObjectPositions()
             
             this.updateBeacons()
-            this.updateSurfaceCamera()
+            // this.updateSurfaceCamera()
             this.updateEarthCamera()
             this.updateSpaceCamera()
             this.updateSunTrail()
@@ -74,6 +72,7 @@ export default class App extends AppBase {
     }
     createModel() { // override base class
         this.model = new Model()
+        this.viewModel = new ViewModel(this.model)
     }
     // override base class skeletons
     createCameras() {
@@ -94,6 +93,14 @@ export default class App extends AppBase {
     createObjects() {
         new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
+
+        // place the surface camera as child of earthglobe
+        // and position it relatively
+        this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
+        this.cameras.surfaceCamera.position = this.viewModel.zenith.normalize().scale(1.01)
+        this.cameras.surfaceCamera.upVector = this.viewModel.zenith
+        this.cameras.surfaceCamera.target = this.viewModel.westVector.scale(1000) // large for stbility
+
         this.createStarfield()
 
         this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
