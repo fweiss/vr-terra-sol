@@ -97,6 +97,7 @@ export default class App extends AppBase {
         // place the surface camera as child of earthglobe
         // and position it relatively
         this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
+        // this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
         this.cameras.surfaceCamera.position = this.viewModel.zenith.normalize().scale(1.01)
         this.cameras.surfaceCamera.upVector = this.viewModel.zenith
         this.cameras.surfaceCamera.target = this.viewModel.westVector.scale(1000) // large for stbility
@@ -181,8 +182,10 @@ export default class App extends AppBase {
         this.horizonBeacon.isVisible = onoff
     }
     updateObjectPositions() {
-        this.earthGroup.earthGroup.position = this.viewModel.earthGroupPosition
-        this.earthGroup.earthGlobe.rotation.y = this.viewModel.earthGlobeRotation
+        // this.earthGroup.earthGroup.position = this.viewModel.earthGroupPosition
+        this.earthGroup.orbitPosition = this.viewModel.earthGroupPosition
+        // this.earthGroup.earthGlobe.rotation.y = this.viewModel.earthGlobeRotation
+        this.earthGroup.earthRotation = this.viewModel.earthGlobeRotation
     }
     updateSurfaceCamera() {
         const offset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)

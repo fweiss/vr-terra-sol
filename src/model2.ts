@@ -61,6 +61,6 @@ export default class model {
         return this.zenith.latitude * Math.PI / 180
     }
     get longitudeRadians() {
-        return this.zenith.longitude * Math.PI / 180
+        return -this.zenith.longitude * Math.PI / 180
     }
 }

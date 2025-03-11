@@ -18,6 +18,7 @@ export default class Cameras {
 
         this.earthCamera = new BABYLON.ArcRotateCamera("earthCamera", Math.PI / 2, 0, zenith, BABYLON.Vector3.Zero(), scene);
         this.earthCamera.maxZ = 100 //model.universeRadius
+        this.earthCamera.minZ = 0.01
 
         const surfaceCameraHeight = 1.01 // half diameter plus a little
         this.surfaceCamera = new BABYLON.ArcRotateCamera("surface Camera", Math.PI / 2, 0, surfaceCameraHeight, BABYLON.Vector3.Zero(), scene);
