@@ -28,7 +28,7 @@ export default class App extends AppBase {
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
-
+        this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
         this.showBecaon(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
@@ -77,6 +77,7 @@ export default class App extends AppBase {
     // override base class skeletons
     createCameras() {
         this.cameras = new Cameras(this.scene, this.model)
+        // this.cameras.earthCamera.position = new BABYLON.Vector3(0, 0, 0)
         this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
     }
 
@@ -96,8 +97,8 @@ export default class App extends AppBase {
 
         // place the surface camera as child of earthglobe
         // and position it relatively
-        this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
-        // this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
+        // this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
+        this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
         this.cameras.surfaceCamera.position = this.viewModel.zenith.normalize().scale(1.01)
         this.cameras.surfaceCamera.upVector = this.viewModel.zenith
         this.cameras.surfaceCamera.target = this.viewModel.westVector.scale(1000) // large for stbility
