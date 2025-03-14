@@ -14,7 +14,7 @@ import Model from './model2'
  */
 export default class EarthGroup {
     private scene: BABYLON.Scene
-    earthGroup: BABYLON.TransformNode
+    private earthGroup: BABYLON.TransformNode
     private earthTilt: BABYLON.TransformNode
     earthGlobe: BABYLON.Mesh
     equatorTrace: BABYLON.Mesh

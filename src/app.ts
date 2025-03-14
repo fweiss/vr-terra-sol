@@ -137,7 +137,8 @@ export default class App extends AppBase {
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
         }
         this.eclipticTrail = BABYLON.MeshBuilder.CreateTorus("ecliptic trail", options, this.scene)
-        this.eclipticTrail.parent = this.earthGroup.earthGroup
+        // this.eclipticTrail.parent = this.earthGroup.earthGroup
+        this.eclipticTrail.parent = this.earthGroup.earthGlobe
         // this.eclipticTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
 
         const material = new BABYLON.StandardMaterial("ecliptic trail material", this.scene)
