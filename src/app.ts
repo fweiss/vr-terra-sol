@@ -97,11 +97,14 @@ export default class App extends AppBase {
 
         // place the surface camera as child of earthglobe
         // and position it relatively
+        const spherical: BABYLON.Spherical = new BABYLON.Spherical(1.01, Math.PI/2-this.model.latitudeRadians, -this.model.longitudeRadians)
         // this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
         this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
-        this.cameras.surfaceCamera.position = this.viewModel.zenith.normalize().scale(1.01)
-        this.cameras.surfaceCamera.upVector = this.viewModel.zenith
-        this.cameras.surfaceCamera.target = this.viewModel.westVector.scale(1000) // large for stbility
+        // this.cameras.surfaceCamera.position = this.viewModel.zenith.normalize().scale(1.01)
+        this.cameras.surfaceCamera.position = spherical.toVector3()
+        this.cameras.surfaceCamera.upVector = spherical.toVector3() //this.viewModel.zenith
+        // this.cameras.surfaceCamera.target = this.viewModel.westVector.scale(1000) // large for stbility
+        this.cameras.surfaceCamera.target = new BABYLON.Vector3(1000, 0, 0)
 
         this.createStarfield()
 

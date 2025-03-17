@@ -43,7 +43,8 @@ export default class model {
 
     tick() {
         this.siderealTime = new Date(this.siderealTime.getTime() + this.siderealTimeDelta)
-        this.solarDate = new Date(this.solarDate.getTime() + this.solarDateDelta)
+        // this.solarDate = new Date(this.solarDate.getTime() + this.solarDateDelta)
+        this.solarDate = new Date("2020-03-22T00:00:00Z")
         this.onYearDateChange(this.solarDate)
     }
     get siderealTimeRadians() {
