@@ -26,7 +26,7 @@ export default class ViewModel {
         this.model = model
 
         this.eclipticSpherical = new BABYLON.Spherical(this.model.earthOrbitRadius, Math.PI/2, 0)
-        this.equatorSpherical = new BABYLON.Spherical(1, Math.PI / 2 - model.latitudeRadians, 0)
+        this.equatorSpherical = new BABYLON.Spherical(1, Math.PI / 2 - model.latitudeRadians, -model.longitudeRadians)
         this.horizonSpherical = new BABYLON.Spherical(1, 0, 0)
 
         this.earthTiltQuaternion = BABYLON.Quaternion.RotationAxis(BABYLON.Vector3.Right(), this.model.axisTiltRadians)
