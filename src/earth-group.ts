@@ -36,18 +36,18 @@ export default class EarthGroup {
 
         // create the nested transform nodes
         this.orbitNode = new BABYLON.TransformNode('orbit node', scene)
-
         this.tiltNode = new BABYLON.TransformNode('tilt node', scene)
-        this.tiltNode.parent = this.orbitNode
-        this.tiltNode.rotation.x = model.axisTiltRadians
-
         this.rotateNode = new BABYLON.TransformNode('rotate node', scene)
-        this.rotateNode.parent = this.tiltNode
-        this.rotateNode.rotation.y = model.longitudeRadians
 
+        this.tiltNode.parent = this.orbitNode
+        this.rotateNode.parent = this.tiltNode
+        
+        this.tiltNode.rotation.x = model.axisTiltRadians
+        this.rotateNode.rotation.y = model.longitudeRadians
+        
         this.createEarthGlobe(model)
-        // this.earthGlobe.parent = this.earthTilt
         this.earthGlobe.parent = this.rotateNode
+        // this.earthGlobe.parent = this.earthTilt
         // this.earthGlobe.rotation.y = model.longitudeRadians
 
         this.earthGroup.position = new BABYLON.Vector3(-5, 0, 0)
@@ -81,14 +81,15 @@ export default class EarthGroup {
             tessellation: 64,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
         })
-        this.equatorTrace.parent = this.earthTilt
+        // this.equatorTrace.parent = this.earthTilt
         const material = new BABYLON.StandardMaterial("equator trace material")
+        this.equatorTrace.parent = this.tiltNode
         material.emissiveColor = new BABYLON.Color3(1, 1, 0)
         this.equatorTrace.material = material
     }
     set orbitPosition(position: BABYLON.Vector3) {
         this.orbitNode.position = position
-        this.earthGroup.position = position
+        // this.earthGroup.position = position
     }
     set earthRotation(rotation: number) {
         // this.rotateNode.rotation.y = rotation
