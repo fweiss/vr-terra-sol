@@ -104,15 +104,15 @@ export default class App extends AppBase {
         const w = this.viewModel.westVector.scale(10)
         this.cameras.surfaceCamera.position = this.viewModel.zenithVector.normalize().scale(1.01) //.add(w)
         // this.cameras.surfaceCamera.position = spherical.toVector3()
-
+        
         this.cameras.surfaceCamera.upVector = this.viewModel.zenithVector
         // this.cameras.surfaceCamera.upVector = spherical.toVector3() //this.viewModel.zenith
-
+        
         const e = this.viewModel.eastVector.scale(1000)
         this.cameras.surfaceCamera.target = this.viewModel.zenithVector.normalize().scale(1.01).add(e)
         // this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
         // this.cameras.surfaceCamera.target = new BABYLON.Vector3(1000, 0, 0)
-
+        
         this.createStarfield()
 
         this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
@@ -158,7 +158,7 @@ export default class App extends AppBase {
     private createSunTrail() {
         const options = {
             // the sun oddly is between *1 and *2
-            diameter: 10, //this.model.earthOrbitRadius * 2,
+            diameter: 100, //this.model.earthOrbitRadius * 2,
             thickness: 0.01,
             tessellation: 64,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
@@ -251,7 +251,7 @@ export default class App extends AppBase {
 
         const eastScaled = this.viewModel.eastVector.normalize().scale(10)
         const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
-        this.updateLineEndpoint(this.horizonBeacon, earthGroupPosition.add(point), earthGroupPosition.add(eastScaled))
+        this.updateLineEndpoint(this.horizonBeacon, earthGroupPosition.add(point), earthGroupPosition.add(point).add(eastScaled))
 
     }
     updateSunTrail() {

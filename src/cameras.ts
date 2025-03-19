@@ -23,6 +23,7 @@ export default class Cameras {
         const surfaceCameraHeight = 1.01 // half diameter plus a little
         this.surfaceCamera = new BABYLON.ArcRotateCamera("surface Camera", Math.PI / 2, 0, surfaceCameraHeight, BABYLON.Vector3.Zero(), scene);
         this.surfaceCamera.minZ = 0.01
+        this.surfaceCamera.maxZ = 10000
     }
 
     setActiveCamera(camera: BABYLON.Camera, scene: BABYLON.Scene, canvas: HTMLCanvasElement) {
