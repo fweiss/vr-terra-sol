@@ -101,8 +101,8 @@ export default class App extends AppBase {
         // this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
         this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
 
-        const w = this.viewModel.westVector.scale(10)
-        this.cameras.surfaceCamera.position = this.viewModel.zenithVector.normalize().scale(1.01) //.add(w)
+        const w = this.viewModel.westVector.scale(-0.04)
+        this.cameras.surfaceCamera.position = this.viewModel.zenithVector.normalize().scale(1.005).add(w)
         // this.cameras.surfaceCamera.position = spherical.toVector3()
         
         this.cameras.surfaceCamera.upVector = this.viewModel.zenithVector

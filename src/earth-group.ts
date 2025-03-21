@@ -56,7 +56,7 @@ export default class EarthGroup {
     }
     private createEarthGlobe(model: Model) {
         let material = new BABYLON.StandardMaterial('earth_no_clouds', this.scene)
-        let res = '8k'
+        let res = '16k'
         const url = 'assets/' + res + '/2_no_clouds_' + res + '.jpg'
         const noMipmapOrOptions = false
         const invertY = false // since default is oddly, true

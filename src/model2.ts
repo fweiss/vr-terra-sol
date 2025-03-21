@@ -46,9 +46,9 @@ export default class model {
         // const vernalEquinox = new Date("2020-03-20T06:00:00Z") // empirical
 
         this.siderealTime = new Date(this.siderealTime.getTime() + this.siderealTimeDelta)
-        // this.solarDate = new Date(this.solarDate.getTime() + this.solarDateDelta)
-        this.solarDate = vernalEquinox
-        
+        this.solarDate = new Date(this.solarDate.getTime() + this.solarDateDelta)
+        // this.solarDate = vernalEquinox
+
         this.onYearDateChange(this.solarDate)
     }
     get siderealTimeRadians() {
