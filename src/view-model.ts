@@ -62,4 +62,7 @@ export default class ViewModel {
     get earthAxis(): BABYLON.Vector3 {
         return BABYLON.Vector3.Up().applyRotationQuaternion(this.earthTiltQuaternion)
     }
+    get sunTrailRadius(): number {
+        return 50
+    }
 }

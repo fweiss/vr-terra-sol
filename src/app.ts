@@ -9,18 +9,18 @@ import EarthGroup from './earth-group'
 import ViewModel from './view-model'
 
 export default class App extends AppBase {
-    private cameras: Cameras
-    private controls: Controls
+    private model: Model
     private viewModel: ViewModel
 
-    private model: Model
     private earthGroup: EarthGroup
+    private cameras: Cameras
+    private controls: Controls
+
 
     private zenithBeacon: BABYLON.LinesMesh
     private axisBeacon: BABYLON.LinesMesh
     private horizonBeacon: BABYLON.LinesMesh
 
-    private eclipticTrail: BABYLON.Mesh
     private sunTrail: BABYLON.Mesh
 
     beaconsOn: boolean = true
@@ -28,12 +28,14 @@ export default class App extends AppBase {
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
+
+        // todo maybe create objects first, since cameras depend on them
         this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
-        this.showBecaon(this.beaconsOn)
+        this.showBecoan(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
-            this.model.tick()
             // synchronize the view model with the model
+            this.model.tick()
             this.viewModel.update()
             
             this.updateObjectPositions()
@@ -50,37 +52,19 @@ export default class App extends AppBase {
             // console.log('earth camera view matrix changed ', camera.position.toString())
         })
 
-        this.controls = new Controls()
-        this.controls.onCameraSelect = (camera: string) => {
-            const cameras = {
-                earth: this.cameras.earthCamera,
-                space: this.cameras.spaceCamera,
-                surface: this.cameras.surfaceCamera,
-            }
-            const selectedCamera = cameras[camera] || this.cameras.earthCamera
-            this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
-            this.showBecaon(camera != 'surface')
-        }
-        this.model.onYearDateChange = (date: Date) => {
-            this.controls.updateYearDate(date)
-        }
-
-    // this.scene.debugLayer.show()
-    
-    // new BABYLON.AxesViewer(this.scene, 2000)
-
+        this.createControls()
+        this.createDebug
     }
+    // override base class skeletons
+
     createModel() { // override base class
         this.model = new Model()
         this.viewModel = new ViewModel(this.model)
     }
-    // override base class skeletons
     createCameras() {
         this.cameras = new Cameras(this.scene, this.model)
-        // this.cameras.earthCamera.position = new BABYLON.Vector3(0, 0, 0)
         this.cameras.setActiveCamera(this.cameras.earthCamera, this.scene, this.canvas)
     }
-
     createLights() {
         const sunLight = new BABYLON.PointLight("sunLight", new BABYLON.Vector3(0, 0, 0), this.scene);
         sunLight.intensity = 1.0
@@ -138,28 +122,11 @@ export default class App extends AppBase {
         material.wireframe = true
         return starfield
     }
-    private createEclipticTrail() {
-        const options = {
-            // the sun oddly is between *1 and *2
-            diameter: 10, //this.model.earthOrbitRadius * 2,
-            thickness: 0.01,
-            tessellation: 64,
-            sideOrientation: BABYLON.Mesh.DOUBLESIDE
-        }
-        this.eclipticTrail = BABYLON.MeshBuilder.CreateTorus("ecliptic trail", options, this.scene)
-        // this.eclipticTrail.parent = this.earthGroup.earthGroup
-        this.eclipticTrail.parent = this.earthGroup.earthGlobe
-        // this.eclipticTrail.rotation.x = -this.model.axisTiltRadians // compensate for earthGroup tilt
-
-        const material = new BABYLON.StandardMaterial("ecliptic trail material", this.scene)
-        material.emissiveColor = new BABYLON.Color3(1, 1, 0)
-        this.eclipticTrail.material = material
-    }
     private createSunTrail() {
         const options = {
             // the sun oddly is between *1 and *2
-            diameter: 100, //this.model.earthOrbitRadius * 2,
-            thickness: 0.01,
+            diameter: this.viewModel.sunTrailRadius * 2,
+            thickness: 0.1,
             tessellation: 64,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
         }
@@ -185,18 +152,16 @@ export default class App extends AppBase {
             positions.push(p.x, p.y, p.z);
         });
         lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-        this.showBecaon(this.beaconsOn)
+        this.showBecoan(this.beaconsOn)
     }
     // probably don't need this
-    private showBecaon(onoff: boolean) {
+    private showBecoan(onoff: boolean) {
         this.zenithBeacon.isVisible = onoff
         this.axisBeacon.isVisible = onoff
         this.horizonBeacon.isVisible = onoff
     }
     updateObjectPositions() {
-        // this.earthGroup.earthGroup.position = this.viewModel.earthGroupPosition
         this.earthGroup.orbitPosition = this.viewModel.earthGroupPosition
-        // this.earthGroup.earthGlobe.rotation.y = this.viewModel.earthGlobeRotation
         this.earthGroup.earthRotation = this.viewModel.earthGlobeRotation
     }
     updateSurfaceCamera() {
@@ -260,5 +225,25 @@ export default class App extends AppBase {
         // earthRadius is 1, so why is the scale * 2?
         const sunTrailOffset = this.viewModel.earthAxis.normalize().scale(st * 2) 
         this.sunTrail.position = sunTrailOffset
+    }
+    createControls() {
+        this.controls = new Controls()
+        this.controls.onCameraSelect = (camera: string) => {
+            const cameras = {
+                earth: this.cameras.earthCamera,
+                space: this.cameras.spaceCamera,
+                surface: this.cameras.surfaceCamera,
+            }
+            const selectedCamera = cameras[camera] || this.cameras.earthCamera
+            this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
+            this.showBecoan(camera != 'surface')
+        }
+        this.model.onYearDateChange = (date: Date) => {
+            this.controls.updateYearDate(date)
+        }
+    }
+    createDebug() {
+        // this.scene.debugLayer.show()  
+        // new BABYLON.AxesViewer(this.scene, 2000)
     }
 }

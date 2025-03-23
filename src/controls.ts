@@ -29,6 +29,6 @@ export default class Controls {
 
     }
     updateFrameRate(frameRate: number) {
-        this.frameRate.value = String(frameRate)
+        this.frameRate.value = frameRate.toFixed(2)
     }
 }
