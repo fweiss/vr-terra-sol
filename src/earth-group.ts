@@ -12,8 +12,8 @@ import Model from './model2'
  * 
  */
 export default class EarthGroup {
-    earthGlobe: BABYLON.Mesh
-    equatorTrace: BABYLON.Mesh
+    private earthGlobe: BABYLON.Mesh
+    private equatorTrace: BABYLON.Mesh
 
     orbitNode: BABYLON.TransformNode
     tiltNode: BABYLON.TransformNode
@@ -45,8 +45,8 @@ export default class EarthGroup {
         const invertY = false // since default is oddly, true
         const texture: BABYLON.Texture = new BABYLON.Texture(url, scene, noMipmapOrOptions, invertY)
         texture.uScale = -1.0 // since texture wraps backwards
-        // TODO - where does this fudge factor come from?
-        const alignSphericalTexture = 0.4798
+        // since image has prime meridian in the center
+        const alignSphericalTexture = 0.5
         texture.uOffset = alignSphericalTexture
         material.diffuseTexture = texture
         material.specularColor = BABYLON.Color3.Black()
@@ -73,7 +73,6 @@ export default class EarthGroup {
         this.orbitNode.position = position
     }
     set earthRotation(rotation: number) {
-        // this.rotateNode.rotation.y = rotation
-        this.earthGlobe.rotation.y = rotation
+        this.rotateNode.rotation.y = rotation
     }
 }

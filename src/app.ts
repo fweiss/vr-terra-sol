@@ -30,7 +30,7 @@ export default class App extends AppBase {
         super()
 
         // todo maybe create objects first, since cameras depend on them
-        this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
+        this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
         this.showBecoan(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
@@ -131,7 +131,7 @@ export default class App extends AppBase {
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
         }
         this.sunTrail = BABYLON.MeshBuilder.CreateTorus("sun trail", options, this.scene)
-        this.sunTrail.parent = this.earthGroup.earthGlobe
+        this.sunTrail.parent = this.earthGroup.rotateNode
 
         const material = new BABYLON.StandardMaterial("sun trail material", this.scene)
         material.emissiveColor = new BABYLON.Color3(1, 1, 0)
