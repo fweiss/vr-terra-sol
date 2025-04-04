@@ -47,6 +47,12 @@ export default class ViewModel {
     get zenithVector(): BABYLON.Vector3 {
         return this.equatorSpherical.toVector3()
     }
+    // special one needed for hoizonNode
+    get zenithVectorZZ(): BABYLON.Vector3 {
+        const t = this.equatorSpherical.clone()
+        t.phi = -t.phi
+        return t.toVector3()
+    }
     get zenith(): BABYLON.Vector3 {
         return this.equatorSpherical.toVector3().applyRotationQuaternion(this.earthTiltQuaternion)        
     }

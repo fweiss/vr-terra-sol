@@ -1,5 +1,6 @@
 import * as BABYLON from 'babylonjs'
 import Model from './model2'
+import { createTorus } from './support'
 
 /**
  * A set of nested TransformNodes to manage the orbit, tilt, and rotation of the earth.
@@ -26,16 +27,20 @@ export default class EarthGroup {
         this.orbitNode = new BABYLON.TransformNode('orbit node', scene)
         this.tiltNode = new BABYLON.TransformNode('tilt node', scene)
         this.rotateNode = new BABYLON.TransformNode('rotate node')
+        this.horizonNode = new BABYLON.TransformNode('horizon node', scene)
 
         this.tiltNode.parent = this.orbitNode
         this.rotateNode.parent = this.tiltNode
+        this.horizonNode.parent = this.rotateNode
         
         this.tiltNode.rotation.x = model.axisTiltRadians
-        this.rotateNode.rotation.y = model.longitudeRadians
+        // this.rotateNode.rotation.y = model.longitudeRadians
         
         this.createEarthGlobe(model, scene)
         this.earthGlobe.parent = this.rotateNode
+
         this.createEquatorTrace(model)
+        this.createHorizonTrace(model)
     }
     private createEarthGlobe(model: Model, scene: BABYLON.Scene) {
         let material = new BABYLON.StandardMaterial('earth_no_clouds')
@@ -74,5 +79,9 @@ export default class EarthGroup {
     }
     set earthRotation(rotation: number) {
         this.rotateNode.rotation.y = rotation
+    }
+    createHorizonTrace(model: Model) {
+        let torus: BABYLON.Mesh = createTorus("horizion trace", 2, BABYLON.Color3.Blue())
+        torus.parent = this.horizonNode
     }
 }

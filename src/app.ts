@@ -79,6 +79,15 @@ export default class App extends AppBase {
         new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
 
+        const horizonNode = this.earthGroup.horizonNode
+        const zenithVector = this.viewModel.zenithVectorZZ
+        const normalVector = new BABYLON.Vector3(0, 1, 0)
+        const rotationAxis = BABYLON.Vector3.Cross(zenithVector, normalVector)
+        const rotationAngle = Math.acos(BABYLON.Vector3.Dot(normalVector, this.viewModel.zenithVector))
+        let quaternion = BABYLON.Quaternion.RotationAxis(rotationAxis, -rotationAngle)
+        horizonNode.rotationQuaternion = quaternion
+        horizonNode.position = zenithVector.scale(this.model.earthRadius)
+
         // place the surface camera as child of earthglobe
         // and position it relatively
         const spherical: BABYLON.Spherical = new BABYLON.Spherical(1.01, Math.PI/2-this.model.latitudeRadians, -this.model.longitudeRadians)
