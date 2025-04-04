@@ -30,7 +30,7 @@ export default class App extends AppBase {
         super()
 
         // todo maybe create objects first, since cameras depend on them
-        this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
+        // this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
         this.showBecoan(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
@@ -83,13 +83,14 @@ export default class App extends AppBase {
         const zenithVector = this.viewModel.zenithVectorZZ
         const normalVector = new BABYLON.Vector3(0, 1, 0)
         const rotationAxis = BABYLON.Vector3.Cross(zenithVector, normalVector)
-        const rotationAngle = Math.acos(BABYLON.Vector3.Dot(normalVector, this.viewModel.zenithVector))
+        const rotationAngle = Math.acos(BABYLON.Vector3.Dot(normalVector, zenithVector))
         let quaternion = BABYLON.Quaternion.RotationAxis(rotationAxis, -rotationAngle)
         horizonNode.rotationQuaternion = quaternion
         horizonNode.position = zenithVector.scale(this.model.earthRadius)
 
         // place the surface camera as child of earthglobe
         // and position it relatively
+        if (false) {
         const spherical: BABYLON.Spherical = new BABYLON.Spherical(1.01, Math.PI/2-this.model.latitudeRadians, -this.model.longitudeRadians)
         // this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
         this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
@@ -105,7 +106,13 @@ export default class App extends AppBase {
         this.cameras.surfaceCamera.target = this.viewModel.zenithVector.normalize().scale(1.01).add(e)
         // this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
         // this.cameras.surfaceCamera.target = new BABYLON.Vector3(1000, 0, 0)
-        
+        } else {
+            const surfaceCamera = this.cameras.surfaceCamera
+            surfaceCamera.parent = this.earthGroup.horizonNode
+            surfaceCamera.position = new BABYLON.Vector3(-.05, .1, 0)
+            surfaceCamera.upVector = new BABYLON.Vector3(0, 1, 0)
+            surfaceCamera.target = new BABYLON.Vector3(1, 0, -.5)
+        }
         this.createStarfield()
 
         this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())

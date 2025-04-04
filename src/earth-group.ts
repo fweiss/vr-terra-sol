@@ -41,6 +41,7 @@ export default class EarthGroup {
 
         this.createEquatorTrace(model)
         this.createHorizonTrace(model)
+        this.createBeacon("zenith", BABYLON.Color3.Red())
     }
     private createEarthGlobe(model: Model, scene: BABYLON.Scene) {
         let material = new BABYLON.StandardMaterial('earth_no_clouds')
@@ -84,4 +85,14 @@ export default class EarthGroup {
         let torus: BABYLON.Mesh = createTorus("horizion trace", 2, BABYLON.Color3.Blue())
         torus.parent = this.horizonNode
     }
+    createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
+        const points = [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)]
+        const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: points, updatable: true})
+        const material = new BABYLON.StandardMaterial("beacon material")
+        material.emissiveColor = color
+        mesh.material = material;
+        mesh.parent = this.horizonNode
+        return mesh
+    }
+   
 }
