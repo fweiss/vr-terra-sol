@@ -78,16 +78,7 @@ export default class App extends AppBase {
     createObjects() {
         new Bodies2(this.scene)
         this.earthGroup = new EarthGroup(this.scene, this.model)
-
-        const horizonNode = this.earthGroup.horizonNode
-        const zenithVector = this.viewModel.zenithVectorZZ
-        const normalVector = new BABYLON.Vector3(0, 1, 0)
-        const adjustQuaternion = BABYLON.Quaternion.RotationAxis(normalVector, -this.model.longitudeRadians)
-        const rotationAxis = BABYLON.Vector3.Cross(zenithVector, normalVector)
-        const rotationAngle = Math.acos(BABYLON.Vector3.Dot(normalVector, zenithVector))
-        let quaternion = BABYLON.Quaternion.RotationAxis(rotationAxis, -rotationAngle)
-        horizonNode.rotationQuaternion = quaternion.multiply(adjustQuaternion)
-        horizonNode.position = zenithVector.scale(this.model.earthRadius)
+        this.earthGroup.positionHorizonNode(this.viewModel.zenithVectorZZ, this.model)
 
         // place the surface camera as child of earthglobe
         // and position it relatively
@@ -180,37 +171,6 @@ export default class App extends AppBase {
     updateObjectPositions() {
         this.earthGroup.orbitPosition = this.viewModel.earthGroupPosition
         this.earthGroup.earthRotation = this.viewModel.earthGlobeRotation
-    }
-    updateSurfaceCamera() {
-        const offset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
-        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(offset)
-        this.cameras.surfaceCamera.upVector = this.viewModel.zenith
-        this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
-    }
-    // used to check alignment of northVector and the pole of the starfield
-    updateSurfaceCamera2() {
-        const offset: BABYLON.Vector3 = this.viewModel.earthAxis.normalize().scale(1.01)
-        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(offset)
-        this.cameras.surfaceCamera.target = this.viewModel.earthAxis.scale(1000) // large for stbility
-        // this.cameras.surfaceCamera.upVector = this.viewModel.eastVector
-        this.cameras.surfaceCamera.upVector = new BABYLON.Vector3(0, 100, 0)
-        const zz = BABYLON.Vector3.Cross(this.viewModel.eastVector, this.viewModel.earthAxis)
-        // this.cameras.surfaceCamera.upVector = zz
-    }
-    // backup camera to get wider field of view
-    updateSurfaceCamera3() {
-        const zenithOffset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
-        const eastOffset: BABYLON.Vector3 = this.viewModel.eastVector.normalize().scale(-1.5)
-        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(zenithOffset).add(eastOffset)
-        this.cameras.surfaceCamera.upVector = this.viewModel.zenith
-        this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
-    }
-    // gaze at the zenith
-    updateSurfaceCamera4() {
-        const zenithOffset: BABYLON.Vector3 = this.viewModel.zenith.normalize().scale(1.01)
-        this.cameras.surfaceCamera.position = this.viewModel.earthGroupPosition.add(zenithOffset)
-        this.cameras.surfaceCamera.upVector = this.viewModel.northVector
-        this.cameras.surfaceCamera.target = this.viewModel.zenith.scale(1000) // large for stbility
     }
     updateEarthCamera() {
         this.cameras.earthCamera.target = this.viewModel.earthGroupPosition

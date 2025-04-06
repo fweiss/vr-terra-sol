@@ -94,5 +94,14 @@ export default class EarthGroup {
         mesh.parent = this.horizonNode
         return mesh
     }
-   
+   positionHorizonNode(zenithVector: BABYLON.Vector3, model: Model) {
+            const horizonNode = this.horizonNode
+            const normalVector = new BABYLON.Vector3(0, 1, 0)
+            const adjustQuaternion = BABYLON.Quaternion.RotationAxis(normalVector, -model.longitudeRadians)
+            const rotationAxis = BABYLON.Vector3.Cross(zenithVector, normalVector)
+            const rotationAngle = Math.acos(BABYLON.Vector3.Dot(normalVector, zenithVector))
+            let quaternion = BABYLON.Quaternion.RotationAxis(rotationAxis, -rotationAngle)
+            horizonNode.rotationQuaternion = quaternion.multiply(adjustQuaternion)
+            horizonNode.position = zenithVector.scale(model.earthRadius)
+   }
 }

@@ -13,31 +13,25 @@
  * 
  * There is a callback onYearDateChange that is called when the solarDate changes.
  */
-class Zenith {
+export default class model {
+    // geometric variables
     latitude: number = 37 + 46/60 + 39/3600
     longitude: number =  -122 - 24/60 - 59/3600
-}
-export default class model {
-    siderealTime: Date = new Date()
-    solarDate: Date = new Date()
-
-    millisPerDay: number = 24 * 60 * 60 * 1000
-    millisPerYear = 365 * this.millisPerDay
-
     axialTilt: number = 23.43602
     earthCameraHeight: number = 5
     earthOrbitRadius: number = 5
     earthRadius: number = 1
-
     universeRadius: number = 1000000 // still used?
 
-    // siderealTimeDelta: number = 1000000
-    // siderealTimeDelta: number = this.millisPerDay * 0.001157
+    // temporal variables
+    siderealTime: Date = new Date()
+    solarDate: Date = new Date()
+    millisPerDay: number = 24 * 60 * 60 * 1000
+    millisPerYear = 365 * this.millisPerDay
+
+    // animation variables
     siderealTimeDelta: number = 1 * this.millisPerDay / 10 // 1 second per frame at 60 fps
-
     solarDateDelta: number = 1 * this.millisPerDay // 1 day per frame at 60 fps
-
-    zenith: Zenith = new Zenith()
 
     onYearDateChange: (date: Date) => void = () => {}
 
@@ -63,9 +57,9 @@ export default class model {
         return this.axialTilt * Math.PI / 180
     }
     get latitudeRadians() {
-        return this.zenith.latitude * Math.PI / 180
+        return this.latitude * Math.PI / 180
     }
     get longitudeRadians() {
-        return this.zenith.longitude * Math.PI / 180
+        return this.longitude * Math.PI / 180
     }
 }
