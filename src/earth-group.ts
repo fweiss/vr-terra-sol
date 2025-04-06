@@ -86,7 +86,7 @@ export default class EarthGroup {
         torus.parent = this.horizonNode
     }
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
-        const points = [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)]
+        const points = [BABYLON.Vector3.Zero(), new BABYLON.Vector3(-2, 0, 0)] // xz plane
         const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: points, updatable: true})
         const material = new BABYLON.StandardMaterial("beacon material")
         material.emissiveColor = color
