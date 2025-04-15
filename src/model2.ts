@@ -13,7 +13,7 @@
  * 
  * There is a callback onYearDateChange that is called when the solarDate changes.
  */
-export default class model {
+export class Model {
     // geometric variables
     latitude: number = 37 + 46/60 + 39/3600
     longitude: number =  -122 - 24/60 - 59/3600
@@ -21,6 +21,7 @@ export default class model {
     earthCameraHeight: number = 5
     earthOrbitRadius: number = 5
     earthRadius: number = 1
+    sunRadius: number = 0.2
     universeRadius: number = 1000000 // still used?
 
     // temporal variables
@@ -34,6 +35,13 @@ export default class model {
     solarDateDelta: number = 1 * this.millisPerDay // 1 day per frame at 60 fps
 
     onYearDateChange: (date: Date) => void = () => {}
+    
+    // add ability to construct with a partial initializer list
+    // base Model class provides default inititializers
+    // for example: "new Model({latitude: 45})"
+    constructor(init?:Partial<Model>) {
+        Object.assign(this, init)
+    }
 
     tick() {
         const vernalEquinox = new Date("2020-03-20T03:50:00Z") // copilot
@@ -63,3 +71,8 @@ export default class model {
         return this.longitude * Math.PI / 180
     }
 }
+
+export const surfaceModel = new Model({
+    earthOrbitRadius: 200,
+    sunRadius: 100,
+})

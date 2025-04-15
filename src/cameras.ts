@@ -1,5 +1,5 @@
 import * as BABYLON from 'babylonjs'
-import Model from './model2'
+import { Model } from './model2'
 
 export default class Cameras {
     public spaceCamera: BABYLON.ArcRotateCamera

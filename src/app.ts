@@ -3,7 +3,7 @@ import * as BABYLON from 'babylonjs'
 import AppBase from './app-base'
 import Cameras from './cameras'
 import Controls from './controls'
-import Model from './model2'
+import { Model, surfaceModel } from './model2'
 import Bodies2 from './bodies2'
 import EarthGroup from './earth-group'
 import ViewModel from './view-model'
@@ -35,8 +35,11 @@ export default class App extends AppBase {
 
         this.scene.onBeforeRenderObservable.add(() => {
             // synchronize the view model with the model
-            this.model.tick()
+            // this.model.tick()
+            this.viewModel.model.tick()
             this.viewModel.update()
+
+            console.log(this.model == this.viewModel.model)
             
             this.updateObjectPositions()
             
@@ -76,7 +79,7 @@ export default class App extends AppBase {
         southHemispherLight.intensity = intensity
     }
     createObjects() {
-        new Bodies2(this.scene)
+        new Bodies2(this.scene, this.viewModel.model)
         this.earthGroup = new EarthGroup(this.scene, this.model)
         this.earthGroup.positionHorizonNode(this.viewModel.zenithVectorZZ, this.model)
 
@@ -117,7 +120,7 @@ export default class App extends AppBase {
     // being off-center. The starfield is centered on the sun position
     // not the earth position. Maybe try making it a child of the earthGroup.
     createStarfield() {
-        const diameter = 1000 //this.model.universeRadius
+        const diameter = this.model.universeRadius
         let starfield = BABYLON.MeshBuilder.CreateSphere("starfield", { diameter: diameter, sideOrientation: BABYLON.Mesh.BACKSIDE }, this.scene)
         // starfield.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI)
         starfield.rotate(new BABYLON.Vector3(1, 0, 0), this.model.axisTiltRadians)
@@ -214,6 +217,11 @@ export default class App extends AppBase {
             const selectedCamera = cameras[camera] || this.cameras.earthCamera
             this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
             this.showBecoan(camera != 'surface')
+
+            if (camera == 'surface') {
+                this.viewModel.model = surfaceModel
+                this.viewModel.eclipticSpherical.radius = this.viewModel.model.earthOrbitRadius
+            }
         }
         this.model.onYearDateChange = (date: Date) => {
             this.controls.updateYearDate(date)

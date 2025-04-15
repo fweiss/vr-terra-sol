@@ -1,5 +1,5 @@
 import * as BABYLON from 'babylonjs'
-import Model from './model2'
+import { Model, surfaceModel } from './model2'
 
 // given the sidereal time and solar date, update the positions of the objects
 // need to calculate:
@@ -15,8 +15,8 @@ import Model from './model2'
 // horizonSpherical - aligned with zenith vector at earth's surface
 
 export default class ViewModel {
-    private model: Model
-    private eclipticSpherical: BABYLON.Spherical
+    model: Model
+    eclipticSpherical: BABYLON.Spherical
     private equatorSpherical: BABYLON.Spherical
     private horizonSpherical: BABYLON.Spherical
 
