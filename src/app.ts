@@ -3,7 +3,7 @@ import * as BABYLON from 'babylonjs'
 import AppBase from './app-base'
 import Cameras from './cameras'
 import Controls from './controls'
-import { Model, surfaceModel } from './model2'
+import { Model, models, surfaceModel } from './model2'
 import Bodies2 from './bodies2'
 import EarthGroup from './earth-group'
 import ViewModel from './view-model'
@@ -108,7 +108,7 @@ export default class App extends AppBase {
             surfaceCamera.upVector = new BABYLON.Vector3(0, 1, 0)
             surfaceCamera.target = new BABYLON.Vector3(0, -.05, 1)
         }
-        this.createStarfield()
+        // this.createStarfield()
 
         this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
         this.axisBeacon = this.createBeacon("axis beacon", BABYLON.Color3.Red())
@@ -218,10 +218,16 @@ export default class App extends AppBase {
             this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
             this.showBecoan(camera != 'surface')
 
-            if (camera == 'surface') {
-                this.viewModel.model = surfaceModel
-                this.viewModel.eclipticSpherical.radius = this.viewModel.model.earthOrbitRadius
-            }
+            // if (camera == 'surface') {
+            //     this.viewModel.model = surfaceModel
+            //     this.viewModel.eclipticSpherical.radius = this.viewModel.model.earthOrbitRadius
+            // } else if (camera == 'earth') {
+            //     this.viewModel.model = models['earthModel']
+            //     this.viewModel.eclipticSpherical.radius = this.viewModel.model.earthOrbitRadius
+            // }
+            // this.viewModel.model.onYearDateChange = (date: Date) => {
+            //     this.controls.updateYearDate(date)
+            // }
         }
         this.model.onYearDateChange = (date: Date) => {
             this.controls.updateYearDate(date)
