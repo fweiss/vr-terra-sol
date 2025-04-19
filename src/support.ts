@@ -7,8 +7,9 @@ export function createTorus(name: string, radius: number, color: BABYLON.Color3)
         tessellation: 64,
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     })
-    const material = new BABYLON.StandardMaterial(name = " material")
+    const material = new BABYLON.StandardMaterial(name + " material")
     material.emissiveColor = color
+    material.specularColor = BABYLON.Color3.Black()
     torus.material = material
     return torus
 }

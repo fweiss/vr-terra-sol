@@ -7,6 +7,7 @@ import { Model, models, surfaceModel } from './model2'
 import Bodies2 from './bodies2'
 import EarthGroup from './earth-group'
 import ViewModel from './view-model'
+import { createTorus } from './support'
 
 export default class App extends AppBase {
     private model: Model
@@ -134,19 +135,8 @@ export default class App extends AppBase {
         return starfield
     }
     private createSunTrail() {
-        const options = {
-            // the sun oddly is between *1 and *2
-            diameter: this.viewModel.sunTrailRadius * 2,
-            thickness: 0.1,
-            tessellation: 64,
-            sideOrientation: BABYLON.Mesh.DOUBLESIDE
-        }
-        this.sunTrail = BABYLON.MeshBuilder.CreateTorus("sun trail", options, this.scene)
+        this.sunTrail = createTorus("suntrail", this.viewModel.sunTrailRadius, BABYLON.Color3.Yellow())
         this.sunTrail.parent = this.earthGroup.rotateNode
-
-        const material = new BABYLON.StandardMaterial("sun trail material", this.scene)
-        material.emissiveColor = new BABYLON.Color3(1, 1, 0)
-        this.sunTrail.material = material
     }
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
         const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
