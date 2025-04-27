@@ -76,14 +76,3 @@ export const surfaceModel = new Model({
     earthOrbitRadius: 200,
     sunRadius: 100,
 })
-
-export const models: any = {
-    earthModel: new Model({}),
-
-    surfaceModel: new Model({
-        // earthOrbitRadius: 20,
-        sunRadius: 100,
-    }),
-    
-    ßspaceModel: new Model({}),
-}

@@ -3,11 +3,12 @@ import * as BABYLON from 'babylonjs'
 import AppBase from './app-base'
 import Cameras from './cameras'
 import Controls from './controls'
-import { Model, models, surfaceModel } from './model2'
+import { Model, surfaceModel } from './model2'
 import Bodies2 from './bodies2'
 import EarthGroup from './earth-group'
 import ViewModel from './view-model'
 import { createTorus } from './support'
+import ModelSwitch from './model-switch'
 
 export default class App extends AppBase {
     private model: Model
@@ -16,6 +17,9 @@ export default class App extends AppBase {
     private earthGroup: EarthGroup
     private cameras: Cameras
     private controls: Controls
+    private bodies: Bodies2
+
+    private modelSwitch: ModelSwitch
 
 
     private zenithBeacon: BABYLON.LinesMesh
@@ -29,6 +33,7 @@ export default class App extends AppBase {
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
+        this.modelSwitch = new ModelSwitch()
 
         // todo maybe create objects first, since cameras depend on them
         // this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
@@ -55,6 +60,12 @@ export default class App extends AppBase {
         this.cameras.earthCamera.onViewMatrixChangedObservable.add((camera: BABYLON.ArcRotateCamera) => {
             // console.log('earth camera view matrix changed ', camera.position.toString())
         })
+        this.modelSwitch.modelSwitchObservable.add((model: Model) => {
+            console.log('model switch observable', model)
+            this.viewModel.eclipticSpherical.radius = model.earthOrbitRadius
+            const scale = model.earthOrbitRadius
+            this.bodies.sun.scaling.set(scale, scale, scale)
+        })
 
         this.createControls()
         this.createDebug
@@ -80,7 +91,7 @@ export default class App extends AppBase {
         southHemispherLight.intensity = intensity
     }
     createObjects() {
-        new Bodies2(this.scene, this.viewModel.model)
+        this.bodies = new Bodies2(this.scene, this.viewModel.model)
         this.earthGroup = new EarthGroup(this.scene, this.model)
         this.earthGroup.positionHorizonNode(this.viewModel.zenithVectorZZ, this.model)
 
@@ -207,6 +218,7 @@ export default class App extends AppBase {
             const selectedCamera = cameras[camera] || this.cameras.earthCamera
             this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
             this.showBecoan(camera != 'surface')
+            this.modelSwitch.switch(camera)
 
             // if (camera == 'surface') {
             //     this.viewModel.model = surfaceModel
