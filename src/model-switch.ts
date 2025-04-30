@@ -19,8 +19,8 @@ export default class ModelSwitch {
     private models: { [key: string]: Model } = {
         'earth': new Model(),
         'surface': new Model({
-            earthOrbitRadius: 200,
-            sunRadius: 100, 
+            earthOrbitRadius: 20,
+            sunRadius: 1, 
         }),
         'space': new Model({}),
     }

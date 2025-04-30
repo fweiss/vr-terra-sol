@@ -63,8 +63,9 @@ export default class App extends AppBase {
         this.modelSwitch.modelSwitchObservable.add((model: Model) => {
             console.log('model switch observable', model)
             this.viewModel.eclipticSpherical.radius = model.earthOrbitRadius
-            const scale = model.earthOrbitRadius
+            const scale = model.sunRadius
             this.bodies.sun.scaling.set(scale, scale, scale)
+            // this.sunTrail.scaling.set(scale, scale, scale)
         })
 
         this.createControls()
@@ -146,7 +147,7 @@ export default class App extends AppBase {
         return starfield
     }
     private createSunTrail() {
-        this.sunTrail = createTorus("suntrail", this.viewModel.sunTrailRadius, BABYLON.Color3.Yellow())
+        this.sunTrail = createTorus("suntrail", this.viewModel.sunTrailRadius, BABYLON.Color3.Yellow(), .2)
         this.sunTrail.parent = this.earthGroup.rotateNode
     }
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
