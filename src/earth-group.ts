@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs'
 import { Model } from './model2'
-import { createTorus } from './support'
+import Support from './support'
 
 /**
  * A set of nested TransformNodes to manage the orbit, tilt, and rotation of the earth.
@@ -64,18 +64,8 @@ export default class EarthGroup {
         this.earthGlobe.material = material;
     }
     createEquatorTrace(model: Model) {
-        this.equatorTrace = createTorus("equator trace", model.earthRadius, BABYLON.Color3.Yellow(), 0.01)
+        this.equatorTrace = Support.createTorus("equator trace", model.earthRadius, BABYLON.Color3.Yellow(), 0.01)
         this.equatorTrace.parent = this.tiltNode
-        // this.equatorTrace = BABYLON.MeshBuilder.CreateTorus("equator trace", {
-        //     diameter: model.earthRadius * 2 + .001,
-        //     thickness: 0.01,
-        //     tessellation: 64,
-        //     sideOrientation: BABYLON.Mesh.DOUBLESIDE
-        // })
-        // const material = new BABYLON.StandardMaterial("equator trace material")
-        // this.equatorTrace.parent = this.tiltNode
-        // material.emissiveColor = new BABYLON.Color3(1, 1, 0)
-        // this.equatorTrace.material = material
     }
     set orbitPosition(position: BABYLON.Vector3) {
         this.orbitNode.position = position
@@ -84,7 +74,7 @@ export default class EarthGroup {
         this.rotateNode.rotation.y = rotation
     }
     createHorizonTrace(model: Model) {
-        let torus: BABYLON.Mesh = createTorus("horizon trace", 2, BABYLON.Color3.Blue())
+        let torus: BABYLON.Mesh = Support.createTorus("horizon trace", 2, BABYLON.Color3.Blue())
         torus.parent = this.horizonNode
     }
     createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {

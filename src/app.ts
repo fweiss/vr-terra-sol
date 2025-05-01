@@ -7,7 +7,7 @@ import { Model, surfaceModel } from './model2'
 import Bodies2 from './bodies2'
 import EarthGroup from './earth-group'
 import ViewModel from './view-model'
-import { createTorus } from './support'
+import Support from './support'
 import ModelSwitch from './model-switch'
 
 export default class App extends AppBase {
@@ -21,11 +21,6 @@ export default class App extends AppBase {
 
     private modelSwitch: ModelSwitch
 
-
-    private zenithBeacon: BABYLON.LinesMesh
-    private axisBeacon: BABYLON.LinesMesh
-    private horizonBeacon: BABYLON.LinesMesh
-
     private sunTrail: BABYLON.Mesh
 
     beaconsOn: boolean = true
@@ -36,8 +31,7 @@ export default class App extends AppBase {
         this.modelSwitch = new ModelSwitch()
 
         // todo maybe create objects first, since cameras depend on them
-        // this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
-        this.showBecoan(this.beaconsOn)
+        // this.showBecoan(this.beaconsOn)
 
         this.scene.onBeforeRenderObservable.add(() => {
             // synchronize the view model with the model
@@ -50,7 +44,6 @@ export default class App extends AppBase {
             this.updateObjectPositions()
             
             this.updateBeacons()
-            // this.updateSurfaceCamera()
             this.updateEarthCamera()
             this.updateSpaceCamera()
             this.updateSunTrail()
@@ -65,7 +58,6 @@ export default class App extends AppBase {
             this.viewModel.eclipticSpherical.radius = model.earthOrbitRadius
             const scale = model.sunRadius
             this.bodies.sun.scaling.set(scale, scale, scale)
-            // this.sunTrail.scaling.set(scale, scale, scale)
         })
 
         this.createControls()
@@ -98,35 +90,13 @@ export default class App extends AppBase {
 
         // place the surface camera as child of earthglobe
         // and position it relatively
-        if (false) {
-        const spherical: BABYLON.Spherical = new BABYLON.Spherical(1.01, Math.PI/2-this.model.latitudeRadians, -this.model.longitudeRadians)
-        // this.cameras.surfaceCamera.parent = this.earthGroup.earthGlobe
-        this.cameras.surfaceCamera.parent = this.earthGroup.rotateNode
+        const surfaceCamera = this.cameras.surfaceCamera
+        surfaceCamera.parent = this.earthGroup.horizonNode
+        surfaceCamera.position = new BABYLON.Vector3(0, 0.001, -0.01)
+        surfaceCamera.upVector = new BABYLON.Vector3(0, 1, 0)
+        surfaceCamera.target = new BABYLON.Vector3(0, -.05, 1)
 
-        const w = this.viewModel.westVector.scale(-0.04)
-        this.cameras.surfaceCamera.position = this.viewModel.zenithVector.normalize().scale(1.005).add(w)
-        // this.cameras.surfaceCamera.position = spherical.toVector3()
-        
-        this.cameras.surfaceCamera.upVector = this.viewModel.zenithVector
-        // this.cameras.surfaceCamera.upVector = spherical.toVector3() //this.viewModel.zenith
-        
-        const e = this.viewModel.eastVector.scale(1000)
-        this.cameras.surfaceCamera.target = this.viewModel.zenithVector.normalize().scale(1.01).add(e)
-        // this.cameras.surfaceCamera.target = this.viewModel.eastVector.scale(1000) // large for stbility
-        // this.cameras.surfaceCamera.target = new BABYLON.Vector3(1000, 0, 0)
-        } else {
-            const surfaceCamera = this.cameras.surfaceCamera
-            surfaceCamera.parent = this.earthGroup.horizonNode
-            surfaceCamera.position = new BABYLON.Vector3(0, 0.001, -0.01)
-            surfaceCamera.upVector = new BABYLON.Vector3(0, 1, 0)
-            surfaceCamera.target = new BABYLON.Vector3(0, -.05, 1)
-        }
-        // this.createStarfield()
-
-        this.zenithBeacon = this.createBeacon("zenith beacon", BABYLON.Color3.White())
-        this.axisBeacon = this.createBeacon("axis beacon", BABYLON.Color3.Red())
-        this.horizonBeacon = this.createBeacon("horizon beacon", BABYLON.Color3.Green())
-
+        Support.createBeacons()
         this.createSunTrail()
     }
     // At diameter < 1000 there are artifacts due to the earth's northVector
@@ -147,31 +117,8 @@ export default class App extends AppBase {
         return starfield
     }
     private createSunTrail() {
-        this.sunTrail = createTorus("suntrail", this.viewModel.sunTrailRadius, BABYLON.Color3.Yellow(), .2)
+        this.sunTrail = Support.createTorus("suntrail", this.viewModel.sunTrailRadius, BABYLON.Color3.Yellow(), .2)
         this.sunTrail.parent = this.earthGroup.rotateNode
-    }
-    createBeacon(name: string, color: BABYLON.Color3): BABYLON.LinesMesh {
-        const mesh = BABYLON.MeshBuilder.CreateLines(name, { points: [BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, 10)], updatable: true }, this.scene)
-        const material = new BABYLON.StandardMaterial("beacon material", this.scene)
-        material.emissiveColor = color
-        mesh.material = material;
-        return mesh
-    }
-    // display a line from start to end
-    private updateLineEndpoint(lineMesh: BABYLON.LinesMesh, newStart, newEnd) {
-        const updatedPoints = [newStart, newEnd];
-        const positions = [];
-        updatedPoints.forEach(p => {
-            positions.push(p.x, p.y, p.z);
-        });
-        lineMesh.geometry.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-        this.showBecoan(this.beaconsOn)
-    }
-    // probably don't need this
-    private showBecoan(onoff: boolean) {
-        this.zenithBeacon.isVisible = onoff
-        this.axisBeacon.isVisible = onoff
-        this.horizonBeacon.isVisible = onoff
     }
     updateObjectPositions() {
         this.earthGroup.orbitPosition = this.viewModel.earthGroupPosition
@@ -189,20 +136,20 @@ export default class App extends AppBase {
         // space camera is fixed
     }
     updateBeacons() {
-        const earthGroupPosition = this.viewModel.earthGroupPosition
-        const axisScaled = this.viewModel.earthAxis.normalize().scale(1000)
-        this.updateLineEndpoint(this.axisBeacon, earthGroupPosition, earthGroupPosition.add(axisScaled))
+        Support.updateBeacons(this.viewModel, this.model)
+        // const earthGroupPosition = this.viewModel.earthGroupPosition
+        // const axisScaled = this.viewModel.earthAxis.normalize().scale(1000)
+        // Support.updateLineEndpoint(this.axisBeacon, earthGroupPosition, earthGroupPosition.add(axisScaled))
 
-        const zenithScaled = this.viewModel.zenith.normalize().scale(10)
-        this.updateLineEndpoint(this.zenithBeacon, earthGroupPosition, earthGroupPosition.add(zenithScaled))
+        // const zenithScaled = this.viewModel.zenith.normalize().scale(10)
+        // Support.updateLineEndpoint(this.zenithBeacon, earthGroupPosition, earthGroupPosition.add(zenithScaled))
 
-        const eastScaled = this.viewModel.eastVector.normalize().scale(10)
-        const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
-        this.updateLineEndpoint(this.horizonBeacon, earthGroupPosition.add(point), earthGroupPosition.add(point).add(eastScaled))
+        // const eastScaled = this.viewModel.eastVector.normalize().scale(10)
+        // const point  = this.viewModel.zenith.normalize().scale(this.model.earthRadius+0.01)
+        // Support.updateLineEndpoint(this.horizonBeacon, earthGroupPosition.add(point), earthGroupPosition.add(point).add(eastScaled))
 
     }
     updateSunTrail() {
-        // const st = Math.sin(this.model.axisTiltRadians) * Math.cos(this.model.solarDateRadians)
         const st = Math.cos(this.model.solarDateRadians)
         // earthRadius is 1, so why is the scale * 2?
         const sunTrailOffset = this.viewModel.earthAxis.normalize().scale(st * 2) 
@@ -218,20 +165,9 @@ export default class App extends AppBase {
             }
             const selectedCamera = cameras[camera] || this.cameras.earthCamera
             this.cameras.setActiveCamera(selectedCamera, this.scene, this.canvas)
-            this.showBecoan(camera != 'surface')
+            // this.showBecoan(camera != 'surface')
             this.modelSwitch.switch(camera)
-
-            // if (camera == 'surface') {
-            //     this.viewModel.model = surfaceModel
-            //     this.viewModel.eclipticSpherical.radius = this.viewModel.model.earthOrbitRadius
-            // } else if (camera == 'earth') {
-            //     this.viewModel.model = models['earthModel']
-            //     this.viewModel.eclipticSpherical.radius = this.viewModel.model.earthOrbitRadius
-            // }
-            // this.viewModel.model.onYearDateChange = (date: Date) => {
-            //     this.controls.updateYearDate(date)
-            // }
-        }
+    }
         this.model.onYearDateChange = (date: Date) => {
             this.controls.updateYearDate(date)
         }
