@@ -6,6 +6,7 @@ export default class Support {
     static zenithBeacon: BABYLON.LinesMesh
     static axisBeacon: BABYLON.LinesMesh
     static horizonBeacon: BABYLON.LinesMesh
+    static northBeacon: BABYLON.LinesMesh
 
     static createTorus(name: string, radius: number, color: BABYLON.Color3, thickness: number = 0.01): BABYLON.Mesh {
         let torus = BABYLON.MeshBuilder.CreateTorus(name, {
@@ -43,6 +44,7 @@ export default class Support {
         this.zenithBeacon.isVisible = onoff
         this.axisBeacon.isVisible = onoff
         this.horizonBeacon.isVisible = onoff
+        this.northBeacon.isVisible = onoff
     }
     static updateBeacons(viewModel: ViewModel, model: Model) {
         const earthGroupPosition = viewModel.earthGroupPosition
@@ -55,10 +57,13 @@ export default class Support {
         const eastScaled = viewModel.eastVector.normalize().scale(10)
         const point  = viewModel.zenith.normalize().scale(model.earthRadius+0.01)
         Support.updateLineEndpoint(this.horizonBeacon, earthGroupPosition.add(point), earthGroupPosition.add(point).add(eastScaled))
+
+        const northScaled = viewModel.northVector.normalize().scale(10)
     }
     static createBeacons() {
         Support.zenithBeacon = Support.createBeacon("zenith beacon", BABYLON.Color3.White())
         Support.axisBeacon = Support.createBeacon("axis beacon", BABYLON.Color3.Red())
         Support.horizonBeacon = Support.createBeacon("horizon beacon", BABYLON.Color3.Green())
+        Support.northBeacon = Support.createBeacon("north beacon", BABYLON.Color3.Blue())
     }
 }

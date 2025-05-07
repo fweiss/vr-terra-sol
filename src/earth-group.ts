@@ -41,7 +41,7 @@ export default class EarthGroup {
 
         this.createEquatorTrace(model)
         this.createHorizonTrace(model)
-        this.createBeacon("zenith", BABYLON.Color3.Red())
+        // this.createBeacon("zenith", BABYLON.Color3.Red())
     }
     private createEarthGlobe(model: Model, scene: BABYLON.Scene) {
         let material = new BABYLON.StandardMaterial('earth_no_clouds')

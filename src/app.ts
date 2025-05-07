@@ -23,12 +23,13 @@ export default class App extends AppBase {
 
     private sunTrail: BABYLON.Mesh
 
-    beaconsOn: boolean = true
+    beaconsOn: boolean
 
     constructor() {
         // implicitly calls createModel, createCameras, createLights, createObjects
         super()
         this.modelSwitch = new ModelSwitch()
+        this.beaconsOn = true
 
         // todo maybe create objects first, since cameras depend on them
         // this.showBecoan(this.beaconsOn)
@@ -97,6 +98,9 @@ export default class App extends AppBase {
         surfaceCamera.target = new BABYLON.Vector3(0, -.05, 1)
 
         Support.createBeacons()
+        Support.northBeacon.parent = this.earthGroup.orbitNode
+        // somehow this.beaconsOn is not set
+        Support.showBeacons(true)
         this.createSunTrail()
     }
     // At diameter < 1000 there are artifacts due to the earth's northVector
